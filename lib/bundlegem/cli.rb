@@ -1,5 +1,5 @@
 require 'bundlegem'
-require 'bundlegem/vendored_thor'
+require 'thor'
 
 module Bundlegem
   class CLI < Thor

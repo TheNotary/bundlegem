@@ -6,6 +6,8 @@ describe Bundlegem do
   end
 
   it 'does something useful' do
-    expect(false).to eq(true)
+    require 'bundlegem/cli'
+    binding.pry
+
   end
 end
