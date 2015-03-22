@@ -1,31 +1,35 @@
-# Bundlegem
 
-TODO: Write a gem description
+# BundleGem: a gem project genorator with user defined templates
 
-## Installation
+I've more or less taken the code out of Bundler's `bundle gem` command, expanded on it and made it available as this repos.
 
-Add this line to your application's Gemfile:
+### Installation and usage
 
-```ruby
-gem 'bundlegem'
+First install it:
+```
+gem install bundlegem
 ```
 
-And then execute:
+Then create a new project structure:
+```
+$  bundlegem template new
+Specify a name for your gem template:  my_service
+Cloning base project structure into ~/.bundlegem/templates/my_service
+...
+Complete!
+```
 
-    $ bundle
+You'll now find a project skeleton in ~/.bundlegem/templates/my_service that you can customize to your liking.  
 
-Or install it yourself as:
 
-    $ gem install bundlegem
+Finally, create a new gem using your new gem template:
+```
+$  cd /tmp
+$  bundlegem project_name -t my_service
+```
 
-## Usage
+### Contributing
 
-TODO: Write usage instructions here
+Please feel free to speak up using the issue section if there's anything on your mind :)  
+Do the usual fork routine and issue a pull request by all means.  
 
-## Contributing
-
-1. Fork it ( https://github.com/[my-github-username]/bundlegem/fork )
-2. Create your feature branch (`git checkout -b my-new-feature`)
-3. Commit your changes (`git commit -am 'Add some feature'`)
-4. Push to the branch (`git push origin my-new-feature`)
-5. Create a new Pull Request

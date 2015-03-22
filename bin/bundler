@@ -1,0 +1,12 @@
+#!/usr/bin/env ruby
+
+# Exit cleanly from an early interrupt
+Signal.trap("INT") { exit 1 }
+
+require 'bundlegem'
+
+# require 'bundlergem/friendly_errors'
+
+require 'bundlegem/cli'
+Bundlegem::CLI.start(ARGV, :debug => true)
+
