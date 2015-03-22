@@ -1,6 +1,6 @@
 require 'pathname'
 
-module Bundler
+module Bundlegem
   class CLI::Gem
     attr_reader :options, :gem_name, :thor, :name, :target
 
@@ -16,7 +16,7 @@ module Bundler
     end
 
     def run
-      Bundler.ui.confirm "Creating gem '#{name}'..."
+      # Bundler.ui.confirm "Creating gem '#{name}'..."
 
       underscored_name = name.tr('-', '_')
       namespaced_path = name.tr('-', '/')
@@ -112,11 +112,14 @@ module Bundler
 
       template_src = match_template_src
 
+      require 'pry'
+      binding.pry
+      
       templates.each do |src, dst|
         thor.template("#{template_src}/#{src}", target.join(dst), config)
       end
 
-      Bundler.ui.info "Initializing git repo in #{target}"
+      # Bundler.ui.info "Initializing git repo in #{target}"
       Dir.chdir(target) { `git init`; `git add .` }
 
       if options[:edit]
