@@ -1,7 +1,10 @@
 ** 0.0.x **
 	- Ability to load templates from github
 	- Better syntax of bundlegem gem_name -t template_name
-	- Default templates
+	- Default templates: 
+		* Service, 
+		* CLI file system app, 
+		* CLI with web client
 	- List templates (with descriptions)
 	- Restore the original UI that was in bundler
 	- Cleanness and goodness
