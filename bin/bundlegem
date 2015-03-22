@@ -3,7 +3,7 @@
 # Exit cleanly from an early interrupt
 Signal.trap("INT") { exit 1 }
 
-require 'bundle'
+require 'bundler'
 require 'bundlegem'
 
 # require 'bundlergem/friendly_errors'
