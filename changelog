@@ -1,0 +1,13 @@
+** 0.0.x **
+	- Ability to load templates from github
+	- Better syntax of bundlegem gem_name -t template_name
+	- Default templates
+	- List templates (with descriptions)
+	- Restore the original UI that was in bundler
+	- Cleanness and goodness
+  - Soapy bubbles that smell like spring time in a box marked surplus kittens
+
+** 0.0.1 **
+  - Very basic prototype that allows you to specify templates in
+~/.bundlegem/templates
+
