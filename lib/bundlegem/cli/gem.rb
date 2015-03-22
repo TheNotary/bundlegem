@@ -112,9 +112,6 @@ module Bundlegem
 
       template_src = match_template_src
 
-      require 'pry'
-      binding.pry
-      
       templates.each do |src, dst|
         thor.template("#{template_src}/#{src}", target.join(dst), config)
       end
