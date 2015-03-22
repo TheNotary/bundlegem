@@ -9,10 +9,10 @@ module Bundlegem
     def self.start(*)
       super
     rescue Exception => e
-      Bundlegem.ui = UI::Shell.new
+      # Bundlegem.ui = UI::Shell.new
       raise e
     ensure
-      Bundlegem.cleanup
+      # Bundlegem.cleanup
     end
 
     def initialize(*args)
@@ -27,8 +27,8 @@ module Bundlegem
       raise InvalidOption, e.message
     ensure
       self.options ||= {}
-      Bundlegem.ui = UI::Shell.new(options)
-      Bundlegem.ui.level = "debug" if options["verbose"]
+      # Bundlegem.ui = UI::Shell.new(options)
+      # Bundlegem.ui.level = "debug" if options["verbose"]
     end
 
     check_unknown_options!(:except => [:config, :exec])
