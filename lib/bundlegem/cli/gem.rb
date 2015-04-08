@@ -46,16 +46,16 @@ module Bundlegem
 
       # Hmmm... generate dynamically instead?  Yes, overwritten below
       templates = {
-        "Gemfile.tt" => "Gemfile",
-        "changelog.tt" => "changelog",
-        "gitignore.tt" => ".gitignore",
-        "lib/newgem.rb.tt" => "lib/#{namespaced_path}.rb",
-        "lib/newgem/version.rb.tt" => "lib/#{namespaced_path}/version.rb",
-        "newgem.gemspec.tt" => "#{name}.gemspec",
-        "Rakefile.tt" => "Rakefile",
-        "README.md.tt" => "README.md",
-        "bin/console.tt" => "bin/console",
-        "bin/setup.tt" => "bin/setup"
+        'Gemfile.tt' => "Gemfile",
+        'changelog.tt' => "changelog",
+        'gitignore.tt' => ".gitignore",
+        'lib/#{name}.rb.tt' => "lib/#{namespaced_path}.rb",
+        'lib/#{name}/version.rb.tt' => "lib/#{namespaced_path}/version.rb",
+        '#{name}.gemspec.tt' => "#{name}.gemspec",
+        'Rakefile.tt' => "Rakefile",
+        'README.md.tt' => "README.md",
+        'bin/console.tt' => "bin/console",
+        'bin/setup.tt' => "bin/setup"
       }
 
 
