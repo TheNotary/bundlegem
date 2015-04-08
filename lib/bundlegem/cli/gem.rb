@@ -49,7 +49,7 @@ module Bundlegem
         "Gemfile.tt" => "Gemfile",
         "changelog.tt" => "changelog",
         "gitignore.tt" => ".gitignore",
-        "lib/#{name}.rb.tt" => "lib/#{namespaced_path}.rb",
+        "lib/newgem.rb.tt" => "lib/#{namespaced_path}.rb",
         "lib/newgem/version.rb.tt" => "lib/#{namespaced_path}/version.rb",
         "newgem.gemspec.tt" => "#{name}.gemspec",
         "Rakefile.tt" => "Rakefile",
@@ -155,15 +155,18 @@ module Bundlegem
     end
 
     def get_template_src
-      if options["template"].nil?
+      template_name = options["template"].nil? ? "newgem" : options["template"]
+      
+      if options["template"].nil?  # if template_exists_within_repo?(template_name)
         gem_template_location = ""
-        gem_template = "newgem"
-        template_src = "#{gem_template_location}#{gem_template}"
       else
         gem_template_location = File.expand_path("~/.bundle/gem_templates") +"/"
-        gem_template = options["template"]
-        template_src = "#{gem_template_location}#{gem_template}"
       end
+      template_src = "#{gem_template_location}#{template_name}"
+    end
+    
+    def template_exists_within_repo?(template_name)      
+      File.exists?(template_name)
     end
 
     def resolve_name(name)
