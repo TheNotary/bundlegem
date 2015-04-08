@@ -59,6 +59,8 @@ module Bundlegem
 
 
       templates = dynamically_generate_templates || templates
+      
+      
 
       
 
@@ -71,6 +73,7 @@ module Bundlegem
         )
         templates.merge!("CODE_OF_CONDUCT.md.tt" => "CODE_OF_CONDUCT.md")
       end
+      
 
       if ask_and_set(:mit, "Do you want to license your code permissively under the MIT license?",
           "This means that any other developer or company will be legally allowed to use your code " \
@@ -109,11 +112,14 @@ module Bundlegem
         )
       end
 
-
+      
       template_src = match_template_src
+      
+      #binding.pry
+      
 
       templates.each do |src, dst|
-        thor.template("#{template_src}/#{src}", target.join(dst), config)
+        template("#{template_src}/#{src}", target.join(dst), config)
       end
 
       # Bundler.ui.info "Initializing git repo in #{target}"
@@ -143,14 +149,16 @@ module Bundlegem
 
     def match_template_src
       template_src = get_template_src
+      binding.pry
 
-      unless File.exists?(template_src)
-        # else message the user that the template could not be found
-        Bundler.ui.error "Could not find template folder #{options["template"]} in `~/.bundle/gem_templates/`. Please check to make sure your desired template exists."
-        exit 1
-      end
+      return template_src if template_src == "newgem" or File.exists?(template_src)   # 'newgem' refers to the built in template that comes with the gem
+      
+      # else message the user that the template could not be found
+      err_missing_template = "Could not find template folder #{options["template"]} in `~/.bundle/gem_templates/`. Please check to make sure your desired template exists."
+      puts err_missing_template
+      Bundler.ui.error err_missing_template
+      exit 1
 
-      template_src
     end
 
     def get_template_src
@@ -227,6 +235,48 @@ module Bundlegem
         Bundler.ui.error "Invalid gem name #{name} constant #{constant_array.join("::")} is already in use. Please choose another gem name."
         exit 1
       end
+    end
+    
+    
+    def in_house_template(src_path, dst_path, config)
+      # Load source, and evaluate erb
+      # evaluate config values
+      # Save what we loaded to dst_path
+    end
+    
+    # Gets an ERB template at the relative source, executes it and makes a copy
+    # at the relative destination. If the destination is not given it's assumed
+    # to be equal to the source removing .tt from the filename.
+    #
+    # ==== Parameters
+    # source<String>:: the relative path to the source root.
+    # destination<String>:: the relative path to the destination root.
+    # config<Hash>:: give :verbose => false to not log the status.
+    #
+    # ==== Examples
+    #
+    #   template "README", "doc/README"
+    #
+    #   template "doc/README"
+    #
+    def template(source, *args, &block)
+      config = args.last.is_a?(Hash) ? args.pop : {}
+      destination = args.first || source.sub(/#{TEMPLATE_EXTNAME}$/, "")
+
+      source  = File.expand_path(find_in_source_paths(source.to_s))
+      context = instance_eval("binding")
+      
+      binding.pry
+
+      create_file destination, nil, config do
+        content = ERB.new(::File.binread(source), nil, "-", "@output_buffer").result(context)
+        content = block.call(content) if block
+        content
+      end
+    end
+    
+    def find_in_source_paths(target)
+      src = "#{File.dirname(__FILE__)}/../templates/#{target}"
     end
 
   end

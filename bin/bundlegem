@@ -9,5 +9,17 @@ require 'bundlegem'
 # require 'bundlergem/friendly_errors'
 
 require 'bundlegem/cli'
-Bundlegem::CLI.start(ARGV, :debug => true)
+# Bundlegem::CLI.start(ARGV, :debug => true)
+
+require 'bundlegem/cli/gem'
+require 'pry'
+# binding.pry # hardcode options, name and self...
+
+options = {"bin"=>false, "ext"=>false}
+binding.pry
+name = ARGV[1] # gem name
+# self.class == Bundlegem::CLI
+Bundlegem::CLI::Gem.new(options, name, self).run
+
+
 

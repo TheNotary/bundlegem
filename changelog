@@ -1,12 +1,13 @@
 ** 0.0.x **
-	- Ability to load templates from github
 	- Better syntax of bundlegem gem_name -t template_name
+	- Change the original algo to use files named #{name} and not other algo
 	- Default templates: 
 		* Service, 
 		* CLI file system app, 
 		* CLI with web client
-	- List templates (with descriptions)
 	- Restore the original UI that was in bundler
+	- Ability to load templates from github
+	- List templates (with descriptions)
 	- Cleanness and goodness
   - Soapy bubbles that smell like spring time in a box marked surplus kittens
 

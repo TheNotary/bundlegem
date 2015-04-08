@@ -10,6 +10,7 @@ module Bundlegem
       super
     rescue Exception => e
       # Bundlegem.ui = UI::Shell.new
+      puts e
       raise e
     ensure
       # Bundlegem.cleanup
@@ -34,7 +35,7 @@ module Bundlegem
     check_unknown_options!(:except => [:config, :exec])
     stop_on_unknown_option! :exec
 
-    default_task :install
+    default_task :gem
     class_option "no-color", :type => :boolean, :desc => "Disable colorization in output"
     class_option "retry",    :type => :numeric, :aliases => "-r", :banner => "NUM",
       :desc => "Specify the number of times you wish to attempt network commands"
@@ -71,9 +72,14 @@ module Bundlegem
     end
 
     def self.handle_no_command_error(command, has_namespace = $thor_runner)
-      return super unless command_path = Bundlegem.which("Bundlegem-#{command}")
+      require 'bundlegem/cli/gem'
+      Gem.new(options, name, self).run
+      
+      
+      
+      # return super unless command_path = Bundlegem.which("Bundlegem-#{command}")
 
-      Kernel.exec(command_path, *ARGV[1..-1])
+      # Kernel.exec(command_path, *ARGV[1..-1])
     end
 
     desc "init [OPTIONS]", "Generates a Gemfile into the current working directory"
@@ -109,6 +115,10 @@ module Bundlegem
       :desc => "Generate a test directory for your library, either rspec or minitest. Set a default with `bundle config gem.test rspec`."
     method_option :template, :type => :string, :lazy_default => "newgem", :aliases => '-u', :banner => "default", :desc => "Generate a gem based on the user's predefined template." 
     def gem(name)
+      require 'pry'; binding.pry
+      # options = {"bin"=>false, "ext"=>false}
+      # name = "gem_name"
+      # self.class == Bundlegem::CLI
       require 'bundlegem/cli/gem'
       Gem.new(options, name, self).run
     end
