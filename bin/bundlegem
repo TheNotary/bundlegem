@@ -2,37 +2,53 @@
 
 # Exit cleanly from an early interrupt
 Signal.trap("INT") { exit 1 }
-
 require 'bundler'
 require 'bundlegem'
-
 # require 'bundlergem/friendly_errors'
-
 require 'bundlegem/cli'
-# Bundlegem::CLI.start(ARGV, :debug => true)
-
 require 'bundlegem/cli/gem'
-# binding.pry # hardcode options, name and self...
 
-if ARGV.length < 2
+if ARGV.length < 1
   puts "error: you need to specify a gemname at least"
   exit 1
 end
 
-options = {"bin"=>false, "ext"=>false, :coc=> false}
-name = ARGV[1] # gem name
+if ARGV[0] == "--help"
+  puts "Usage:  "
+  puts "  # creates a gem based on default template"
+  puts "  $ bundlegem gem_name                "
+  puts
+  puts "  # creates a gem using the service template built into gem"
+  puts "  $ bundlegem gem_name -t service     "
+  puts
+  puts "  # not implemented, but shoud create a new gem template in ~/.bundlegem/templates"
+  puts "  # that you'll love customizing to your personal preference"
+  puts "  $ bundlegem --newtemplate  "
+  puts
+  puts "  $ bundlegem --help              # shows these strings"
+  exit 0
+end
 
-if ARGV.length > 2
-  if ARGV[2] != "-t"
+if ARGV[0] == "--newtemplate"
+  puts "Sorry, I haven't been implemented, I don't have a lot of free time atm :("
+  exit 0
+end
+
+
+
+options = {"bin"=>false, "ext"=>false, :coc=> false}
+name = ARGV[0] # gem name
+
+if ARGV.length > 1
+  if ARGV[1] != "-t"
     puts "you can ONLY use -t as an argument cause I'm quite busy and should be doing something else right now!"
     exit 1
   end
   
-  options.merge!({"template" => ARGV[3]})
+  options.merge!({"template" => ARGV[2]})
 end
 
-# self.class == Bundlegem::CLI
-Bundlegem::CLI::Gem.new(options, name, self).run
 
+Bundlegem::CLI::Gem.new(options, name, self).run
 
 

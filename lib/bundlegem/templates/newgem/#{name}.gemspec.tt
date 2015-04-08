@@ -10,8 +10,8 @@ Gem::Specification.new do |spec|
   spec.email         = [<%=config[:email].inspect%>]
 
   spec.summary       = %q{TODO: Write a short summary, because Rubygems requires one.}
-  spec.description   = %q{TODO: Write a longer description or delete this line.}
-  spec.homepage      = "TODO: Put your gem's website or public repo URL here."
+  spec.description   = %q{TODO: delete this line since you're in a hurry.}
+  spec.homepage      = "https://github.com/<%=config[:author]%>/<%=config[:name]%>"
 <%- if config[:mit] -%>
   spec.license       = "MIT"
 <%- end -%>

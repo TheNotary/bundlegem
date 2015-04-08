@@ -54,8 +54,7 @@ module Bundlegem
         '#{name}.gemspec.tt' => "#{name}.gemspec",
         'Rakefile.tt' => "Rakefile",
         'README.md.tt' => "README.md",
-        'bin/console.tt' => "bin/console",
-        'bin/setup.tt' => "bin/setup"
+        'bin/console.tt' => "bin/console"
       }
 
 
@@ -87,7 +86,7 @@ module Bundlegem
           templates.merge!(
             "rspec.tt" => ".rspec",
             "spec/spec_helper.rb.tt" => "spec/spec_helper.rb",
-            "spec/newgem_spec.rb.tt" => "spec/#{namespaced_path}_spec.rb"
+            'spec/#{name}_spec.rb.tt' => "spec/#{namespaced_path}_spec.rb"
           )
         when 'minitest'
           templates.merge!(

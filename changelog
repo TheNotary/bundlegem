@@ -1,15 +1,19 @@
 ** 0.0.x **
-	- Better syntax of bundlegem gem_name -t template_name
-	- Change the original algo to use files named #{name} and not other algo
 	- Default templates: 
-		* Service, 
 		* CLI file system app, 
 		* CLI with web client
 	- Restore the original UI that was in bundler
 	- Ability to load templates from github
-	- List templates (with descriptions)
-	- Cleanness and goodness
-  - Soapy bubbles that smell like spring time in a box marked surplus kittens
+	- CMD:  --list to list templates (with descriptions)
+	- CMD:  --newtemplate to start new template
+	- Behavior: gems in the ~/.bundlegem/templates folder take precidence over
+	built in gems
+
+** 0.0.2 **
+	- Added default gem template 'service'
+	- Better syntax of bundlegem gem_name -t template_name
+	- CMD:  --help to display a help message
+
 
 ** 0.0.1 **
   - Very basic prototype that allows you to specify templates in
