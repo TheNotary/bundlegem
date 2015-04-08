@@ -1,4 +1,5 @@
 require 'pathname'
+require 'pry'
 
 module Bundlegem
   class CLI::Gem
@@ -43,7 +44,7 @@ module Bundlegem
       }
       ensure_safe_gem_name(name, constant_array)
 
-      # Hmmm... generate dynamically instead?
+      # Hmmm... generate dynamically instead?  Yes, overwritten below
       templates = {
         "Gemfile.tt" => "Gemfile",
         "changelog.tt" => "changelog",
@@ -57,12 +58,6 @@ module Bundlegem
         "bin/setup.tt" => "bin/setup"
       }
 
-
-      templates = dynamically_generate_templates || templates
-      
-      
-
-      
 
       if ask_and_set(:coc, "Do you want to include a code of conduct in gems you generate?",
           "Codes of conduct can increase contributions to your project by contributors who " \
@@ -111,13 +106,12 @@ module Bundlegem
           "ext/newgem/newgem.c.tt" => "ext/#{name}/#{underscored_name}.c"
         )
       end
-
       
       template_src = match_template_src
+      templates = dynamically_generate_templates || templates
       
-      #binding.pry
       
-
+      
       templates.each do |src, dst|
         template("#{template_src}/#{src}", target.join(dst), config)
       end
@@ -149,7 +143,6 @@ module Bundlegem
 
     def match_template_src
       template_src = get_template_src
-      binding.pry
 
       return template_src if template_src == "newgem" or File.exists?(template_src)   # 'newgem' refers to the built in template that comes with the gem
       
@@ -178,7 +171,7 @@ module Bundlegem
     end
 
     def ask_and_set(key, header, message)
-      choice = options[key] || Bundler.settings["gem.#{key}"]
+      choice = options[key]  # || Bundler.settings["gem.#{key}"]
 
       if choice.nil?
         Bundler.ui.confirm header
@@ -238,12 +231,10 @@ module Bundlegem
     end
     
     
-    def in_house_template(src_path, dst_path, config)
-      # Load source, and evaluate erb
-      # evaluate config values
-      # Save what we loaded to dst_path
-    end
     
+    #
+    # EDIT:  Reworked from Thor to not rely on Thor (or do so much unneeded stuff)
+    #
     # Gets an ERB template at the relative source, executes it and makes a copy
     # at the relative destination. If the destination is not given it's assumed
     # to be equal to the source removing .tt from the filename.
@@ -266,25 +257,26 @@ module Bundlegem
       source  = File.expand_path(find_in_source_paths(source.to_s))
       context = instance_eval("binding")
       
-      binding.pry
-      
       make_file(destination, config) do
         content = ERB.new(::File.binread(source), nil, "-", "@output_buffer").result(context)
         content = block.call(content) if block
         content
       end
 
-      #create_file(destination, nil, config) do
-      #  content = ERB.new(::File.binread(source), nil, "-", "@output_buffer").result(context)
-      #  content = block.call(content) if block
-      #  content
-      #end
     end
     
+    #
+    # EDIT:  Reworked from Thor to not rely on Thor (or do so much unneeded stuff)
+    #
     def find_in_source_paths(target)
-      src = "#{File.dirname(__FILE__)}/../templates/#{target}"
+      src_in_source_path = "#{File.dirname(__FILE__)}/../templates/#{target}"
+      return src_in_source_path if File.exists?(src_in_source_path)
+      target # failed, hopefully full path to a user specified gem template file
     end
     
+    #
+    # EDIT:  Reworked from Thor to not rely on Thor (or do so much unneeded stuff)
+    #
     def make_file(destination, config, &block)
       FileUtils.mkdir_p(File.dirname(destination))
       File.open(destination, "wb") { |f| f.write block.call }

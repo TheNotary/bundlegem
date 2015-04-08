@@ -115,7 +115,6 @@ module Bundlegem
       :desc => "Generate a test directory for your library, either rspec or minitest. Set a default with `bundle config gem.test rspec`."
     method_option :template, :type => :string, :lazy_default => "newgem", :aliases => '-u', :banner => "default", :desc => "Generate a gem based on the user's predefined template." 
     def gem(name)
-      require 'pry'; binding.pry
       # options = {"bin"=>false, "ext"=>false}
       # name = "gem_name"
       # self.class == Bundlegem::CLI
