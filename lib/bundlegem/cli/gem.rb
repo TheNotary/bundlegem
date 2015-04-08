@@ -49,7 +49,7 @@ module Bundlegem
         "Gemfile.tt" => "Gemfile",
         "changelog.tt" => "changelog",
         "gitignore.tt" => ".gitignore",
-        "lib/newgem.rb.tt" => "lib/#{namespaced_path}.rb",
+        "lib/#{name}.rb.tt" => "lib/#{namespaced_path}.rb",
         "lib/newgem/version.rb.tt" => "lib/#{namespaced_path}/version.rb",
         "newgem.gemspec.tt" => "#{name}.gemspec",
         "Rakefile.tt" => "Rakefile",
