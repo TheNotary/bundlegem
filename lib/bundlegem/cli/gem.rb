@@ -267,16 +267,27 @@ module Bundlegem
       context = instance_eval("binding")
       
       binding.pry
-
-      create_file destination, nil, config do
+      
+      make_file(destination, config) do
         content = ERB.new(::File.binread(source), nil, "-", "@output_buffer").result(context)
         content = block.call(content) if block
         content
       end
+
+      #create_file(destination, nil, config) do
+      #  content = ERB.new(::File.binread(source), nil, "-", "@output_buffer").result(context)
+      #  content = block.call(content) if block
+      #  content
+      #end
     end
     
     def find_in_source_paths(target)
       src = "#{File.dirname(__FILE__)}/../templates/#{target}"
+    end
+    
+    def make_file(destination, config, &block)
+      FileUtils.mkdir_p(File.dirname(destination))
+      File.open(destination, "wb") { |f| f.write block.call }
     end
 
   end
