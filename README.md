@@ -1,6 +1,8 @@
-# BundleGem: a gem project genorator with user defined templates
+# BundleGem: A Gem Project Generator with User Defined Templates
 
 I've more or less taken the code out of Bundler's `bundle gem` command, expanded on it and made it available as this repos (so credits to Bundler team).
+  
+The goal to the project is to allow users to define templates in the most native form for all technologist: Directory Structures, short command, and helpful commands which make the gem's usage completely visible!
 
 The benefits of using this repo to create gems rather than bundler is that you can choose to create 'classes' of gems.  By classes, I mean that there are different typs of 'gems', there are basic library gems, that are just code and can only be used from other code, there are command line application gems, those are gems that are run on the command line and include a binary file, and there are also web interface gems, those are gems which spin up a simple web interface and request that the user connect to it's server on what ever port it has spun up on.  Depending on your field of specialty, you may be able to imagine other classes of gems that will aid you in your work.  
 
