@@ -110,8 +110,6 @@ module Bundlegem
       template_src = match_template_src
       templates = dynamically_generate_templates || templates
       
-      
-      
       templates.each do |src, dst|
         template("#{template_src}/#{src}", target.join(dst), config)
       end
@@ -143,30 +141,33 @@ module Bundlegem
 
     def match_template_src
       template_src = get_template_src
-
-      return template_src if template_src == "newgem" or File.exists?(template_src)   # 'newgem' refers to the built in template that comes with the gem
+      
+      return template_src if template_exists_within_repo?(template_src) or File.exists?(template_src)   # 'newgem' refers to the built in template that comes with the gem
       
       # else message the user that the template could not be found
       err_missing_template = "Could not find template folder #{options["template"]} in `~/.bundle/gem_templates/`. Please check to make sure your desired template exists."
       puts err_missing_template
       Bundler.ui.error err_missing_template
       exit 1
-
     end
 
     def get_template_src
       template_name = options["template"].nil? ? "newgem" : options["template"]
       
-      if options["template"].nil?  # if template_exists_within_repo?(template_name)
-        gem_template_location = ""
+      if template_exists_within_repo?(template_name)  # if template_exists_within_repo?(template_name)
+        gem_template_location = get_internal_template_location
       else
-        gem_template_location = File.expand_path("~/.bundle/gem_templates") +"/"
+        gem_template_location = File.expand_path("~/.bundle/gem_templates")
       end
-      template_src = "#{gem_template_location}#{template_name}"
+      template_src = "#{gem_template_location}/#{template_name}"
     end
     
-    def template_exists_within_repo?(template_name)      
-      File.exists?(template_name)
+    def template_exists_within_repo?(template_name)
+      file_in_source?(template_name)
+    end
+    
+    def get_internal_template_location
+      File.expand_path("#{File.dirname(__FILE__)}/../templates")
     end
 
     def resolve_name(name)
@@ -275,6 +276,11 @@ module Bundlegem
       src_in_source_path = "#{File.dirname(__FILE__)}/../templates/#{target}"
       return src_in_source_path if File.exists?(src_in_source_path)
       target # failed, hopefully full path to a user specified gem template file
+    end
+    
+    def file_in_source?(target)
+      src_in_source_path = "#{File.dirname(__FILE__)}/../templates/#{target}"
+      File.exists?(src_in_source_path)
     end
     
     #
