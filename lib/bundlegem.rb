@@ -13,7 +13,7 @@ module Bundlegem
                               { "predefined" => "service" }]
       
       # search through user downloaded
-      # not implemented
+      available_templates += configurator.user_downloaded_templates
       
       # search through user defined
       available_templates += configurator.user_defined_templates

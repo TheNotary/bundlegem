@@ -7,12 +7,12 @@ require 'pry'
 ENV['HOME'] = "/tmp/bundlegem_mock_home"  
 
 
-def create_user_defined_template
+def create_user_defined_template(category = nil)
   template_root = "#{ENV['HOME']}/.bundlegem/gem_templates/empty_template"
   FileUtils.mkdir_p template_root
   
   File.open("#{template_root}/.bundlegem", "w+") do |f|
-    f.puts "category: ARDUIONO"
+    f.puts "category: #{category}" unless category.nil?
   end
   
 end

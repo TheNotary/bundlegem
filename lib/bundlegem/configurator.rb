@@ -3,7 +3,7 @@ require 'fileutils'
 module Bundlegem
   
   class Configurator
-    attr_accessor :user_defined_templates
+    attr_accessor :user_defined_templates, :user_downloaded_templates
     
     def initialize
       @config_directory_root = "#{ENV['HOME']}/.bundlegem"
@@ -14,8 +14,15 @@ module Bundlegem
       
       @user_defined_templates = get_user_defined_templates
       
+      @user_downloaded_templates = get_user_downloaded_templates
+      
       # load configurations from config file if needed...
       # perhaps it would contain a list of remote templates specified by the user
+    end
+    
+    # not implemented yet
+    def get_user_downloaded_templates
+      []
     end
 
     def get_user_defined_templates
@@ -28,7 +35,19 @@ module Bundlegem
       template_dirs.each do |dir|
         # open the dir and read the .bundlegem file to see what class of file it is
         # If there's no .bundlegem file in there, mark it misc
-        pairs << {"MISC" => dir }
+        
+        begin
+          f = File.read("#{@user_defined_templates_path}/#{dir}/.bundlegem")
+          /category:\s*([\w\s]*$)/ =~ f
+          
+          category = $1.chomp
+        rescue
+          category = "MISC"
+        end
+        
+        category = "MISC" if category.nil?
+        
+        pairs << {category => dir }
       end
       pairs
     end

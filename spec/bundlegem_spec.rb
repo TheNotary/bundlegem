@@ -23,4 +23,10 @@ describe Bundlegem do
     expect(File.exists?("#{ENV['HOME']}/.bundlegem")).to be true
   end
   
+  it "lists with good categories" do
+    create_user_defined_template("ARDUINO")
+    
+    list_output = Bundlegem.list
+  end
+  
 end
