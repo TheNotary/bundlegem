@@ -23,8 +23,13 @@ $  bundlegem --newtemplate
 Specify a name for your gem template:  my_service
 Specify description:  
 Specify template tag name [MISC]:  
-Cloning base project structure into ~/.bundlegem/templates/my_service
+Cloning base project structure into ~/.bundlegem/gem_templates/my_service
+...
+  Complete!
+```
+You can now get to work making changes to the my_service gem.  All you need to know is that any file that ends in .tt in that folder will be copied into new projects when you create a new project based on that template, however the .tt extension will obviously be stripped out of the resulting file name.  Also, you can specify the `category` of the gem by editing the .bundlegem file in each template's root.  Categories are just used for organizing the output when you run `bundlegem --list`.  Here, I'll show you an example:
 
+```
 $  bundlegem --list
 PREDEFINED:
   default - A basic ruby gem
@@ -35,8 +40,7 @@ MISC:
   
 EMBEDDED:
   arduino
-...
-  Complete!
+
 ```
 
 You'll now find a project skeleton in ~/.bundlegem/templates/my_service that you can customize to your liking.  

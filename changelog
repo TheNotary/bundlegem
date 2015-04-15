@@ -4,11 +4,12 @@
 		* CLI with web client
 	- Restore the original UI that was in bundler
 	- Ability to load templates from github
-	- CMD:  --list to list templates (with descriptions)
 	- CMD:  --newtemplate to start new template
 	- Behavior: gems in the ~/.bundlegem/templates folder take precidence over
 	built in gems
 
+	- CMD:  --list to list templates (with descriptions)
+	
 ** 0.0.2 **
 	- Added default gem template 'service'
 	- Better syntax of bundlegem gem_name -t template_name
