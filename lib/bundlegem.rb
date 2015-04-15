@@ -9,7 +9,7 @@ module Bundlegem
     def list
       configurator = Configurator.new
       # search through builtin
-      available_templates = [ { "predefined" => "default" }, 
+      available_templates = [ { "predefined" => "newgem" }, 
                               { "predefined" => "service" }]
       
       # search through user downloaded
