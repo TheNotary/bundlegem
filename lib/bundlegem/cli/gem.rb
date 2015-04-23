@@ -169,13 +169,11 @@ module Bundlegem
     def match_template_src
       template_src = get_template_src
       
-      return template_src if template_exists_within_repo?(template_src) or File.exists?(template_src)   # 'newgem' refers to the built in template that comes with the gem
-      
-      # else message the user that the template could not be found
-      err_missing_template = "Could not find template folder #{options["template"]} in `~/.bundle/gem_templates/`. Please check to make sure your desired template exists."
-      puts err_missing_template
-      Bundler.ui.error err_missing_template
-      exit 1
+      if template_exists_within_repo?(template_src) or File.exists?(template_src)
+        return template_src    # 'newgem' refers to the built in template that comes with the gem
+      else
+        raise_templet_not_found! # else message the user that the template could not be found
+      end
     end
 
     def get_template_src
@@ -184,7 +182,7 @@ module Bundlegem
       if template_exists_within_repo?(template_name)  # if template_exists_within_repo?(template_name)
         gem_template_location = get_internal_template_location
       else
-        gem_template_location = File.expand_path("~/.bundle/gem_templates")
+        gem_template_location = File.expand_path("~/.bundlegem/gem_templates")
       end
       template_src = "#{gem_template_location}/#{template_name}"
     end
@@ -334,6 +332,13 @@ module Bundlegem
       puts
       puts "Exiting..."
       exit
+    end
+    
+    def raise_templet_not_found!
+      err_missing_template = "Could not find template folder '#{options["template"]}' in `~/.bundle/gem_templates/`. Please check to make sure your desired template exists."
+      puts err_missing_template
+      Bundler.ui.error err_missing_template
+      exit 1
     end
 
   end

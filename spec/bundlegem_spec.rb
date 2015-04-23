@@ -19,7 +19,7 @@ describe Bundlegem do
     
     list_output = Bundlegem.list
     
-    expect(list_output).to eq " PREDEFINED:\n   default\n   service\n\n MISC:\n   empty_template\n\n"
+    expect(list_output).to eq " PREDEFINED:\n   newgem\n   service\n\n MISC:\n   empty_template\n\n"
     expect(File.exists?("#{ENV['HOME']}/.bundlegem")).to be true
   end
   
@@ -27,6 +27,8 @@ describe Bundlegem do
     create_user_defined_template("ARDUINO")
     
     list_output = Bundlegem.list
+    
+    binding.pry
   end
   
 end

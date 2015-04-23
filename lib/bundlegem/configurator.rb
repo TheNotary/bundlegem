@@ -30,6 +30,7 @@ module Bundlegem
       template_dirs = Dir.entries(user_definition_directory).select do |entry| 
         File.directory?(File.join(user_definition_directory, entry)) and !(entry =='.' || entry == '..') 
       end
+      binding.pry
       
       pairs = []
       template_dirs.each do |dir|

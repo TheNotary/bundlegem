@@ -8,7 +8,7 @@ ENV['HOME'] = "/tmp/bundlegem_mock_home"
 
 
 def create_user_defined_template(category = nil)
-  template_root = "#{ENV['HOME']}/.bundlegem/gem_templates/empty_template"
+  template_root = "/tmp/bundlegem_mock_home/.bundlegem/gem_templates/empty_template"
   FileUtils.mkdir_p template_root
   
   File.open("#{template_root}/.bundlegem", "w+") do |f|
