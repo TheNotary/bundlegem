@@ -24,6 +24,13 @@ module Bundlegem
       output_string
     end
     
+    def gem(options, gem_name)
+      require 'bundlegem/cli'
+      require 'bundlegem/cli/gem'
+      
+      Bundlegem::CLI::Gem.new(options, gem_name).run
+    end
+    
     # input:  [ { "predefined" => "default" }, 
     #           { "MISC" => "my_thing" },
     #           { "prdefined" => "service" }

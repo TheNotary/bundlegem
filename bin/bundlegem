@@ -5,8 +5,6 @@ Signal.trap("INT") { exit 1 }
 require 'bundler'
 require 'bundlegem'
 # require 'bundlergem/friendly_errors'
-require 'bundlegem/cli'
-require 'bundlegem/cli/gem'
 
 if ARGV.length < 1
   puts "error: you need to specify a gemname at least"
@@ -42,18 +40,17 @@ end
 
 
 options = {"bin"=>false, "ext"=>false, :coc=> false}
-name = ARGV[0] # gem name
+gem_name = ARGV[0] # gem name
 
 if ARGV.length > 1
-  if ARGV[1] != "-t"
-    puts "you can ONLY use -t as an argument cause I'm quite busy and should be doing something else right now!"
+  if ARGV[1] != "-t" and ARGV[1] != "--template"
+    puts "you can ONLY use -t as an argument because I'm quite busy and should be doing something else right now!"
     exit 1
   end
   
   options.merge!({"template" => ARGV[2]})
 end
 
-
-Bundlegem::CLI::Gem.new(options, name, self).run
+Bundlegem.gem(options, gem_name)
 
 

@@ -3,12 +3,11 @@ require 'pry'
 
 module Bundlegem
   class CLI::Gem
-    attr_reader :options, :gem_name, :thor, :name, :target
+    attr_reader :options, :gem_name, :name, :target
 
-    def initialize(options, gem_name, thor)
+    def initialize(options, gem_name)
       @options = options
       @gem_name = resolve_name(gem_name)
-      @thor = thor
 
       @name = @gem_name
       @target = Pathname.pwd.join(gem_name)
@@ -125,10 +124,12 @@ module Bundlegem
       # Bundler.ui.info "Initializing git repo in #{target}"
       Dir.chdir(target) { `git init`; `git add .` }
 
-      if options[:edit]
-        # Open gemspec in editor
-        thor.run("#{options["edit"]} \"#{target.join("#{name}.gemspec")}\"")
-      end
+      # Disabled thanks to removal of thor, might not be helpful...
+      #if options[:edit]
+      #  # Open gemspec in editor
+      #  
+      #  # thor.run("#{options["edit"]} \"#{target.join("#{name}.gemspec")}\"")
+      #end
       
       puts "\nComplete."
     end
@@ -136,12 +137,12 @@ module Bundlegem
     private
     
     def dynamically_generate_template_directories
-      return nil if options["template"].nil?
+      # return nil if options["template"].nil?
 
       template_src = get_template_src
       
       template_dirs = {}
-      Dir.glob("#{template_src}/**").each do |f|
+      Dir.glob("#{template_src}/**/*").each do |f|
         next unless File.directory? f
         base_path = f[template_src.length+1..-1]
         template_dirs.merge!(base_path => base_path.gsub('#{name}', "#{name}") )

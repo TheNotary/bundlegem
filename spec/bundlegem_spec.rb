@@ -32,4 +32,10 @@ describe Bundlegem do
     expect(list_output.include?(category)).to be true
   end
   
+  it "can generate the built-in gems fine" do
+    options = {"bin"=>false, "ext"=>false, :coc=> false}
+    gem_name = "tmp_gem" # gem name
+    Bundlegem.gem(options, gem_name)
+  end
+  
 end

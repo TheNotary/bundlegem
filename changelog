@@ -12,7 +12,17 @@
 	  new template
 	- Behavior: gems in the ~/.bundlegem/gem_templates folder take precidence over
 	  built in gems?  ...add prompt
+  - Cleaning:  Make create_gem build a string instead of puts so
+	  output can be squelched for testing
 
+
+** 0.0.5 **
+  - Bug in 0.0.3 that broke building template gems fixed
+    * Template Directories part of code was being skipped for built in templates, but not all of it
+  - Bug where sub directories were not being explicitly created
+  - Added integration test just to make sure the built-in templates can be generated without problems
+  - Cleaned up internal API and how the binary works
+  
 
 ** 0.0.4 **
   - Tell the user what files are being created
