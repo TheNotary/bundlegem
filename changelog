@@ -11,10 +11,12 @@
 	  built in gems?
   - Tell the user what files are being created
 
-	- Raise error when project name already exists, do not overwrite!
+
+** 0.0.3 **
 	- CMD:  --list to list templates (with descriptions)
+	- Raise error when project name already exists, do not overwrite!
+	- Raises error if none of the files in the template directory end in .tt
 	- Create even empty folders
-	- Inform user if none of the files in the template directory end in .tt
 
 	
 ** 0.0.2 **
