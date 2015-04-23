@@ -112,6 +112,7 @@ module Bundlegem
       templates.each do |src, dst|
         template("#{template_src}/#{src}", target.join(dst), config)
       end
+      
 
       # Bundler.ui.info "Initializing git repo in #{target}"
       Dir.chdir(target) { `git init`; `git add .` }
@@ -128,12 +129,14 @@ module Bundlegem
       return nil if options["template"].nil?
 
       template_src = get_template_src
-
+      
       templates = {}
       Dir.glob("#{template_src}/**/*.tt").each do |f|
         base_path = f[template_src.length+1..-1]
         templates.merge!(base_path => base_path.gsub(/\.tt$/, "").gsub('#{name}', "#{name}") )
       end
+      
+      raise_no_files_in_template_error! if templates.empty?
 
       templates
     end
@@ -288,6 +291,16 @@ module Bundlegem
     def make_file(destination, config, &block)
       FileUtils.mkdir_p(File.dirname(destination))
       File.open(destination, "wb") { |f| f.write block.call }
+    end
+    
+    
+    
+    def raise_no_files_in_template_error!
+      puts "Ooops, the template was found for '#{options['template']}' in ~/.bundlegem/gem_templates, "
+      puts "but no files within it ended in .tt.  Did you forget to rename the extensions of your files?"
+      puts
+      puts "Exiting..."
+      exit
     end
 
   end
