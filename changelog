@@ -10,6 +10,8 @@
 	- Behavior: gems in the ~/.bundlegem/gem_templates folder take precidence over
 	  built in gems?
   - Tell the user what files are being created
+  
+  - Created config['git_repo_url'] path to be used in templates
 
 
 ** 0.0.3 **

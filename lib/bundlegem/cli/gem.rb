@@ -38,6 +38,7 @@ module Bundlegem
         :constant_array   => constant_array,
         :author           => git_user_name.empty? ? "TODO: Write your name" : git_user_name,
         :email            => git_user_email.empty? ? "TODO: Write your email address" : git_user_email,
+        :git_repo_url     => git_user_name.empty? ? "TODO: set your git username so link to repo is automatic" : "https://github.com/#{git_user_name}/#{underscored_name}",
         :template         => options[:template],
         :test             => options[:test],
         :ext              => options[:ext],
@@ -172,14 +173,14 @@ module Bundlegem
       if template_exists_within_repo?(template_src) or File.exists?(template_src)
         return template_src    # 'newgem' refers to the built in template that comes with the gem
       else
-        raise_templet_not_found! # else message the user that the template could not be found
+        raise_template_not_found! # else message the user that the template could not be found
       end
     end
 
     def get_template_src
       template_name = options["template"].nil? ? "newgem" : options["template"]
       
-      if template_exists_within_repo?(template_name)  # if template_exists_within_repo?(template_name)
+      if template_exists_within_repo?(template_name)
         gem_template_location = get_internal_template_location
       else
         gem_template_location = File.expand_path("~/.bundlegem/gem_templates")
@@ -334,7 +335,7 @@ module Bundlegem
       exit
     end
     
-    def raise_templet_not_found!
+    def raise_template_not_found!
       err_missing_template = "Could not find template folder '#{options["template"]}' in `~/.bundle/gem_templates/`. Please check to make sure your desired template exists."
       puts err_missing_template
       Bundler.ui.error err_missing_template
