@@ -10,8 +10,8 @@
 	- Behavior: gems in the ~/.bundlegem/gem_templates folder take precidence over
 	  built in gems?
   - Tell the user what files are being created
-	- Raise error when project name already exists, do not overwrite!
 
+	- Raise error when project name already exists, do not overwrite!
 	- CMD:  --list to list templates (with descriptions)
 	- Create even empty folders
 	- Inform user if none of the files in the template directory end in .tt

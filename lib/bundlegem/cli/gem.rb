@@ -18,6 +18,8 @@ module Bundlegem
 
     def run
       # Bundler.ui.confirm "Creating gem '#{name}'..."
+      
+      raise_project_with_that_name_already_exists! if File.exists?(target)
 
       underscored_name = name.tr('-', '_')
       namespaced_path = name.tr('-', '/')
@@ -321,6 +323,14 @@ module Bundlegem
     def raise_no_files_in_template_error!
       puts "Ooops, the template was found for '#{options['template']}' in ~/.bundlegem/gem_templates, "
       puts "but no files within it ended in .tt.  Did you forget to rename the extensions of your files?"
+      puts
+      puts "Exiting..."
+      exit
+    end
+    
+    def raise_project_with_that_name_already_exists!
+      puts "Ooops, a project with the name #{target} already exists."
+      puts "Can't make project.  Either delete that folder or choose a new project name"
       puts
       puts "Exiting..."
       exit
