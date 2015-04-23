@@ -4,14 +4,19 @@
 		* CLI with web client
 	- Restore the original UI that was in bundler
 	- Ability to load templates from github
+	  - Track a list of additional web templates in this repo
+	  - Allow for it to be listed
+	  - Hint the user to cd into ~/.bundlegem/gem_templates and clone any they choose
 	- CMD:  --newtemplate to start new template
 	- CMD:  --templateize-current-directory to make the current directory into a
 	  new template
 	- Behavior: gems in the ~/.bundlegem/gem_templates folder take precidence over
-	  built in gems?
+	  built in gems?  ...add prompt
+
+
+** 0.0.4 **
   - Tell the user what files are being created
-  
-  - Created config['git_repo_url'] path to be used in templates
+  - Created config['git_repo_url'] variable to be used in templates
 
 
 ** 0.0.3 **

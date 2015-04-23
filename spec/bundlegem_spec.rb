@@ -24,11 +24,12 @@ describe Bundlegem do
   end
   
   it "lists with good categories" do
-    create_user_defined_template("ARDUINO")
+    category = "ARDUINO"
+    create_user_defined_template(category)
     
     list_output = Bundlegem.list
     
-    binding.pry
+    expect(list_output.include?(category)).to be true
   end
   
 end

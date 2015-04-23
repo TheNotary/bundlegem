@@ -109,6 +109,8 @@ module Bundlegem
         )
       end
       
+      puts "Creating new project folder\n\n"
+      
       template_src = match_template_src
       template_directories = dynamically_generate_template_directories
       templates = dynamically_generate_templates || templates
@@ -127,6 +129,8 @@ module Bundlegem
         # Open gemspec in editor
         thor.run("#{options["edit"]} \"#{target.join("#{name}.gemspec")}\"")
       end
+      
+      puts "\nComplete."
     end
 
     private
@@ -163,7 +167,9 @@ module Bundlegem
     
     def create_template_directories(template_directories, target)
       template_directories.each do |k,v|
-        FileUtils.mkdir_p("#{target}/#{v}")
+        d = "#{target}/#{v}"
+        puts " mkdir     #{d} ..."
+        FileUtils.mkdir_p(d)
       end
     end
 
@@ -314,6 +320,7 @@ module Bundlegem
     #
     def make_file(destination, config, &block)
       FileUtils.mkdir_p(File.dirname(destination))
+      puts " Writing   #{destination} ..."
       File.open(destination, "wb") { |f| f.write block.call }
     end
     
