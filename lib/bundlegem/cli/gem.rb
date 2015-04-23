@@ -107,7 +107,10 @@ module Bundlegem
       end
       
       template_src = match_template_src
+      template_directories = dynamically_generate_template_directories
       templates = dynamically_generate_templates || templates
+      
+      create_template_directories(template_directories, target)
       
       templates.each do |src, dst|
         template("#{template_src}/#{src}", target.join(dst), config)
@@ -124,6 +127,20 @@ module Bundlegem
     end
 
     private
+    
+    def dynamically_generate_template_directories
+      return nil if options["template"].nil?
+
+      template_src = get_template_src
+      
+      template_dirs = {}
+      Dir.glob("#{template_src}/**").each do |f|
+        next unless File.directory? f
+        base_path = f[template_src.length+1..-1]
+        template_dirs.merge!(base_path => base_path.gsub('#{name}', "#{name}") )
+      end
+      template_dirs
+    end
 
     def dynamically_generate_templates 
       return nil if options["template"].nil?
@@ -139,6 +156,12 @@ module Bundlegem
       raise_no_files_in_template_error! if templates.empty?
 
       templates
+    end
+    
+    def create_template_directories(template_directories, target)
+      template_directories.each do |k,v|
+        FileUtils.mkdir_p("#{target}/#{v}")
+      end
     end
 
     def match_template_src
