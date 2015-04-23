@@ -5,10 +5,17 @@
 	- Restore the original UI that was in bundler
 	- Ability to load templates from github
 	- CMD:  --newtemplate to start new template
-	- Behavior: gems in the ~/.bundlegem/templates folder take precidence over
-	built in gems
+	- CMD:  --templateize-current-directory to make the current directory into a
+	  new template
+	- Behavior: gems in the ~/.bundlegem/gem_templates folder take precidence over
+	  built in gems?
+  - Tell the user what files are being created
+	- Raise error when project name already exists, do not overwrite!
 
 	- CMD:  --list to list templates (with descriptions)
+	- Create even empty folders
+	- Inform user if none of the files in the template directory end in .tt
+
 	
 ** 0.0.2 **
 	- Added default gem template 'service'
@@ -18,5 +25,5 @@
 
 ** 0.0.1 **
   - Very basic prototype that allows you to specify templates in
-~/.bundlegem/templates
+    ~/.bundlegem/templates
 
