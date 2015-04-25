@@ -7,13 +7,18 @@
 	  - Track a list of additional web templates in this repo
 	  - Allow for it to be listed
 	  - Hint the user to cd into ~/.bundlegem/gem_templates and clone any they choose
-	- CMD:  --newtemplate to start new template
-	- CMD:  --templateize-current-directory to make the current directory into a
-	  new template
+	
 	- Behavior: gems in the ~/.bundlegem/gem_templates folder take precidence over
 	  built in gems?  ...add prompt
-  - Cleaning:  Make create_gem build a string instead of puts so
+    - Cleaning:  Make create_gem build a string instead of puts so
 	  output can be squelched for testing
+	  
+    - CMD:  --templateize-current-directory to make the current directory into a
+      new template
+
+    - BUG:  Accidentally tracked in a test gem project and fixed tests to not
+      change directory into a test area for creating new gems.
+    - CMD:  --newtemplate to start new template
 
 
 ** 0.0.5 **
@@ -22,7 +27,7 @@
   - Bug where sub directories were not being explicitly created
   - Added integration test just to make sure the built-in templates can be generated without problems
   - Cleaned up internal API and how the binary works
-  
+
 
 ** 0.0.4 **
   - Tell the user what files are being created

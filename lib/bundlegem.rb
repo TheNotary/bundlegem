@@ -1,5 +1,6 @@
 require "bundlegem/version"
 require 'bundlegem/configurator'
+require 'bundlegem/template_manager'
 
 module Bundlegem
   
@@ -30,7 +31,21 @@ module Bundlegem
       
       Bundlegem::CLI::Gem.new(options, gem_name).run
     end
-    
+
+    def new_template(args)
+      template_name = args[1]
+      template_name = prompt_for_template_name if template_name.nil?
+
+      # Copy newgem from within the repo to ~/.bundlegem/gem_templates/#{template_name}
+      Configurator.new.create_new_template(template_name)
+
+    end
+
+    def prompt_for_template_name 
+      puts "Please specify a name for your template:  "
+      template_name = STDIN.gets.chomp.strip.gsub(" ", "_")
+    end
+
     # input:  [ { "predefined" => "default" }, 
     #           { "MISC" => "my_thing" },
     #           { "prdefined" => "service" }

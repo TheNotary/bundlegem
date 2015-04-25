@@ -174,6 +174,7 @@ module Bundlegem
       end
     end
 
+    # returns the full path of the template source
     def match_template_src
       template_src = get_template_src
       
@@ -257,7 +258,9 @@ module Bundlegem
       req.join(".")
     end
 
-    def ensure_safe_gem_name name, constant_array
+    # This checks to see that the gem_name is a valid ruby gem name and will 'work'
+    # and won't overlap with a bundlegem constant apparently...
+    def ensure_safe_gem_name(name, constant_array)
       if name =~ /^\d/
         Bundler.ui.error "Invalid gem name #{name} Please give a name which does not start with numbers."
         exit 1
@@ -311,6 +314,8 @@ module Bundlegem
       target # failed, hopefully full path to a user specified gem template file
     end
     
+    # Get's path to 'target' from within the gem's "templates" folder 
+    # within the gem's source
     def file_in_source?(target)
       src_in_source_path = "#{File.dirname(__FILE__)}/../templates/#{target}"
       File.exists?(src_in_source_path)

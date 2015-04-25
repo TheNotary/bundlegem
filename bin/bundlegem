@@ -35,6 +35,7 @@ end
 if ARGV[0] == "--newtemplate"
   puts "Sorry, I haven't been implemented, I don't have a lot of free time atm :("
   exit 0
+  Bundlegem.newtemplate(ARGV)
 end
 
 

@@ -20,6 +20,10 @@ module Bundlegem
       # perhaps it would contain a list of remote templates specified by the user
     end
     
+    def built_in_templates
+      
+    end
+    
     # not implemented yet
     def get_user_downloaded_templates
       []
@@ -55,6 +59,10 @@ module Bundlegem
     def create_config_file_if_needed!
       FileUtils.mkdir_p @user_defined_templates_path
       FileUtils.touch @config_file
+    end
+    
+    def create_new_template(template_name)
+      
     end
     
   end
