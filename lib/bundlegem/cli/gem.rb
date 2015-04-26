@@ -44,15 +44,11 @@ module Bundlegem
       }
       ensure_safe_gem_name(name, constant_array)
       
-
-      
-      
-      
-      puts "Creating new project folder\n\n"
       template_src = match_template_src
       template_directories = dynamically_generate_template_directories
       templates = dynamically_generate_templates(config)
       
+      puts "Creating new project folder '#{name}'\n\n"
       create_template_directories(template_directories, target)
       
       templates.each do |src, dst|
@@ -78,7 +74,7 @@ module Bundlegem
     def dynamically_generate_template_directories
       # return nil if options["template"].nil?
 
-      template_src = get_template_src
+      template_src = TemplateManager.get_template_src(options)
       
       template_dirs = {}
       Dir.glob("#{template_src}/**/*").each do |f|
@@ -130,7 +126,7 @@ module Bundlegem
       #if options["template"].nil? # if it's doing some of the built in template
       #  return generate_templates_for_built_in_gems(config)
       #else
-        template_src = get_template_src
+        template_src = TemplateManager.get_template_src(options)
         
         templates = {}
         Dir.glob("#{template_src}/**/*.tt").each do |f|
@@ -154,40 +150,21 @@ module Bundlegem
 
     # returns the full path of the template source
     def match_template_src
-      template_src = get_template_src
+      template_src = TemplateManager.get_template_src(options)
       
-      if template_exists_within_repo?(template_src) or File.exists?(template_src)
+      if File.exists?(template_src)
         return template_src    # 'newgem' refers to the built in template that comes with the gem
       else
         raise_template_not_found! # else message the user that the template could not be found
       end
     end
-
-    def get_template_src
-      template_name = options["template"].nil? ? "newgem" : options["template"]
-      
-      if template_exists_within_repo?(template_name)
-        gem_template_location = get_internal_template_location
-      else
-        gem_template_location = File.expand_path("~/.bundlegem/gem_templates")
-      end
-      template_src = "#{gem_template_location}/#{template_name}"
-    end
     
-    def template_exists_within_repo?(template_name)
-      file_in_source?(template_name)
-    end
     
-    def get_internal_template_location
-      File.expand_path("#{File.dirname(__FILE__)}/../templates")
-    end
-
     def resolve_name(name)
       Pathname.pwd.join(name).basename.to_s
     end
 
     
-
     def validate_ext_name
       return unless gem_name.index('-')
 
@@ -199,7 +176,6 @@ module Bundlegem
     end
 
     
-
     def bundler_dependency_version
       v = Gem::Version.new(Bundler::VERSION)
       req = v.segments[0..1]
@@ -233,7 +209,7 @@ module Bundlegem
       config = args.last.is_a?(Hash) ? args.pop : {}
       destination = args.first || source.sub(/#{TEMPLATE_EXTNAME}$/, "")
 
-      source  = File.expand_path(find_in_source_paths(source.to_s))
+      source  = File.expand_path(TemplateManager.find_in_source_paths(source.to_s))
       context = instance_eval("binding")
       
       make_file(destination, config) do
@@ -244,21 +220,7 @@ module Bundlegem
 
     end
     
-    #
-    # EDIT:  Reworked from Thor to not rely on Thor (or do so much unneeded stuff)
-    #
-    def find_in_source_paths(target)
-      src_in_source_path = "#{File.dirname(__FILE__)}/../templates/#{target}"
-      return src_in_source_path if File.exists?(src_in_source_path)
-      target # failed, hopefully full path to a user specified gem template file
-    end
     
-    # Get's path to 'target' from within the gem's "templates" folder 
-    # within the gem's source
-    def file_in_source?(target)
-      src_in_source_path = "#{File.dirname(__FILE__)}/../templates/#{target}"
-      File.exists?(src_in_source_path)
-    end
     
     #
     # EDIT:  Reworked from Thor to not rely on Thor (or do so much unneeded stuff)
@@ -379,7 +341,7 @@ module Bundlegem
     # This checks to see that the gem_name is a valid ruby gem name and will 'work'
     # and won't overlap with a bundlegem constant apparently...
     #
-    # TODO:  This should be defined within the template itself in some way
+    # TODO:  This should be defined within the template itself in some way possibly, may have security implications
     def ensure_safe_gem_name(name, constant_array)
       if name =~ /^\d/
         Bundler.ui.error "Invalid gem name #{name} Please give a name which does not start with numbers."
@@ -389,7 +351,6 @@ module Bundlegem
         exit 1
       end
     end
-    
 
   end
 end

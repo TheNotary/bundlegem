@@ -2,6 +2,8 @@ require "bundlegem/version"
 require 'bundlegem/configurator'
 require 'bundlegem/template_manager'
 
+SOURCE_ROOT = File.expand_path("#{File.dirname(__FILE__)}/..")
+
 module Bundlegem
   
   class << self
@@ -22,7 +24,7 @@ module Bundlegem
       available_templates = group_hashes_by_key(available_templates)
       output_string = convert_grouped_hashes_to_output(available_templates)
       
-      output_string
+      mark_default_template(output_string, configurator.default_template)
     end
     
     def gem(options, gem_name)
@@ -80,6 +82,17 @@ module Bundlegem
         s << "\n"
       end
       s
+    end
+    
+    def mark_default_template(output_string, default_template)
+      output_string.lines.reverse.map do |l|
+        if l.strip == default_template  
+          l[1]= "*"
+          "#{l.chomp}       (default)\n"
+        else
+          l
+        end
+      end.reverse.join
     end
     
     def which(executable)

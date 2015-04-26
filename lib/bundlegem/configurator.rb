@@ -1,4 +1,5 @@
 require 'fileutils'
+require 'yaml'
 
 module Bundlegem
   
@@ -13,11 +14,20 @@ module Bundlegem
       create_config_file_if_needed!
       
       @user_defined_templates = get_user_defined_templates
-      
       @user_downloaded_templates = get_user_downloaded_templates
       
       # load configurations from config file if needed...
+      @c = YAML.load_file @config_file
       # perhaps it would contain a list of remote templates specified by the user
+    end
+    
+    def default_template
+      @c["default_template"]
+    end
+    
+    def default_template=(val)
+      @c["default_template"] = val
+      File.write(@config_file, "# Comments made to this file will not be preserved\n#{YAML.dump(@c)}")
     end
     
     def built_in_templates
@@ -58,7 +68,7 @@ module Bundlegem
     
     def create_config_file_if_needed!
       FileUtils.mkdir_p @user_defined_templates_path
-      FileUtils.touch @config_file
+      FileUtils.cp("#{SOURCE_ROOT}/config/config", @config_file) unless File.exists? @config_file
     end
     
     def create_new_template(template_name)

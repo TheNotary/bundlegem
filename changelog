@@ -19,6 +19,9 @@
     - CORE:  refactor the built-in gems so they look pretty (templates/newgem/lib/#{name}.rb.tt)
 			* Need to implement partials that are stored inside the gem
 
+		- Built-in Template:  cli_gem
+		- Built-in Template:  c_ext_gem
+
     - CORE:  Created TemplateManager for working with templates
     - BUG:  Accidentally tracked in a test gem project and fixed tests to not
       change directory into a test area for creating new gems.
