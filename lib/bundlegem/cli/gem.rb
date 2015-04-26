@@ -43,39 +43,15 @@ module Bundlegem
         :bundler_version  => bundler_dependency_version
       }
       ensure_safe_gem_name(name, constant_array)
+      
 
-      # Hmmm... generate dynamically instead?  Yes, overwritten below
-      templates = {
-        'Gemfile.tt' => "Gemfile",
-        'changelog.tt' => "changelog",
-        'gitignore.tt' => ".gitignore",
-        'lib/#{name}.rb.tt' => "lib/#{namespaced_path}.rb",
-        'lib/#{name}/version.rb.tt' => "lib/#{namespaced_path}/version.rb",
-        '#{name}.gemspec.tt' => "#{name}.gemspec",
-        'Rakefile.tt' => "Rakefile",
-        'README.md.tt' => "README.md",
-        'bin/console.tt' => "bin/console"
-      }
-
-      prompt_coc!(templates)
-      prompt_mit!(templates, config)
-      prompt_test_framework!(templates, config)
-
-      templates.merge!("exe/newgem.tt" => "exe/#{config[:name]}") if config[:bin]
-
-      if config[:ext]
-        templates.merge!(
-          "ext/newgem/extconf.rb.tt" => "ext/#{config[:name]}/extconf.rb",
-          "ext/newgem/newgem.h.tt" => "ext/#{config[:name]}/#{config[:underscored_name]}.h",
-          "ext/newgem/newgem.c.tt" => "ext/#{config[:name]}/#{config[:underscored_name]}.c"
-        )
-      end
+      
+      
       
       puts "Creating new project folder\n\n"
-      
       template_src = match_template_src
       template_directories = dynamically_generate_template_directories
-      templates = dynamically_generate_templates || templates
+      templates = dynamically_generate_templates(config)
       
       create_template_directories(template_directories, target)
       
@@ -113,11 +89,46 @@ module Bundlegem
       template_dirs
     end
 
+    # This function should be eliminated over time so that other methods conform to the
+    # new algo for generating templates automatically.
+    # Really, this function generates a template_src to template_dst naming 
+    # structure so that a later method can copy all the template files from the
+    # source and rename them properly
+    def generate_templates_for_built_in_gems(config)
+      # Hmmm... generate dynamically instead?  Yes, overwritten below
+      templates = {
+        'Gemfile.tt' => "Gemfile",
+        'changelog.tt' => "changelog",
+        'gitignore.tt' => ".gitignore",
+        'lib/#{name}.rb.tt' => "lib/#{config[:namespaced_path]}.rb",
+        'lib/#{name}/version.rb.tt' => "lib/#{config[:namespaced_path]}/version.rb",
+        '#{name}.gemspec.tt' => "#{config[:name]}.gemspec",
+        'Rakefile.tt' => "Rakefile",
+        'README.md.tt' => "README.md",
+        'bin/console.tt' => "bin/console"
+      }
+
+      prompt_coc!(templates)
+      prompt_mit!(templates, config)
+      prompt_test_framework!(templates, config)
+
+      templates.merge!("exe/newgem.tt" => "exe/#{config[:name]}") if config[:bin]
+
+      if config[:ext]
+        templates.merge!(
+          "ext/newgem/extconf.rb.tt" => "ext/#{config[:name]}/extconf.rb",
+          "ext/newgem/newgem.h.tt" => "ext/#{config[:name]}/#{config[:underscored_name]}.h",
+          "ext/newgem/newgem.c.tt" => "ext/#{config[:name]}/#{config[:underscored_name]}.c"
+        )
+      end
+      templates
+    end
+    
     # Figures out the translation between all the .tt file to their 
     # destination names
-    def dynamically_generate_templates
+    def dynamically_generate_templates(config)
       if options["template"].nil? # if it's doing some of the built in template
-        return nil 
+        return generate_templates_for_built_in_gems(config)
       else
         template_src = get_template_src
         
