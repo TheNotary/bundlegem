@@ -127,9 +127,9 @@ module Bundlegem
     # Figures out the translation between all the .tt file to their 
     # destination names
     def dynamically_generate_templates(config)
-      if options["template"].nil? # if it's doing some of the built in template
-        return generate_templates_for_built_in_gems(config)
-      else
+      #if options["template"].nil? # if it's doing some of the built in template
+      #  return generate_templates_for_built_in_gems(config)
+      #else
         template_src = get_template_src
         
         templates = {}
@@ -141,7 +141,7 @@ module Bundlegem
         raise_no_files_in_template_error! if templates.empty?
   
         return templates
-      end
+      #end
     end
     
     def create_template_directories(template_directories, target)

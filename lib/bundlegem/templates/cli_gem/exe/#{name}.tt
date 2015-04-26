@@ -1,0 +1,5 @@
+#!/usr/bin/env ruby
+
+require "<%= config[:namespaced_path] %>"
+
+puts "I'm still just a stub cli ruby app"
