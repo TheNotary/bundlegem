@@ -32,8 +32,6 @@ describe Bundlegem do
     category = "ARDUINO"
     create_user_defined_template(category)
     
-    binding.pry
-    
     list_output = Bundlegem.list
     
     expect(list_output.include?(category)).to be true
@@ -42,7 +40,7 @@ describe Bundlegem do
   it "can generate the built-in gems fine" do
     options = {"bin"=>false, "ext"=>false, :coc=> false}
     gem_name = "tmp_gem" # gem name
-    binding.pry
+
     Bundlegem.gem(options, gem_name)
   end
   

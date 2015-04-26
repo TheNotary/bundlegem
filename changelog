@@ -12,13 +12,16 @@
 	  built in gems?  ...add prompt
     - Cleaning:  Make create_gem build a string instead of puts so
 	  output can be squelched for testing
-	  
     - CMD:  --templateize-current-directory to make the current directory into a
       new template
+    - CMD:  --newtemplate to start new template
+    - CMD:  --default to set a gem_template as the default one (list should indicate this)
+    - CORE:  refactor the built-in gems so they look pretty (templates/newgem/lib/#{name}.rb.tt)
 
+    - CORE:  Created TemplateManager for working with templates
     - BUG:  Accidentally tracked in a test gem project and fixed tests to not
       change directory into a test area for creating new gems.
-    - CMD:  --newtemplate to start new template
+    
 
 
 ** 0.0.5 **

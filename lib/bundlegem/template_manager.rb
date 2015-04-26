@@ -9,6 +9,10 @@ module Bundlegem
     
     class << self
       
+      def create_new_template(template_name)
+        
+      end
+      
       
       
     end

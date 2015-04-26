@@ -37,8 +37,7 @@ module Bundlegem
       template_name = prompt_for_template_name if template_name.nil?
 
       # Copy newgem from within the repo to ~/.bundlegem/gem_templates/#{template_name}
-      Configurator.new.create_new_template(template_name)
-
+      TemplateManager.create_new_template(template_name)
     end
 
     def prompt_for_template_name 
