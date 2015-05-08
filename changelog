@@ -1,4 +1,7 @@
 ** 0.0.x **
+	- Feature:  Gem's display names are based on what's specified in their
+    respective root .bundlegem
+	- newgem template: fix Rake file and test organization
 	- Default templates: 
 		* CLI file system app, 
 		* CLI with web client
@@ -7,6 +10,7 @@
 	  - Track a list of additional web templates in this repo
 	  - Allow for it to be listed
 	  - Hint the user to cd into ~/.bundlegem/gem_templates and clone any they choose
+  - BUG:  .gitignore.tt isn't being used for my arduino template
 	
 	- Behavior: gems in the ~/.bundlegem/gem_templates folder take precidence over
 	  built in gems?  ...add prompt
@@ -14,14 +18,16 @@
 	  output can be squelched for testing
     - CMD:  --templateize-current-directory to make the current directory into a
       new template
-    - CMD:  --newtemplate to start new template
-    - CMD:  --default to set a gem_template as the default one (list should indicate this)
     - CORE:  refactor the built-in gems so they look pretty (templates/newgem/lib/#{name}.rb.tt)
 			* Need to implement partials that are stored inside the gem
+
+    - CMD:  --newtemplate to start new template
+    - CMD:  --default to set a gem_template as the default one (list should indicate this)
 
 		- Built-in Template:  cli_gem
 		- Built-in Template:  c_ext_gem
 
+		- Feature:  List now indicates default template
     - CORE:  Created TemplateManager for working with templates
     - BUG:  Accidentally tracked in a test gem project and fixed tests to not
       change directory into a test area for creating new gems.
