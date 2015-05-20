@@ -44,18 +44,4 @@ describe Bundlegem do
     Bundlegem.gem(options, gem_name)
   end
   
-  it "has .gitignore", current: true do
-    # Come up with eligant way of testing that a specific file exists
-    options = {"bin"=>false, "ext"=>false, :coc=> false}
-    gem_name = "tmp_gem" # gem name
-
-    Bundlegem.gem(options, gem_name)
-    
-    binding.pry
-    # where is the tmp gem, expect(File.exists?("")).to be_true
-    #
-    # gitignore is there, but it doesn't have a . in front it's name
-    
-  end
-  
 end

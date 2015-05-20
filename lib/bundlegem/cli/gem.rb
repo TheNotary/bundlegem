@@ -51,7 +51,6 @@ module Bundlegem
       puts "Creating new project folder '#{name}'\n\n"
       create_template_directories(template_directories, target)
       
-      binding.pry
       templates.each do |src, dst|
         template("#{template_src}/#{src}", target.join(dst), config)
       end
@@ -130,7 +129,7 @@ module Bundlegem
         template_src = TemplateManager.get_template_src(options)
         
         templates = {}
-        Dir.glob("#{template_src}/**/*.tt").each do |f|
+        Dir.glob("#{template_src}/**/{*,.*}.tt").each do |f|
           base_path = f[template_src.length+1..-1]
           templates.merge!(base_path => base_path.gsub(/\.tt$/, "").gsub('#{name}', "#{name}") )
         end
