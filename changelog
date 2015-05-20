@@ -1,4 +1,7 @@
 ** 0.0.x **
+    - Feature:  Make each user defined gem have a subfolder that is the exact 
+	  project structure, so the readme for the gem can exist without fear of it
+	  being copied into new projects
 	- Feature:  Gem's display names are based on what's specified in their
     respective root .bundlegem
 	- newgem template: fix Rake file and test organization
@@ -10,7 +13,7 @@
 	  - Track a list of additional web templates in this repo
 	  - Allow for it to be listed
 	  - Hint the user to cd into ~/.bundlegem/gem_templates and clone any they choose
-  - BUG:  .gitignore.tt isn't being used for my arduino template
+  
 	
 	- Behavior: gems in the ~/.bundlegem/gem_templates folder take precidence over
 	  built in gems?  ...add prompt
@@ -31,6 +34,7 @@
     - CORE:  Created TemplateManager for working with templates
     - BUG:  Accidentally tracked in a test gem project and fixed tests to not
       change directory into a test area for creating new gems.
+    - BUG:  newgem template didn't have a dot in .gitignore.tt
     
 
 
