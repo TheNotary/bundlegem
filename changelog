@@ -1,28 +1,28 @@
 ** 0.0.x **
     - Feature:  Make each user defined gem have a subfolder that is the exact 
-	  project structure, so the readme for the gem can exist without fear of it
-	  being copied into new projects
-	- Feature:  Gem's display names are based on what's specified in their
+      project structure, so the readme for the gem can exist without fear of it
+      being copied into new projects
+    - Feature:  Gem's display names are based on what's specified in their
     respective root .bundlegem
-	- newgem template: fix Rake file and test organization
-	- Default templates: 
-		* CLI file system app, 
-		* CLI with web client
-	- Restore the original UI that was in bundler
-	- Ability to load templates from github
-	  - Track a list of additional web templates in this repo
-	  - Allow for it to be listed
-	  - Hint the user to cd into ~/.bundlegem/gem_templates and clone any they choose
+    - newgem template: fix Rake file and test organization
+    - Default templates: 
+        * CLI file system app, 
+        * CLI with web client
+    - Restore the original UI that was in bundler
+    - Feature:  Ability to load templates from github
+    - Track a list of additional web templates in this repo
+      - Allow for it to be listed
+      - Hint the user to cd into ~/.bundlegem/gem_templates and clone any they choose
   
-	
-	- Behavior: gems in the ~/.bundlegem/gem_templates folder take precidence over
-	  built in gems?  ...add prompt
+    
+    - Behavior: gems in the ~/.bundlegem/gem_templates folder take precidence over
+      built in gems?  ...add prompt
     - Cleaning:  Make create_gem build a string instead of puts so
-	  output can be squelched for testing
+      output can be squelched for testing
     - CMD:  --templateize-current-directory to make the current directory into a
       new template
     - CORE:  refactor the built-in gems so they look pretty (templates/newgem/lib/#{name}.rb.tt)
-			* Need to implement partials that are stored inside the gem
+            * Need to implement partials that are stored inside the gem
 
     - CMD:  --newtemplate to start new template
     - CMD:  --default to set a gem_template as the default one (list should indicate this)
@@ -30,6 +30,8 @@
     - Built-in Template:  cli_gem
     - Built-in Template:  c_ext_gem
 
+
+** 0.0.6 **
     - Feature:  List now indicates default template
     - CORE:  Created TemplateManager for working with templates
     - BUG:  Accidentally tracked in a test gem project and fixed tests to not
@@ -52,16 +54,16 @@
 
 
 ** 0.0.3 **
-	- CMD:  --list to list templates (with descriptions)
-	- Raise error when project name already exists, do not overwrite!
-	- Raises error if none of the files in the template directory end in .tt
-	- Create even empty folders
+    - CMD:  --list to list templates (with descriptions)
+    - Raise error when project name already exists, do not overwrite!
+    - Raises error if none of the files in the template directory end in .tt
+    - Create even empty folders
 
-	
+    
 ** 0.0.2 **
-	- Added default gem template 'service'
-	- Better syntax of bundlegem gem_name -t template_name
-	- CMD:  --help to display a help message
+    - Added default gem template 'service'
+    - Better syntax of bundlegem gem_name -t template_name
+    - CMD:  --help to display a help message
 
 
 ** 0.0.1 **
