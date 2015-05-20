@@ -16,9 +16,8 @@ module Bundlegem
       @user_defined_templates = get_user_defined_templates
       @user_downloaded_templates = get_user_downloaded_templates
       
-      # load configurations from config file if needed...
+      # load configurations from config file
       @c = YAML.load_file @config_file
-      # perhaps it would contain a list of remote templates specified by the user
     end
     
     def default_template

@@ -51,6 +51,7 @@ module Bundlegem
       puts "Creating new project folder '#{name}'\n\n"
       create_template_directories(template_directories, target)
       
+      #binding.pry
       templates.each do |src, dst|
         template("#{template_src}/#{src}", target.join(dst), config)
       end
