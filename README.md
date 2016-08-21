@@ -34,10 +34,10 @@ $  bundlegem --list
 PREDEFINED:
   default - A basic ruby gem
   service - A gem that allows installation as a service to run as a daemon
-  
+
 MISC:
-  my_service - 
-  
+  my_service -
+
 EMBEDDED:
   arduino
 
@@ -56,4 +56,3 @@ $  bundlegem project_name -t my_service
 
 Please feel free to speak up using the issue section if there's anything on your mind :)  
 Do the usual fork routine and issue a pull request by all means.  
-

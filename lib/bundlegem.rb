@@ -2,35 +2,37 @@ require "bundlegem/version"
 require 'bundlegem/configurator'
 require 'bundlegem/template_manager'
 
+require 'bundlegem/cli'
+
 SOURCE_ROOT = File.expand_path("#{File.dirname(__FILE__)}/..")
 
 module Bundlegem
-  
+
   class << self
-    
+
     # lists available templates
     def list
       configurator = Configurator.new
       # search through builtin
-      available_templates = [ { "predefined" => "newgem" }, 
+      available_templates = [ { "predefined" => "newgem" },
                               { "predefined" => "service" }]
-      
+
       # search through user downloaded
       available_templates += configurator.user_downloaded_templates
-      
+
       # search through user defined
       available_templates += configurator.user_defined_templates
 
       available_templates = group_hashes_by_key(available_templates)
       output_string = convert_grouped_hashes_to_output(available_templates)
-      
+
       mark_default_template(output_string, configurator.default_template)
     end
-    
+
     def gem(options, gem_name)
       require 'bundlegem/cli'
       require 'bundlegem/cli/gem'
-      
+
       Bundlegem::CLI::Gem.new(options, gem_name).run
     end
 
@@ -42,19 +44,19 @@ module Bundlegem
       TemplateManager.create_new_template(template_name)
     end
 
-    def prompt_for_template_name 
+    def prompt_for_template_name
       puts "Please specify a name for your template:  "
       template_name = STDIN.gets.chomp.strip.gsub(" ", "_")
     end
 
-    # input:  [ { "predefined" => "default" }, 
+    # input:  [ { "predefined" => "default" },
     #           { "MISC" => "my_thing" },
     #           { "prdefined" => "service" }
     #         ]
     #
-    # output: [ { "predefined" => ["default", "service"] }, 
+    # output: [ { "predefined" => ["default", "service"] },
     #           { "MISC" => ["my_thing"] }
-    #         ]     
+    #         ]
     #
     def group_hashes_by_key(available_templates)
       h = {}
@@ -66,10 +68,10 @@ module Bundlegem
       end
       h
     end
-    
-    # input:  [ { "predefined" => ["default", "service"] }, 
+
+    # input:  [ { "predefined" => ["default", "service"] },
     #           { "MISC" => ["my_thing"] }
-    #         ]  
+    #         ]
     def convert_grouped_hashes_to_output(available_templates)
       s = ""
       available_templates.each do |hash|
@@ -83,10 +85,10 @@ module Bundlegem
       end
       s
     end
-    
+
     def mark_default_template(output_string, default_template)
       output_string.lines.reverse.map do |l|
-        if l.strip == default_template  
+        if l.strip == default_template
           l[1]= "*"
           "#{l.chomp}       (default)\n"
         else
@@ -94,7 +96,7 @@ module Bundlegem
         end
       end.reverse.join
     end
-    
+
     def which(executable)
       if File.file?(executable) && File.executable?(executable)
         executable
@@ -106,7 +108,7 @@ module Bundlegem
         path && File.expand_path(executable, path)
       end
     end
-    
+
   end
-  
+
 end

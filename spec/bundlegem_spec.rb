@@ -15,10 +15,6 @@ describe Bundlegem do
     expect(Bundlegem::VERSION).not_to be nil
   end
 
-  it 'does something useful' do
-    require 'bundlegem/cli'
-  end
-
   it 'creates a config file if needed and lists properly' do
     create_user_defined_template
     

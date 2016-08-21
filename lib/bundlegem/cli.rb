@@ -74,9 +74,9 @@ module Bundlegem
     def self.handle_no_command_error(command, has_namespace = $thor_runner)
       require 'bundlegem/cli/gem'
       Gem.new(options, name, self).run
-      
-      
-      
+
+
+
       # return super unless command_path = Bundlegem.which("Bundlegem-#{command}")
 
       # Kernel.exec(command_path, *ARGV[1..-1])
@@ -94,7 +94,7 @@ module Bundlegem
       Init.new(options.dup).run
     end
 
-    
+
 
     desc "version", "Prints the bundler's version information"
     def version
@@ -113,7 +113,7 @@ module Bundlegem
     method_option :mit, :type => :boolean, :desc => "Generate an MIT license file"
     method_option :test, :type => :string, :lazy_default => 'rspec', :aliases => '-t', :banner => "rspec",
       :desc => "Generate a test directory for your library, either rspec or minitest. Set a default with `bundle config gem.test rspec`."
-    method_option :template, :type => :string, :lazy_default => "newgem", :aliases => '-u', :banner => "default", :desc => "Generate a gem based on the user's predefined template." 
+    method_option :template, :type => :string, :lazy_default => "newgem", :aliases => '-u', :banner => "default", :desc => "Generate a gem based on the user's predefined template."
     def gem(name)
       # options = {"bin"=>false, "ext"=>false}
       # name = "gem_name"

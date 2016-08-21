@@ -43,18 +43,18 @@ module Bundlegem
         :bundler_version  => bundler_dependency_version
       }
       ensure_safe_gem_name(name, constant_array)
-      
+
       template_src = match_template_src
       template_directories = dynamically_generate_template_directories
       templates = dynamically_generate_templates(config)
-      
+
       puts "Creating new project folder '#{name}'\n\n"
       create_template_directories(template_directories, target)
-      
+
       templates.each do |src, dst|
         template("#{template_src}/#{src}", target.join(dst), config)
       end
-      
+
 
       # Bundler.ui.info "Initializing git repo in #{target}"
       Dir.chdir(target) { `git init`; `git add .` }
@@ -62,20 +62,20 @@ module Bundlegem
       # Disabled thanks to removal of thor, might not be helpful...
       #if options[:edit]
       #  # Open gemspec in editor
-      #  
+      #
       #  # thor.run("#{options["edit"]} \"#{target.join("#{name}.gemspec")}\"")
       #end
-      
+
       puts "\nComplete."
     end
 
     private
-    
+
     def dynamically_generate_template_directories
       # return nil if options["template"].nil?
 
       template_src = TemplateManager.get_template_src(options)
-      
+
       template_dirs = {}
       Dir.glob("#{template_src}/**/*").each do |f|
         next unless File.directory? f
@@ -87,7 +87,7 @@ module Bundlegem
 
     # This function should be eliminated over time so that other methods conform to the
     # new algo for generating templates automatically.
-    # Really, this function generates a template_src to template_dst naming 
+    # Really, this function generates a template_src to template_dst naming
     # structure so that a later method can copy all the template files from the
     # source and rename them properly
     def generate_templates_for_built_in_gems(config)
@@ -119,27 +119,27 @@ module Bundlegem
       end
       templates
     end
-    
-    # Figures out the translation between all the .tt file to their 
+
+    # Figures out the translation between all the .tt file to their
     # destination names
     def dynamically_generate_templates(config)
       #if options["template"].nil? # if it's doing some of the built in template
       #  return generate_templates_for_built_in_gems(config)
       #else
         template_src = TemplateManager.get_template_src(options)
-        
+
         templates = {}
         Dir.glob("#{template_src}/**/{*,.*}.tt").each do |f|
           base_path = f[template_src.length+1..-1]
           templates.merge!(base_path => base_path.gsub(/\.tt$/, "").gsub('#{name}', "#{name}") )
         end
-        
+
         raise_no_files_in_template_error! if templates.empty?
-  
+
         return templates
       #end
     end
-    
+
     def create_template_directories(template_directories, target)
       template_directories.each do |k,v|
         d = "#{target}/#{v}"
@@ -151,20 +151,20 @@ module Bundlegem
     # returns the full path of the template source
     def match_template_src
       template_src = TemplateManager.get_template_src(options)
-      
+
       if File.exists?(template_src)
         return template_src    # 'newgem' refers to the built in template that comes with the gem
       else
         raise_template_not_found! # else message the user that the template could not be found
       end
     end
-    
-    
+
+
     def resolve_name(name)
       Pathname.pwd.join(name).basename.to_s
     end
 
-    
+
     def validate_ext_name
       return unless gem_name.index('-')
 
@@ -175,18 +175,18 @@ module Bundlegem
       exit 1
     end
 
-    
+
     def bundler_dependency_version
-      v = Gem::Version.new(Bundler::VERSION)
+      v = Gem::Version.new(Bundlegem::VERSION)
       req = v.segments[0..1]
       req << 'a' if v.prerelease?
       req.join(".")
     end
 
-    
-    
-    
-    
+
+
+
+
     #
     # EDIT:  Reworked from Thor to not rely on Thor (or do so much unneeded stuff)
     #
@@ -211,7 +211,7 @@ module Bundlegem
 
       source  = File.expand_path(TemplateManager.find_in_source_paths(source.to_s))
       context = instance_eval("binding")
-      
+
       make_file(destination, config) do
         content = ERB.new(::File.binread(source), nil, "-", "@output_buffer").result(context)
         content = block.call(content) if block
@@ -219,9 +219,9 @@ module Bundlegem
       end
 
     end
-    
-    
-    
+
+
+
     #
     # EDIT:  Reworked from Thor to not rely on Thor (or do so much unneeded stuff)
     #
@@ -230,9 +230,9 @@ module Bundlegem
       puts " Writing   #{destination} ..."
       File.open(destination, "wb") { |f| f.write block.call }
     end
-    
-    
-    
+
+
+
     def raise_no_files_in_template_error!
       puts "Ooops, the template was found for '#{options['template']}' in ~/.bundlegem/gem_templates, "
       puts "but no files within it ended in .tt.  Did you forget to rename the extensions of your files?"
@@ -240,7 +240,7 @@ module Bundlegem
       puts "Exiting..."
       exit
     end
-    
+
     def raise_project_with_that_name_already_exists!
       puts "Ooops, a project with the name #{target} already exists."
       puts "Can't make project.  Either delete that folder or choose a new project name"
@@ -248,17 +248,17 @@ module Bundlegem
       puts "Exiting..."
       exit
     end
-    
+
     def raise_template_not_found!
       err_missing_template = "Could not find template folder '#{options["template"]}' in `~/.bundle/gem_templates/`. Please check to make sure your desired template exists."
       puts err_missing_template
       Bundler.ui.error err_missing_template
       exit 1
     end
-    
-    
+
+
     ############# STUFF THAT SHOULD BE REMOVED DOWN THE ROAD
-    
+
     # This asks the user if they want to setup rspec or test...
     # It's not class based, it's additive based... Plus bundlegem does this already
     def ask_and_set_test_framework
@@ -281,7 +281,7 @@ module Bundlegem
 
       test_framework
     end
-    
+
     def ask_and_set(key, header, message)
       choice = options[key]  # || Bundler.settings["gem.#{key}"]
 
@@ -293,7 +293,7 @@ module Bundlegem
 
       choice
     end
-    
+
     def prompt_coc!(templates)
       if ask_and_set(:coc, "Do you want to include a code of conduct in gems you generate?",
           "Codes of conduct can increase contributions to your project by contributors who " \
@@ -305,7 +305,7 @@ module Bundlegem
         templates.merge!("CODE_OF_CONDUCT.md.tt" => "CODE_OF_CONDUCT.md")
       end
     end
-    
+
     def prompt_mit!(templates, config)
       if ask_and_set(:mit, "Do you want to license your code permissively under the MIT license?",
           "This means that any other developer or company will be legally allowed to use your code " \
@@ -316,7 +316,7 @@ module Bundlegem
         templates.merge!("LICENSE.txt.tt" => "LICENSE.txt")
       end
     end
-    
+
     def prompt_test_framework!(templates, config)
       namespaced_path = config[:namespaced_path]
       if test_framework = ask_and_set_test_framework
@@ -337,7 +337,7 @@ module Bundlegem
         end
       end
     end
-    
+
     # This checks to see that the gem_name is a valid ruby gem name and will 'work'
     # and won't overlap with a bundlegem constant apparently...
     #
