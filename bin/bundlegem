@@ -6,30 +6,41 @@ require 'bundler'
 require 'bundlegem'
 # require 'bundlergem/friendly_errors'
 
+help_msg = <<-HEREDOC
+Use bundlegem to start a new project folder based on a predefined template.
+
+Usage Examples:
+
+  # Make a new ruby gem
+  $  bundlegem your_gem_name
+
+  # List available teplates
+  $  bundlegem --list
+
+  # Create a ruby gem project using the built in service template
+  $ bundlegem your_gem_name -t service
+
+  # not implemented, should create a new gem template in ~/.bundlegem/templates
+  # that you'll love customizing to your personal preference
+  $ bundlegem --newtemplate
+
+  $ bundlegem --help              # shows this message
+HEREDOC
+
 if ARGV.length < 1
-  puts "error: you need to specify a gemname at least"
+  puts "error: you need to specify a name for the project being created\n\n"
+  puts help_msg
   exit 1
 end
 
 if ARGV[0] == "--help"
-  puts "Usage:  "
-  puts "  # creates a gem based on default template"
-  puts "  $ bundlegem gem_name                "
-  puts
-  puts "  # creates a gem using the service template built into gem"
-  puts "  $ bundlegem gem_name -t service     "
-  puts
-  puts "  # not implemented, but shoud create a new gem template in ~/.bundlegem/templates"
-  puts "  # that you'll love customizing to your personal preference"
-  puts "  $ bundlegem --newtemplate  "
-  puts
-  puts "  $ bundlegem --help              # shows these strings"
+  puts help_msg
   exit 0
 end
 
 if ARGV[0] == "--list" or ARGV[0] == "-l"
   puts Bundlegem.list
-  exit 0  
+  exit 0
 end
 
 if ARGV[0] == "--newtemplate"
@@ -48,10 +59,8 @@ if ARGV.length > 1
     puts "you can ONLY use -t as an argument because I'm quite busy and should be doing something else right now!"
     exit 1
   end
-  
+
   options.merge!({"template" => ARGV[2]})
 end
 
 Bundlegem.gem(options, gem_name)
-
-
