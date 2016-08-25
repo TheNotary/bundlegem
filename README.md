@@ -23,7 +23,7 @@ $  bundlegem --newtemplate
 Specify a name for your gem template:  my_service
 Specify description:  
 Specify template tag name [MISC]:  
-Cloning base project structure into ~/.bundlegem/gem_templates/my_service
+Cloning base project structure into ~/.bundlegem/templates/my_service
 ...
   Complete!
 ```

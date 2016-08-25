@@ -9,7 +9,7 @@ module Bundlegem
     def initialize
       @config_directory_root = "#{ENV['HOME']}/.bundlegem"
       @config_file = "#{@config_directory_root}/config"
-      @user_defined_templates_path = "#{@config_directory_root}/gem_templates"
+      @user_defined_templates_path = "#{@config_directory_root}/templates"
 
       create_config_file_if_needed!
 

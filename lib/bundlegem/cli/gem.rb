@@ -234,7 +234,7 @@ module Bundlegem
 
 
     def raise_no_files_in_template_error!
-      puts "Ooops, the template was found for '#{options['template']}' in ~/.bundlegem/gem_templates, "
+      puts "Ooops, the template was found for '#{options['template']}' in ~/.bundlegem/templates, "
       puts "but no files within it ended in .tt.  Did you forget to rename the extensions of your files?"
       puts
       puts "Exiting..."
@@ -250,7 +250,7 @@ module Bundlegem
     end
 
     def raise_template_not_found!
-      err_missing_template = "Could not find template folder '#{options["template"]}' in `~/.bundle/gem_templates/`. Please check to make sure your desired template exists."
+      err_missing_template = "Could not find template folder '#{options["template"]}' in `~/.bundle/templates/`. Please check to make sure your desired template exists."
       puts err_missing_template
       Bundler.ui.error err_missing_template
       exit 1

@@ -12,10 +12,10 @@
     - Feature:  Ability to load templates from github
     - Track a list of additional web templates in this repo
       - Allow for it to be listed
-      - Hint the user to cd into ~/.bundlegem/gem_templates and clone any they choose
+      - Hint the user to cd into ~/.bundlegem/templates and clone any they choose
   
     
-    - Behavior: gems in the ~/.bundlegem/gem_templates folder take precidence over
+    - Behavior: gems in the ~/.bundlegem/templates folder take precidence over
       built in gems?  ...add prompt
     - Cleaning:  Make create_gem build a string instead of puts so
       output can be squelched for testing

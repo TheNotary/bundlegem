@@ -22,11 +22,11 @@ module Bundlegem
         template_name = options["template"].nil? ? get_default_template_name : options["template"]
 
         if template_exists_within_repo?(template_name)
-          gem_template_location = get_internal_template_location
+          template_location = get_internal_template_location
         else
-          gem_template_location = File.expand_path("~/.bundlegem/gem_templates")
+          template_location = File.expand_path("~/.bundlegem/templates")
         end
-        template_src = "#{gem_template_location}/#{template_name}"
+        template_src = "#{template_location}/#{template_name}"
       end
 
 
