@@ -49,6 +49,11 @@ if ARGV[0] == "--newtemplate"
   Bundlegem.newtemplate(ARGV)
 end
 
+if ARGV[0] == "--install-best-templates"
+  puts Bundlegem.install_best_templates
+  exit 0
+end
+
 
 
 options = {"bin"=>false, "ext"=>false, :coc=> false}
@@ -56,7 +61,8 @@ gem_name = ARGV[0] # gem name
 
 if ARGV.length > 1
   if ARGV[1] != "-t" and ARGV[1] != "--template"
-    puts "you can ONLY use -t as an argument because I'm quite busy and should be doing something else right now!"
+    puts "You can ONLY use -t as an argument because I'm quite busy and should be doing something else right now!"
+    puts help_msg
     exit 1
   end
 

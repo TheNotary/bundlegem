@@ -109,6 +109,20 @@ module Bundlegem
       end
     end
 
+    def install_best_templates
+      puts "Downloading templates from the following locations: #{ENV['best_templates']}"
+      ENV['best_templates'].split.each do |url|
+        uri = URI.parse(url)
+        template_folder_name = File.basename(uri.path).sub(/\.git$/, "")
+        if !File.exists?(template_folder_name)
+          `cd #{ENV['HOME']}/.bundlegem/templates && git clone #{url}`
+        else
+          # TODO:
+          # Prompt to update the repo if they have a clean working state.
+        end
+      end
+    end
+
   end
 
 end
