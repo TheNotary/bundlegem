@@ -6,35 +6,15 @@ require 'bundler'
 require 'bundlegem'
 # require 'bundlergem/friendly_errors'
 
-help_msg = <<-HEREDOC
-Use bundlegem to start a new project folder based on a predefined template.
-
-Usage Examples:
-
-  # Make a new ruby gem
-  $  bundlegem your_gem_name
-
-  # List available teplates
-  $  bundlegem --list
-
-  # Create a ruby gem project using the built in service template
-  $ bundlegem your_gem_name -t service
-
-  # not implemented, should create a new gem template in ~/.bundlegem/templates
-  # that you'll love customizing to your personal preference
-  $ bundlegem --newtemplate
-
-  $ bundlegem --help              # shows this message
-HEREDOC
 
 if ARGV.length < 1
   puts "error: you need to specify a name for the project being created\n\n"
-  puts help_msg
+  puts Bundlegem::HELP_MSG
   exit 1
 end
 
 if ARGV[0] == "--help"
-  puts help_msg
+  puts Bundlegem::HELP_MSG
   exit 0
 end
 
@@ -62,7 +42,7 @@ gem_name = ARGV[0] # gem name
 if ARGV.length > 1
   if ARGV[1] != "-t" and ARGV[1] != "--template"
     puts "You can ONLY use -t as an argument because I'm quite busy and should be doing something else right now!"
-    puts help_msg
+    puts Bundlegem::HELP_MSG
     exit 1
   end
 

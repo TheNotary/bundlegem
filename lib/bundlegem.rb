@@ -1,4 +1,5 @@
 require "bundlegem/version"
+require "bundlegem/strings"
 require 'bundlegem/configurator'
 require 'bundlegem/template_manager'
 
