@@ -116,7 +116,9 @@ module Bundlegem
         uri = URI.parse(url)
         template_folder_name = File.basename(uri.path).sub(/\.git$/, "")
         if !File.exists?(template_folder_name)
-          `cd #{ENV['HOME']}/.bundlegem/templates && git clone #{url}`
+          cmd = "cd #{ENV['HOME']}/.bundlegem/templates && git clone #{url}"
+          cmd += " 2> /dev/null" if $test_env
+          `#{cmd}`
         else
           # TODO:
           # Prompt to update the repo if they have a clean working state.

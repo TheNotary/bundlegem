@@ -54,9 +54,9 @@ $  bundlegem project_name -t my_service
 
 ## Customizing Your Own Templates
 
-Place your own templates in `~/.bunglegem/templates`.  You can populate it with examples by running `--install-best-templates`
+Place your own templates in `~/.bunglegem/templates`.  You can populate it with examples by running `bundlegem --install-best-templates`
 
-You'll get a good idea as to the possibilities by instpecting the files in [templates](https://github.com/TheNotary/bundlegem/tree/master/lib/bundlegem/templates/newgem).  Some quick tips follow:
+You'll get a good idea as to the possibilities by inspecting the files in [templates](https://github.com/TheNotary/bundlegem/tree/master/lib/bundlegem/templates/newgem).  Some quick tips follow:
 
 - Files ending with a `.tt` extension will by written to new projects
 - File **names** containing `#{name}` will have that symbol replaced by the project name defined on the CLI

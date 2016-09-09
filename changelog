@@ -1,34 +1,22 @@
 ** 0.0.x **
-    - Feature:  Make each user defined gem have a subfolder that is the exact 
-      project structure, so the readme for the gem can exist without fear of it
-      being copied into new projects
-    - Feature:  Gem's display names are based on what's specified in their
-    respective root .bundlegem
-    - newgem template: fix Rake file and test organization
-    - Default templates: 
-        * CLI file system app, 
-        * CLI with web client
-    - Restore the original UI that was in bundler
-    - Feature:  Ability to load templates from github
-    - Track a list of additional web templates in this repo
-      - Allow for it to be listed
-      - Hint the user to cd into ~/.bundlegem/templates and clone any they choose
-  
-    
-    - Behavior: gems in the ~/.bundlegem/templates folder take precidence over
-      built in gems?  ...add prompt
-    - Cleaning:  Make create_gem build a string instead of puts so
-      output can be squelched for testing
-    - CMD:  --templateize-current-directory to make the current directory into a
-      new template
-    - CORE:  refactor the built-in gems so they look pretty (templates/newgem/lib/#{name}.rb.tt)
-            * Need to implement partials that are stored inside the gem
+  - CORE:  refactor the built-in gems so they look pretty (templates/newgem/lib/#{name}.rb.tt)
+    * Need to implement partials that are stored inside the gem
 
-    - CMD:  --newtemplate to start new template
-    - CMD:  --default to set a gem_template as the default one (list should indicate this)
-	- list doesn't display these becasue lib/bundlegem.rb:15
+  - CMD:  --newtemplate to start new template
+    - I'll need to write a basic starter template that is educational
+  - list doesn't display these becasue lib/bundlegem.rb:15
     - Built-in Template:  cli_gem
     - Built-in Template:  c_ext_gem
+
+
+** 0.0.7 **
+
+  - Feature:  Ability to load templates from github via --install-best-templates
+  - Feature:  Make each user defined gem have a subfolder that is the exact 
+    project structure, so the readme for the gem can exist without fear of it
+    being copied into new projects
+  - Feature:  Gem's display names are based on what's specified in their
+  respective root .bundlegem
 
 
 ** 0.0.6 **

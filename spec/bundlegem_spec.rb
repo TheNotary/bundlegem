@@ -8,7 +8,7 @@ describe Bundlegem do
     @dst_dir = "/tmp/bundle_gem_dst_dir"
 
     reset_test_env
-    FileUtils.chdir("/tmp/bundle_gem_dst_dir")
+    FileUtils.chdir(@dst_dir)
   end
 
   it 'has a version number' do
@@ -34,9 +34,10 @@ describe Bundlegem do
 
   it "can generate the built-in gems fine" do
     options = {"bin"=>false, "ext"=>false, :coc=> false}
-    gem_name = "tmp_gem" # gem name
+    gem_name = "tmp_gem"
 
-    Bundlegem.gem(options, gem_name)
+    capture_stdout { Bundlegem.gem(options, gem_name) }
+    expect(File.exists?("#{@dst_dir}/#{gem_name}/README.md")).to be_truthy
   end
 
   describe "install best templates" do
@@ -50,23 +51,10 @@ describe Bundlegem do
     end
 
     it "can download best templates from the web" do
-      Bundlegem.install_best_templates
+      capture_stdout { Bundlegem.install_best_templates }
       expect(File.exists?("#{ENV['HOME']}/.bundlegem/templates/arduino/README.md")).to be_truthy
     end
 
   end
 
-end
-
-
-def setup_mock_web_template
-  ENV['best_templates'] = "#{ENV['HOME']}/arduino.git"
-  FileUtils.mkdir("#{ENV['HOME']}/arduino.git")
-  FileUtils.touch("#{ENV['HOME']}/arduino.git/README.md")
-  auth_settings = 'git config --local user.email "you@example.com" && git config --local user.name "test"'
-  `cd "#{ENV['HOME']}/arduino.git" && git init &&  git add . && #{auth_settings} && git commit -m "haxing"`
-end
-
-def remove_mock_web_template
-  FileUtils.rm_rf("#{ENV['HOME']}/arduino.git")
 end
