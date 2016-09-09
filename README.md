@@ -52,6 +52,18 @@ $  cd /tmp
 $  bundlegem project_name -t my_service
 ```
 
+## Customizing Your Own Templates
+
+Place your own templates in `~/.bunglegem/templates`.  You can populate it with examples by running `--install-best-templates`
+
+You'll get a good idea as to the possibilities by instpecting the files in [templates](https://github.com/TheNotary/bundlegem/tree/master/lib/bundlegem/templates/newgem).  Some quick tips follow:
+
+- Files ending with a `.tt` extension will by written to new projects
+- File **names** containing `#{name}` will have that symbol replaced by the project name defined on the CLI
+- Within files, use `<%=config[:namespaced_path]%>` to have that reinterpreted as just the file name with underscores
+- Have a look [under the hood](https://github.com/TheNotary/bundlegem/blob/master/lib/bundlegem/cli/gem.rb#L30-L43) to see other options and the context where the ERB.new takes place.
+
+
 ### Contributing
 
 Please feel free to speak up using the issue section if there's anything on your mind :)  
