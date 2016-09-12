@@ -49,6 +49,7 @@ describe Bundlegem do
     expect(File.exists?("#{@dst_dir}/#{gem_name}/ext/tmp_gem/#{gem_name}.c")).to be_truthy
   end
 
+
   describe "install best templates" do
 
     before :each do

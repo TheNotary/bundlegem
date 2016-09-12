@@ -34,19 +34,20 @@ if ARGV[0] == "--install-best-templates"
   exit 0
 end
 
-
-
 options = {"bin"=>false, "ext"=>false, :coc=> false}
-gem_name = ARGV[0] # gem name
+gem_name = ""
+skip_i = -99
 
-if ARGV.length > 1
-  if ARGV[1] != "-t" and ARGV[1] != "--template"
-    puts "You can ONLY use -t as an argument because I'm quite busy and should be doing something else right now!"
-    puts Bundlegem::HELP_MSG
-    exit 1
+# Loop over CLI parameters
+ARGV.each_with_index do |arg, i|
+  next if skip_i == i
+  if arg == "-t" or arg == "--template" # the item after this specifies the template to use
+    options.merge!({"template" => ARGV[i+1]})
+    skip_i = i+1
+    next
+  elsif !arg.include?("-") # this must be what they want as the gem_name
+    gem_name = arg
   end
-
-  options.merge!({"template" => ARGV[2]})
 end
 
 Bundlegem.gem(options, gem_name)
