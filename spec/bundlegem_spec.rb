@@ -32,12 +32,21 @@ describe Bundlegem do
     expect(list_output.include?(category)).to be true
   end
 
-  it "can generate the built-in gems fine" do
+  # what template is it being generated from?  Default?
+  it "can generate the default built-in gem fine" do
     options = {"bin"=>false, "ext"=>false, :coc=> false}
     gem_name = "tmp_gem"
 
     capture_stdout { Bundlegem.gem(options, gem_name) }
     expect(File.exists?("#{@dst_dir}/#{gem_name}/README.md")).to be_truthy
+  end
+
+  it "can generate the c_ext gem fine" do
+    options = {"bin"=>false, "ext"=>false, :coc=> false, "template" => "c_extension_gem"}
+    gem_name = "tmp_gem"
+
+    capture_stdout { Bundlegem.gem(options, gem_name) }
+    expect(File.exists?("#{@dst_dir}/#{gem_name}/ext/tmp_gem/#{gem_name}.c")).to be_truthy
   end
 
   describe "install best templates" do

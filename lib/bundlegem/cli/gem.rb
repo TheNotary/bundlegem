@@ -73,7 +73,6 @@ module Bundlegem
 
     def dynamically_generate_template_directories
       # return nil if options["template"].nil?
-
       template_src = TemplateManager.get_template_src(options)
 
       template_dirs = {}
@@ -103,6 +102,7 @@ module Bundlegem
         'README.md.tt' => "README.md",
         'bin/console.tt' => "bin/console"
       }
+
 
       prompt_coc!(templates)
       prompt_mit!(templates, config)
