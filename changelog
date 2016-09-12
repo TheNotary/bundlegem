@@ -8,6 +8,8 @@
     - Built-in Template:  cli_gem
     - Built-in Template:  c_ext_gem
 
+  - Building a c_ext_gem doesn't interpolate #{name}.c correctly
+
 
 ** 0.0.7 **
 
