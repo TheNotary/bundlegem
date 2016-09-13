@@ -4,7 +4,7 @@ require 'yaml'
 module Bundlegem
 
   class Configurator
-    attr_accessor :user_defined_templates, :user_downloaded_templates
+    attr_accessor :user_defined_templates, :user_downloaded_templates, :config_file_data
 
     def initialize
       @config_directory_root = "#{ENV['HOME']}/.bundlegem"
@@ -17,16 +17,16 @@ module Bundlegem
       @user_downloaded_templates = get_user_downloaded_templates
 
       # load configurations from config file
-      @c = YAML.load_file @config_file
+      @config_file_data = YAML.load_file @config_file
     end
 
     def default_template
-      @c["default_template"]
+      @config_file_data["default_template"]
     end
 
     def default_template=(val)
-      @c["default_template"] = val
-      File.write(@config_file, "# Comments made to this file will not be preserved\n#{YAML.dump(@c)}")
+      @config_file_data["default_template"] = val
+      File.write(@config_file, "# Comments made to this file will not be preserved\n#{YAML.dump(@config_file_data)}")
     end
 
     def built_in_templates
