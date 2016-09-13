@@ -30,7 +30,7 @@ if ARGV[0] == "--newtemplate"
 end
 
 if ARGV[0] == "--install-best-templates"
-  puts Bundlegem.install_best_templates
+  Bundlegem.install_best_templates
   exit 0
 end
 

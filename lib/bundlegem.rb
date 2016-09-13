@@ -39,7 +39,7 @@ module Bundlegem
       config_file_data['best_templates'].split.each do |url|
         uri = URI.parse(url)
         template_folder_name = File.basename(uri.path).sub(/\.git$/, "")
-        if !File.exists?(template_folder_name)
+        if !File.exists?("#{ENV['HOME']}/.bundlegem/templates/#{template_folder_name}")
           cmd = "cd #{ENV['HOME']}/.bundlegem/templates && git clone #{url}"
           cmd += " 2> /dev/null" if $test_env
           `#{cmd}`
