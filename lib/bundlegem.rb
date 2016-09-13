@@ -32,6 +32,23 @@ module Bundlegem
       mark_default_template(output_string, configurator.default_template)
     end
 
+    def install_best_templates
+      configurator = Configurator.new
+      puts "Downloading templates from the following locations: #{ENV['best_templates']}"
+      ENV['best_templates'].split.each do |url|
+        uri = URI.parse(url)
+        template_folder_name = File.basename(uri.path).sub(/\.git$/, "")
+        if !File.exists?(template_folder_name)
+          cmd = "cd #{ENV['HOME']}/.bundlegem/templates && git clone #{url}"
+          cmd += " 2> /dev/null" if $test_env
+          `#{cmd}`
+        else
+          # TODO:
+          # Prompt to update the repo if they have a clean working state.
+        end
+      end
+    end
+
     def gem(options, gem_name)
       require 'bundlegem/cli'
       require 'bundlegem/cli/gem'
@@ -109,22 +126,6 @@ module Bundlegem
           File.file?(abs_path) && File.executable?(abs_path)
         end
         path && File.expand_path(executable, path)
-      end
-    end
-
-    def install_best_templates
-      puts "Downloading templates from the following locations: #{ENV['best_templates']}"
-      ENV['best_templates'].split.each do |url|
-        uri = URI.parse(url)
-        template_folder_name = File.basename(uri.path).sub(/\.git$/, "")
-        if !File.exists?(template_folder_name)
-          cmd = "cd #{ENV['HOME']}/.bundlegem/templates && git clone #{url}"
-          cmd += " 2> /dev/null" if $test_env
-          `#{cmd}`
-        else
-          # TODO:
-          # Prompt to update the repo if they have a clean working state.
-        end
       end
     end
 
