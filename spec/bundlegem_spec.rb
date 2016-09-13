@@ -32,7 +32,7 @@ describe Bundlegem do
     expect(list_output.include?(category)).to be true
   end
 
-  # what template is it being generated from?  Default?
+  # This bulids the default gem template
   it "can generate the default built-in gem fine" do
     options = {"bin"=>false, "ext"=>false, :coc=> false}
     gem_name = "tmp_gem"

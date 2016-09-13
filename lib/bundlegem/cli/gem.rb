@@ -1,5 +1,4 @@
 require 'pathname'
-require 'pry'
 
 module Bundlegem
   class CLI::Gem
