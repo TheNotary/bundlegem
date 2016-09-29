@@ -17,8 +17,7 @@ module Bundlegem
       # search through builtin
       available_templates = [ { "predefined" => "newgem" },
                               { "predefined" => "c_extension_gem" },
-                              { "predefined" => "cli_gem" },
-                              { "predefined" => "service" }]
+                              { "predefined" => "cli_gem" }]
 
       # search through user downloaded
       available_templates += configurator.user_downloaded_templates

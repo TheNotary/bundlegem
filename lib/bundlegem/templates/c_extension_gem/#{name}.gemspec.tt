@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = [<%=config[:email].inspect%>]
 
   spec.summary       = %q{TODO: Write a short summary, because Rubygems requires one.}
-  spec.description   = %q{TODO: delete this line since you're in a hurry.}
+  # spec.description   = %q{TODO: delete this line since you're in a hurry.}
   spec.homepage      = "https://github.com/<%=config[:author]%>/<%=config[:name]%>"
   # spec.license       = "MIT" # uncomment this line if MIT is the best license for your situation
 
@@ -18,18 +18,11 @@ Gem::Specification.new do |spec|
   spec.bindir        = "exe"
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
-<%- if config[:ext] -%>
   spec.extensions    = ["ext/<%=config[:underscored_name]%>/extconf.rb"]
-<%- end -%>
 
-  if spec.respond_to?(:metadata)
-    spec.metadata['allowed_push_host'] = "TODO: Set to 'http://mygemserver.com' to prevent pushes to rubygems.org, or delete to allow pushes to any server."
-  end
 
-  spec.add_development_dependency "bundler", "~> <%= config[:bundler_version] %>"
+  spec.add_development_dependency "bundler"
   spec.add_development_dependency "rake", "~> 10.0"
-<%- if config[:ext] -%>
   spec.add_development_dependency "rake-compiler"
-<%- end -%>
   spec.add_development_dependency "rspec"
 end
