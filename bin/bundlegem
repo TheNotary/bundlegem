@@ -8,7 +8,7 @@ require 'bundlegem'
 
 
 if ARGV.length < 1
-  puts "error: you need to specify a name for the project being created\n\n"
+  puts "Error: you need to specify a name for the project being created\n\n"
   puts Bundlegem::HELP_MSG
   exit 1
 end
@@ -20,6 +20,11 @@ end
 
 if ARGV[0] == "--list" or ARGV[0] == "-l"
   puts Bundlegem.list
+  exit 0
+end
+
+if ARGV[0] == "--version" or ARGV[0] == "-v"
+  puts Bundlegem.version
   exit 0
 end
 

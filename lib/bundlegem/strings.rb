@@ -1,5 +1,6 @@
 module Bundlegem
   HELP_MSG = <<-HEREDOC
+                    BundleGem version #{Bundlegem::VERSION}
 Use bundlegem to start a new project folder based on a predefined template.
 
 Usage Examples:

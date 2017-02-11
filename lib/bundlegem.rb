@@ -11,6 +11,10 @@ module Bundlegem
 
   class << self
 
+    def version
+      Bundlegem::VERSION
+    end
+
     # lists available templates
     def list
       configurator = Configurator.new

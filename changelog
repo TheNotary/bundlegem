@@ -2,6 +2,17 @@
   - CMD:  --newtemplate to start new template
     - I'll need to write a basic starter template that is educational
 
+Completed:
+  - Nothing Yet
+
+
+
+** 0.0.9 **
+  - Bugfix:  there were misconfigurations with the Rakefiles for cli_gems and c_ect gems that were corrected
+  - Feature: `--version` option added
+
+
+
 ** 0.0.8 **
 
   - Bugfix: fixes bug where git clone was attempted even when the a clone 
