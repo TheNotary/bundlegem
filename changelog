@@ -1,9 +1,19 @@
 ** 0.0.x **
   - CMD:  --newtemplate to start new template
     - I'll need to write a basic starter template that is educational
+  - Why have more than one built in template?  Only one is needed for testing, the rest should
+    be pulled from the web and made easily customizable by the users.
 
 Completed:
   - Nothing Yet
+
+** 0.0.11 **
+  - Bugfix: config[:bundler_version] was listing the version of bundlegem not bundler
+
+
+
+** 0.0.10 **
+  - Feature: tweaks built-in templates
 
 
 
@@ -15,11 +25,11 @@ Completed:
 
 ** 0.0.8 **
 
-  - Bugfix: fixes bug where git clone was attempted even when the a clone 
+  - Bugfix: fixes bug where git clone was attempted even when the a clone
     already took place in a prior run
-  - Bugfix: fixes bug where I thought I was using something cool like figaro 
+  - Bugfix: fixes bug where I thought I was using something cool like figaro
     but was not
-  - Bugfix: fixes bug where configuration wasn't loaded before running 
+  - Bugfix: fixes bug where configuration wasn't loaded before running
     --install-best-templates
   - Bugfix:  fixes bug where require pry was left in
 
@@ -28,12 +38,12 @@ Completed:
 ** 0.0.7 **
 
   - Feature:  Ability to load templates from github via --install-best-templates
-  - Feature:  Make each user defined gem have a subfolder that is the exact 
+  - Feature:  Make each user defined gem have a subfolder that is the exact
     project structure, so the readme for the gem can exist without fear of it
     being copied into new projects
   - Feature:  Gem's display names are based on what's specified in their
     respective root .bundlegem
-  - Feature:  Allow better CLI parsing so -t t_name can be the first couple 
+  - Feature:  Allow better CLI parsing so -t t_name can be the first couple
     arguments or at the end
   - Bugfix: cli_gem and c_ext_gem now show up in the list
   - Bugfix: cli_gem and c_ext_gem had typos fixed
@@ -46,7 +56,7 @@ Completed:
     - BUG:  Accidentally tracked in a test gem project and fixed tests to not
       change directory into a test area for creating new gems.
     - BUG:  newgem template didn't have a dot in .gitignore.tt
-    
+
 
 
 ** 0.0.5 **
@@ -68,7 +78,7 @@ Completed:
     - Raises error if none of the files in the template directory end in .tt
     - Create even empty folders
 
-    
+
 ** 0.0.2 **
     - Added default gem template 'service'
     - Better syntax of bundlegem gem_name -t template_name
