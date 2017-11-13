@@ -50,7 +50,7 @@ ARGV.each_with_index do |arg, i|
     options.merge!({"template" => ARGV[i+1]})
     skip_i = i+1
     next
-  elsif !arg.include?("-") # this must be what they want as the gem_name
+  elsif !(arg =~ /^-/) # this must be what they want as the gem_name
     gem_name = arg
   end
 end
