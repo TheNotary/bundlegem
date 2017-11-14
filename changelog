@@ -5,8 +5,11 @@
   - Why have more than one built in template?  Only one is needed for testing, the rest should
     be pulled from the web and made easily customizable by the users.
 
-Completed:
-  - Nothing Yet
+Completed on Master:
+  - Bugfix: project names may now contain hyphens
+  - Feature:  java project template added to best templates
+  - Feature:  python project template added to best templates
+
 
 ** 0.0.11 **
   - Bugfix: config[:bundler_version] was listing the version of bundlegem not bundler
