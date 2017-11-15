@@ -217,8 +217,9 @@ module Bundlegem
         content
       end
 
+      original_mode = File.stat(source).mode
+      File.chmod(original_mode, destination)
     end
-
 
 
     #

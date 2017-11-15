@@ -7,11 +7,7 @@
     be pulled from the web and made easily customizable by the users.
 
 Completed on Master:
-  - Nothing yet
-
-
-
-** 0.0.12 **
+  - Feature:  File mode (permissions) is now cloned from source template file's permissions to dest
   - Bugfix: project names may now contain hyphens
   - Feature:  java project template added to best templates
   - Feature:  python project template added to best templates
