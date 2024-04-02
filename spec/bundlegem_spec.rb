@@ -21,7 +21,7 @@ describe Bundlegem do
     list_output = Bundlegem.list
 
     expect(list_output).to eq " PREDEFINED:\n * newgem       (default)\n   c_extension_gem\n   cli_gem\n\n MISC:\n   empty_template\n\n"
-    expect(File.exists?("#{ENV['HOME']}/.bundlegem")).to be true
+    expect(File.exist?("#{ENV['HOME']}/.bundlegem")).to be true
   end
 
   it "lists with good categories" do
@@ -38,7 +38,7 @@ describe Bundlegem do
     gem_name = "tmp_gem"
 
     capture_stdout { Bundlegem.gem(options, gem_name) }
-    expect(File.exists?("#{@dst_dir}/#{gem_name}/README.md")).to be_truthy
+    expect(File.exist?("#{@dst_dir}/#{gem_name}/README.md")).to be_truthy
   end
 
   it "can generate the c_ext gem fine" do
@@ -46,7 +46,7 @@ describe Bundlegem do
     gem_name = "tmp_gem"
 
     capture_stdout { Bundlegem.gem(options, gem_name) }
-    expect(File.exists?("#{@dst_dir}/#{gem_name}/ext/tmp_gem/#{gem_name}.c")).to be_truthy
+    expect(File.exist?("#{@dst_dir}/#{gem_name}/ext/tmp_gem/#{gem_name}.c")).to be_truthy
   end
 
 
@@ -62,7 +62,7 @@ describe Bundlegem do
 
     it "can download best templates from the web" do
       capture_stdout { Bundlegem.install_best_templates }
-      expect(File.exists?("#{ENV['HOME']}/.bundlegem/templates/arduino/README.md")).to be_truthy
+      expect(File.exist?("#{ENV['HOME']}/.bundlegem/templates/arduino/README.md")).to be_truthy
     end
 
   end

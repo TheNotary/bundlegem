@@ -67,7 +67,7 @@ module Bundlegem
 
     def create_config_file_if_needed!
       FileUtils.mkdir_p @user_defined_templates_path
-      FileUtils.cp("#{SOURCE_ROOT}/config/config", @config_file) unless File.exists? @config_file
+      FileUtils.cp("#{SOURCE_ROOT}/config/config", @config_file) unless File.exist? @config_file
     end
 
     def create_new_template(template_name)

@@ -15,7 +15,7 @@ module Bundlegem
     end
 
     def run
-      raise_project_with_that_name_already_exists! if File.exists?(target)
+      raise_project_with_that_name_already_exists! if File.exist?(target)
 
       underscored_name = name.tr('-', '_')
       namespaced_path = name.tr('-', '/')
@@ -151,7 +151,7 @@ module Bundlegem
     def match_template_src
       template_src = TemplateManager.get_template_src(options)
 
-      if File.exists?(template_src)
+      if File.exist?(template_src)
         return template_src    # 'newgem' refers to the built in template that comes with the gem
       else
         raise_template_not_found! # else message the user that the template could not be found
@@ -212,7 +212,7 @@ module Bundlegem
       context = instance_eval("binding")
 
       make_file(destination, config) do
-        content = ERB.new(::File.binread(source), nil, "-", "@output_buffer").result(context)
+        content = ERB.new(::File.binread(source), trim_mode: "-", eoutvar: "@output_buffer").result(context)
         content = block.call(content) if block
         content
       end

@@ -43,7 +43,7 @@ module Bundlegem
       #
       def find_in_source_paths(target)
         src_in_source_path = "#{File.dirname(__FILE__)}/templates/#{target}"
-        return src_in_source_path if File.exists?(src_in_source_path)
+        return src_in_source_path if File.exist?(src_in_source_path)
         target # failed, hopefully full path to a user specified gem template file
       end
 
@@ -51,7 +51,7 @@ module Bundlegem
       # within the gem's source
       def file_in_source?(target)
         src_in_source_path = "#{File.dirname(__FILE__)}/templates/#{target}"
-        File.exists?(src_in_source_path)
+        File.exist?(src_in_source_path)
       end
 
     end
