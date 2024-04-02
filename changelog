@@ -10,6 +10,8 @@ Completed on Master:
   - Nothing yet
 
 
+** 0.0.13 **
+  - Bugfix:  The project didn't work with ruby 3 due to use of the method `exists?`???
 
 ** 0.0.12 **
   - Feature:  File mode (permissions) is now cloned from source template file's permissions to dest
