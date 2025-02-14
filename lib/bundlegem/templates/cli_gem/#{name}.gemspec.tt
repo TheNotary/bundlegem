@@ -1,7 +1,5 @@
 # coding: utf-8
-lib = File.expand_path('../lib', __FILE__)
-$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require '<%=config[:namespaced_path]%>/version'
+require_relative 'lib/<%=config[:namespaced_path]%>/version'
 
 Gem::Specification.new do |spec|
   spec.name          = <%=config[:name].inspect%>
@@ -9,12 +7,26 @@ Gem::Specification.new do |spec|
   spec.authors       = [<%=config[:author].inspect%>]
   spec.email         = [<%=config[:email].inspect%>]
 
-  spec.summary       = %q{TODO: Write a short summary, because Rubygems requires one.}
-  # spec.description   = %q{TODO: delete this line since you're in a hurry.}
-  spec.homepage      = "https://github.com/<%=config[:author]%>/<%=config[:name]%>"
-  # spec.license       = "MIT" # uncomment and replace with GPLv3, etc.
+  spec.summary       = %q{A gem}
 
-  spec.files         = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
+  spec.homepage      = "https://github.com/<%=config[:author]%>/<%=config[:name]%>"
+  spec.required_ruby_version = ">= 3.0.0"
+
+  spec.metadata["allowed_push_host"] = "https://localhost.com" # prevents unexpected data loss
+
+  spec.metadata["homepage_uri"] = spec.homepage
+  spec.metadata["source_code_uri"] = "https://localhost.com"
+  spec.metadata["changelog_uri"] = "https://localhost.com"
+
+  # Specify which files should be added to the gem when it is released.
+  # The `git ls-files -z` loads the files in the RubyGem that have been added into git.
+  gemspec = File.basename(__FILE__)
+  spec.files = IO.popen(%w[git ls-files -z], chdir: __dir__, err: IO::NULL) do |ls|
+    ls.readlines("\x0", chomp: true).reject do |f|
+      (f == gemspec) ||
+        f.start_with?(*%w[bin/ test/ spec/ features/ .git .gitlab-ci.yml appveyor Gemfile])
+    end
+  end
   spec.bindir        = "exe"
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
@@ -22,7 +34,7 @@ Gem::Specification.new do |spec|
   # spec.add_dependency "bundler", "~> <%= config[:bundler_version] %>"
 
   spec.add_development_dependency "bundler", "~> <%= config[:bundler_version] %>"
-  spec.add_development_dependency "rake", "~> 10.0"
+  spec.add_development_dependency "rake", "~> 13.0"
   spec.add_development_dependency "rspec"
   spec.add_development_dependency "pry"
 end

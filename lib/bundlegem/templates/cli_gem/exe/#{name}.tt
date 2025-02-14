@@ -2,4 +2,11 @@
 
 require "<%= config[:namespaced_path] %>"
 
-puts "I'm still just a stub cli ruby app"
+command = ARGV.count > 0 ? ARGV[0].chomp.strip : ''
+
+if command == "help" || command == "--help" || command == "-h"
+  puts <%= config[:constant_name] %>.help
+  return
+end
+
+puts <%= config[:constant_name] %>.main
