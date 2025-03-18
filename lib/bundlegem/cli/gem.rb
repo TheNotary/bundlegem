@@ -14,9 +14,7 @@ module Bundlegem
       validate_ext_name if options[:ext]
     end
 
-    def run
-      raise_project_with_that_name_already_exists! if File.exist?(target)
-
+    def build_interpolation_config
       underscored_name = name.tr('-', '_')
       namespaced_path = name.tr('-', '/')
       constant_name = name.split('_').map{|p| p[0..0].upcase + p[1..-1] unless p.empty?}.join
@@ -41,11 +39,20 @@ module Bundlegem
         :bin              => options[:bin],
         :bundler_version  => bundler_dependency_version
       }
-      ensure_safe_gem_name(name, constant_array)
+    end
+
+    def config
+      @config ||= build_interpolation_config
+    end
+
+    def run
+      raise_project_with_that_name_already_exists! if File.exist?(target)
+
+      ensure_safe_gem_name(name, config[:constant_array])
 
       template_src = match_template_src
       template_directories = dynamically_generate_template_directories
-      templates = dynamically_generate_templates(config)
+      templates = dynamically_generate_templates
 
       puts "Creating new project folder '#{name}'\n\n"
       create_template_directories(template_directories, target)
@@ -53,7 +60,6 @@ module Bundlegem
       templates.each do |src, dst|
         template("#{template_src}/#{src}", target.join(dst), config)
       end
-
 
       # Bundler.ui.info "Initializing git repo in #{target}"
       Dir.chdir(target) { `git init`; `git add .` }
@@ -70,8 +76,8 @@ module Bundlegem
 
     private
 
+    # Returns a hash of source directory names and their destination mappings
     def dynamically_generate_template_directories
-      # return nil if options["template"].nil?
       template_src = TemplateManager.get_template_src(options)
 
       template_dirs = {}
@@ -121,22 +127,22 @@ module Bundlegem
 
     # Figures out the translation between all the .tt file to their
     # destination names
-    def dynamically_generate_templates(config)
-      #if options["template"].nil? # if it's doing some of the built in template
-      #  return generate_templates_for_built_in_gems(config)
-      #else
-        template_src = TemplateManager.get_template_src(options)
+    def dynamically_generate_templates
+      template_src = TemplateManager.get_template_src(options)
 
-        templates = {}
-        Dir.glob("#{template_src}/**/{*,.*}.tt").each do |f|
-          base_path = f[template_src.length+1..-1]
-          templates.merge!(base_path => base_path.gsub(/\.tt$/, "").gsub('#{name}', "#{name}") )
-        end
+      templates = {}
+      Dir.glob("#{template_src}/**/{*,.*}.tt").each do |f|
+        base_path = f[template_src.length+1..-1]
+        templates.merge!(base_path => base_path
+                   .gsub(/\.tt$/, "")
+                   .gsub('#{name}', "#{name}")
+                   .gsub('#{underscored_name}', config[:underscored_name])
+        )
+      end
 
-        raise_no_files_in_template_error! if templates.empty?
+      raise_no_files_in_template_error! if templates.empty?
 
-        return templates
-      #end
+      return templates
     end
 
     def create_template_directories(template_directories, target)

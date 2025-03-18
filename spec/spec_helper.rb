@@ -8,6 +8,7 @@ require 'pry'
 
 # Mock our home directory
 ENV['HOME'] = "/tmp/bundlegem_mock_home"
+ENV['SPEC_DATA_DIR'] = File.expand_path("./spec/data") # I fell into this from sloppy chdir handling, bad CLI/ API isolation.
 
 
 def setup_mock_web_template
@@ -15,8 +16,7 @@ def setup_mock_web_template
   FileUtils.mkdir("#{ENV['HOME']}/arduino.git")
   FileUtils.touch("#{ENV['HOME']}/arduino.git/README.md")
 
-  auth_settings = 'git config --local user.email "you@example.com" && git config --local user.name "test"'
-  `cd "#{ENV['HOME']}/arduino.git" && git init &&  git add . && #{auth_settings} && git commit -m "haxing"`
+  `cd "#{ENV['HOME']}/arduino.git" && git init && git add . && git commit -m "haxing"`
 end
 
 def remove_mock_web_template
@@ -43,7 +43,9 @@ def reset_test_env
   FileUtils.mkdir_p @dst_dir
   FileUtils.mkdir_p @template_root
   FileUtils.cd @dst_dir
-  `git config --global init.defaultBranch main`
+  auth_settings = 'git config --global user.email "you@example.com" && git config --global user.name "test"'
+
+  `git config --global init.defaultBranch main && #{auth_settings}`
 end
 
 # squelch stdout

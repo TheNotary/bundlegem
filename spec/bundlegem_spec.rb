@@ -49,6 +49,38 @@ describe Bundlegem do
     expect(File.exist?("#{@dst_dir}/#{gem_name}/ext/tmp_gem/#{gem_name}.c")).to be_truthy
   end
 
+  it "has a useful dynamically_generate_templates metho" do
+    options = { "bin"=>false, "ext"=>false, :coc=> false, "template" => "test_template" }
+    gem_name = "good-dog"
+    my_gem = Bundlegem::CLI::Gem.new(options, gem_name)
+
+    src_dst_map = my_gem.send('dynamically_generate_template_directories')
+
+    expect(src_dst_map['#{name}']).to eq "good-dog"
+    expect(src_dst_map['#{underscored_name}']).to eq '#{underscored_name}'
+    expect(src_dst_map['simple_dir']).to eq 'simple_dir'
+  end
+
+  it "has a useful dynamically_generate_templates method" do
+    options = { "bin"=>false, "ext"=>false, :coc=> false, "template" => "test_template" }
+    gem_name = "good-dog"
+    my_gem = Bundlegem::CLI::Gem.new(options, gem_name)
+
+    src_dst_map = my_gem.send('dynamically_generate_templates')
+
+    expect(src_dst_map['#{name}/keep.tt']).to eq "good-dog/keep"
+    expect(src_dst_map['#{name}.rb.tt']).to eq 'good-dog.rb'
+    expect(src_dst_map['#{underscored_name}/keep.tt']).to eq 'good_dog/keep'
+    expect(src_dst_map['simple_dir/keep.tt']).to eq 'simple_dir/keep'
+  end
+
+  it "has a test proving every interpolation in one file" do
+    options = { "bin"=>false, "ext"=>false, :coc=> false, "template" => "test_template" }
+    gem_name = "good-dog"
+
+    capture_stdout { Bundlegem.gem(options, gem_name) }
+    expect(File.read("#{@dst_dir}/#{gem_name}/#{gem_name}.rb")).to eq File.read("#{ENV['SPEC_DATA_DIR']}/variable_manifest_test.rb")
+  end
 
   describe "install best templates" do
 

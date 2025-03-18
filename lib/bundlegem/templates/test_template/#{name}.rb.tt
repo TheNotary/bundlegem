@@ -1,0 +1,11 @@
+This file shows all the variables in one place!
+
+config[:name]:             <%= config[:name] %>
+config[:underscored_name]: <%= config[:underscored_name] %>
+config[:namespaced_path]:  <%= config[:namespaced_path] %>
+config[:makefile_path]:    <%= config[:makefile_path] %>
+config[:constant_name]:    <%= config[:constant_name] %>
+config[:constant_array]:   <%= config[:constant_array] %>
+config[:author]:           <%= config[:author] %>
+config[:email]:            <%= config[:email] %>
+config[:git_repo_url]:     <%= config[:git_repo_url] %>
