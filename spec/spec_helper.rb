@@ -1,21 +1,20 @@
 $LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
 $test_env = true
 require 'bundlegem'
+require 'bundlegem/cli'
+require 'bundlegem/cli/gem'
 require 'fileutils'
 require 'pry'
 
 # Mock our home directory
-
 ENV['HOME'] = "/tmp/bundlegem_mock_home"
-
-
-
 
 
 def setup_mock_web_template
   ENV['best_templates'] = "#{ENV['HOME']}/arduino.git"
   FileUtils.mkdir("#{ENV['HOME']}/arduino.git")
   FileUtils.touch("#{ENV['HOME']}/arduino.git/README.md")
+
   auth_settings = 'git config --local user.email "you@example.com" && git config --local user.name "test"'
   `cd "#{ENV['HOME']}/arduino.git" && git init &&  git add . && #{auth_settings} && git commit -m "haxing"`
 end
@@ -43,6 +42,8 @@ def reset_test_env
 
   FileUtils.mkdir_p @dst_dir
   FileUtils.mkdir_p @template_root
+  FileUtils.cd @dst_dir
+  `git config --global init.defaultBranch main`
 end
 
 # squelch stdout
