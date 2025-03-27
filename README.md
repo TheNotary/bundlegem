@@ -1,6 +1,6 @@
 # BundleGem: A Gem Project Generator with User Defined Templates
 
-Alot of the code here was extracted from Bundler's `bundle gem` command, so credits to Bundler folks.  Originally I planned to make the new features accessible to the Bundler team and so tried to keep the code as similar to their project as possible, but ultimately discovered that they don't want to feature to grow because good tools should do a single thing very well (manage dependencies), not many things (manage dependencies and also do random other helpful stuff).
+Note: Alot of the code here was extracted from Bundler's `bundle gem` command, so credits to the Bundler folks.  Originally I planned to make the new features accessible to the Bundler team and so tried to keep the code as similar to their project as possible, but ultimately discovered that they don't want to grow this feature because good tools should do a single thing very well (manage dependencies), not many things (manage dependencies and also do random other helpful stuff). Also it's a profoundly common dependency meaning every change is high stakes.
 
 The goal of the project is to allow users to define templates in the most native form to all technologist: Directory Structures, short commands, and helpful commands which make the gem's usage completely visible!
 
@@ -54,7 +54,7 @@ $  bundlegem project_name -t my_service
 
 ## Customizing Your Own Templates
 
-Place your own templates in `~/.bunglegem/templates`.  You can populate it with examples by running `bundlegem --install-best-templates`
+Place your own templates in `~/.bunglegem/templates`.  You can populate it with examples by running `bundlegem --install-best-templates` which will effectively clone down a few sample git repos into the templates folder for you such as [Go-Cli](https://github.com/TheNotary/go-cli) for instance.
 
 You'll get a good idea as to the possibilities by inspecting the files in [templates](https://github.com/TheNotary/bundlegem/tree/master/lib/bundlegem/templates/newgem).  Some quick tips follow:
 
@@ -63,8 +63,3 @@ You'll get a good idea as to the possibilities by inspecting the files in [templ
 - Within files, use `<%=config[:namespaced_path]%>` to have that reinterpreted as just the file name with underscores
 - Have a look [under the hood](https://github.com/TheNotary/bundlegem/blob/master/lib/bundlegem/cli/gem.rb#L30-L43) to see other options and the context where the ERB.new takes place.
 
-
-### Contributing
-
-Please feel free to speak up using the issue section if there's anything on your mind :)
-Do the usual fork routine and issue a pull request by all means.

@@ -8,10 +8,17 @@ Gem::Specification.new do |spec|
   spec.version       = Bundlegem::VERSION
   spec.authors       = ["TheNotary"]
   spec.email         = ["no@mail.plz"]
-  spec.summary       = %q{this gem makes more gems!}
-  spec.description   = %q{ I KNOW!  ISN'T THAT LIKE WISHING FOR MORE WISHES!}
-  spec.homepage      = ""
+  spec.summary       = %q{This gem makes more gems!}
+  spec.description   = %q{ This is a gem for making more gems.  I KNOW!  ISN'T THAT LIKE WISHING FOR MORE WISHES!}
+  spec.homepage      = "https://github.com/thenotary/bundlegem"
   spec.license       = "MIT"
+
+  spec.metadata = {
+    "bug_tracker_uri"   => "https://github.com/TheNotary/bundlegem/issues",
+    "changelog_uri"     => "https://github.com/TheNotary/bundlegem/releases/tag/v#{version}",
+    "documentation_uri" => "https://api.rubyonrails.org/v#{version}/",
+    "source_code_uri"   => "https://github.com/TheNotary/bundlegem/tree/v#{version}",
+  }
 
   spec.files         = `git ls-files -z`.split("\x0")
   spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
