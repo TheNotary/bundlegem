@@ -1,5 +1,7 @@
 # BundleGem: A Gem Project Generator with User Defined Templates
 
+[![Gem Version](https://badge.fury.io/rb/bundlegem.svg)](https://badge.fury.io/rb/bundlegem)
+
 Note: Alot of the code here was extracted from Bundler's `bundle gem` command, so credits to the Bundler folks.  Originally I planned to make the new features accessible to the Bundler team and so tried to keep the code as similar to their project as possible, but ultimately discovered that they don't want to grow this feature because good tools should do a single thing very well (manage dependencies), not many things (manage dependencies and also do random other helpful stuff). Also it's a profoundly common dependency meaning every change is high stakes.
 
 The goal of the project is to allow users to define templates in the most native form to all technologist: Directory Structures, short commands, and helpful commands which make the gem's usage completely visible!
