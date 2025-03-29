@@ -1,40 +1,42 @@
 # coding: utf-8
 require_relative 'lib/<%=config[:namespaced_path]%>/version'
 
-Gem::Specification.new do |spec|
-  spec.name          = <%=config[:name].inspect%>
-  spec.version       = <%=config[:constant_name]%>::VERSION
-  spec.authors       = [<%=config[:author].inspect%>]
-  spec.email         = [<%=config[:email].inspect%>]
+version = <%=config[:constant_name]%>::VERSION
 
-  spec.summary       = %q{A gem}
+Gem::Specification.new do |s|
+  s.name          = <%=config[:name].inspect%>
+  s.version       = version
+  s.authors       = [<%=config[:author].inspect%>]
+  s.email         = [<%=config[:email].inspect%>]
 
-  spec.homepage      = "https://github.com/<%=config[:author]%>/<%=config[:name]%>"
-  spec.required_ruby_version = ">= 3.0.0"
+  s.summary       = %q{A gem}
 
-  spec.metadata["allowed_push_host"] = "https://localhost.com" # prevents unexpected data loss
+  s.homepage      = "https://github.com/<%=config[:author]%>/<%=config[:name]%>"
+  s.required_ruby_version = ">= 3.0.0"
 
-  spec.metadata["homepage_uri"] = spec.homepage
-  spec.metadata["source_code_uri"] = "https://localhost.com"
-  spec.metadata["changelog_uri"] = "https://localhost.com"
+  s.metadata["allowed_push_host"] = "https://localhost.com" # prevents accidental gem pushes for private projects
+
+  s.metadata["homepage_uri"] = s.homepage
+  s.metadata["source_code_uri"] =  s.homepage
+  s.metadata["changelog_uri"] =  s.homepage
 
   # Specify which files should be added to the gem when it is released.
   # The `git ls-files -z` loads the files in the RubyGem that have been added into git.
   gemspec = File.basename(__FILE__)
-  spec.files = IO.popen(%w[git ls-files -z], chdir: __dir__, err: IO::NULL) do |ls|
+  s.files = IO.popen(%w[git ls-files -z], chdir: __dir__, err: IO::NULL) do |ls|
     ls.readlines("\x0", chomp: true).reject do |f|
       (f == gemspec) ||
         f.start_with?(*%w[bin/ test/ spec/ features/ .git .gitlab-ci.yml appveyor Gemfile])
     end
   end
-  spec.bindir        = "exe"
-  spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
-  spec.require_paths = ["lib"]
+  s.bindir        = "exe"
+  s.executables   = s.files.grep(%r{^exe/}) { |f| File.basename(f) }
+  s.require_paths = ["lib"]
 
-  # spec.add_dependency "bundler", "~> <%= config[:bundler_version] %>"
+  # s.add_dependency "bundler", "~> <%= config[:bundler_version] %>"
 
-  spec.add_development_dependency "bundler", "~> <%= config[:bundler_version] %>"
-  spec.add_development_dependency "rake", "~> 13.0"
-  spec.add_development_dependency "rspec"
-  spec.add_development_dependency "pry"
+  s.add_development_dependency "bundler", "~> <%= config[:bundler_version] %>"
+  s.add_development_dependency "rake", "~> 13.0"
+  s.add_development_dependency "rspec"
+  s.add_development_dependency "pry"
 end
