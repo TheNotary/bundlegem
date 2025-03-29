@@ -20,7 +20,7 @@ describe Bundlegem do
 
     list_output = Bundlegem.list
 
-    expect(list_output).to eq " PREDEFINED:\n * newgem       (default)\n   c_extension_gem\n   cli_gem\n\n MISC:\n   empty_template\n\n"
+    expect(list_output).to eq " PREDEFINED:\n * cli_gem       (default)\n   c_extension_gem\n\n MISC:\n   empty_template\n\n"
     expect(File.exist?("#{ENV['HOME']}/.bundlegem")).to be true
   end
 

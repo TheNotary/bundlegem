@@ -15,7 +15,7 @@ module Bundlegem
 
 
       def get_default_template_name
-        "newgem"
+        "cli_gem"
       end
 
       def get_template_src(options)

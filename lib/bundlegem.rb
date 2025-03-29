@@ -19,9 +19,10 @@ module Bundlegem
     def list
       configurator = Configurator.new
       # search through builtin
-      available_templates = [ { "predefined" => "newgem" },
-                              { "predefined" => "c_extension_gem" },
-                              { "predefined" => "cli_gem" }]
+      available_templates = [
+        { "predefined" => "cli_gem" },
+        { "predefined" => "c_extension_gem" },
+      ]
 
       # search through user downloaded
       available_templates += configurator.user_downloaded_templates
@@ -64,7 +65,7 @@ module Bundlegem
       template_name = args[1]
       template_name = prompt_for_template_name if template_name.nil?
 
-      # Copy newgem from within the repo to ~/.bundlegem/templates/#{template_name}
+      # Copy template_name from within the repo to ~/.bundlegem/templates/#{template_name}
       TemplateManager.create_new_template(template_name)
     end
 
