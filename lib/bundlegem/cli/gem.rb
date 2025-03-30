@@ -1,4 +1,5 @@
 require 'pathname'
+require 'yaml'
 
 module Bundlegem
   class CLI::Gem
@@ -10,16 +11,15 @@ module Bundlegem
 
       @name = @gem_name
       @target = Pathname.pwd.join(gem_name)
+      @template_src = TemplateManager.get_template_src(options)
+
+      @tconf = load_template_configs
 
       validate_ext_name if options[:ext]
     end
 
     def build_interpolation_config
       underscored_name = name.tr('-', '_')
-      pascal_name = name.tr('-', '_').split('_').map(&:capitalize).join
-      camel_name = name.tr('-', '_').split('_').map(&:capitalize).join.sub(/^./, &:downcase)
-      screamcase_name = name.tr('-', '_').upcase
-      namespaced_path = name.tr('-', '/')
       constant_name = name.split('_').map{|p| p[0..0].upcase + p[1..-1] unless p.empty?}.join
       constant_name = constant_name.split('-').map{|q| q[0..0].upcase + q[1..-1] }.join('::') if constant_name =~ /-/
       constant_array = constant_name.split('::')
@@ -28,17 +28,19 @@ module Bundlegem
 
       config = {
         :name             => name,
+        :unprefixed_name  => name.sub(/^#{@tconf[:prefix]}/, ''),
         :underscored_name => underscored_name,
-        :pascal_name      => pascal_name,
-        :camel_name       => camel_name,
-        :screamcase_name  => screamcase_name,
-        :namespaced_path  => namespaced_path,
+        :pascal_name      => name.tr('-', '_').split('_').map(&:capitalize).join,
+        :camel_name       => name.tr('-', '_').split('_').map(&:capitalize).join.sub(/^./, &:downcase),
+        :screamcase_name  => name.tr('-', '_').upcase,
+        :namespaced_path  => name.tr('-', '/'),
         :makefile_path    => "#{underscored_name}/#{underscored_name}",
         :constant_name    => constant_name,
         :constant_array   => constant_array,
         :author           => git_user_name.empty? ? "TODO: Write your name" : git_user_name,
         :email            => git_user_email.empty? ? "TODO: Write your email address" : git_user_email,
-        :git_repo_url     => git_user_name.empty? ? "TODO: set your git username so link to repo is automatic" : "https://github.com/#{git_user_name}/#{underscored_name}",
+        :git_repo_url     => git_user_name.empty? ? "TODO: set your git username so link to repo is automatic" : "https://github.com/#{git_user_name}/#{name}",
+        :git_repo_domain  => git_user_name.empty? ? "TODO: set your git username so link to repo is automatic" : "github.com/#{git_user_name.downcase}/#{name}",
         :template         => options[:template],
         :test             => options[:test],
         :ext              => options[:ext],
@@ -82,14 +84,31 @@ module Bundlegem
 
     private
 
+    def load_template_configs
+      template_config_path = File.join(@template_src, "bundlegem.yml")
+      if File.exist?(template_config_path)
+        t_config = YAML.load_file(template_config_path, symbolize_names: true)
+      else
+        t_config = {
+          purpose: "tool",
+          language: "go"
+        }
+      end
+
+      if t_config[:prefix].nil?
+        t_config[:prefix] = t_config[:purpose] ? "#{t_config[:purpose]}-" : ""
+        t_config[:prefix] += t_config[:language] ? "#{t_config[:language]}-" : ""
+      end
+
+      t_config
+    end
+
     # Returns a hash of source directory names and their destination mappings
     def dynamically_generate_template_directories
-      template_src = TemplateManager.get_template_src(options)
-
       template_dirs = {}
-      Dir.glob("#{template_src}/**/*").each do |f|
+      Dir.glob("#{@template_src}/**/*").each do |f|
         next unless File.directory? f
-        base_path = f[template_src.length+1..-1]
+        base_path = f[@template_src.length+1..-1]
         template_dirs.merge!(base_path => base_path.gsub('#{name}', "#{name}") )
       end
       template_dirs
@@ -134,11 +153,9 @@ module Bundlegem
     # Figures out the translation between all the .tt file to their
     # destination names
     def dynamically_generate_templates
-      template_src = TemplateManager.get_template_src(options)
-
       templates = {}
-      Dir.glob("#{template_src}/**/{*,.*}.tt").each do |f|
-        base_path = f[template_src.length+1..-1]
+      Dir.glob("#{@template_src}/**/{*,.*}.tt").each do |f|
+        base_path = f[@template_src.length+1..-1]
         templates.merge!(base_path => base_path
                    .gsub(/\.tt$/, "")
                    .gsub('#{name}', "#{name}")

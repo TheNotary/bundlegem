@@ -82,6 +82,16 @@ describe Bundlegem do
     expect(File.read("#{@dst_dir}/#{gem_name}/#{gem_name}.rb")).to eq File.read("#{ENV['SPEC_DATA_DIR']}/variable_manifest_test.rb")
   end
 
+  it "has config[:unprefixed_name] removing purpose-tool- from name" do
+    options = { "bin"=>false, "ext"=>false, :coc=> false, "template" => "test_template" }
+    gem_name = "tool-go-good-dog"
+    my_gem = Bundlegem::CLI::Gem.new(options, gem_name)
+
+    config = my_gem.build_interpolation_config
+
+    expect(config[:unprefixed_name]).to eq "good-dog"
+  end
+
   describe "install best templates" do
 
     before :each do
