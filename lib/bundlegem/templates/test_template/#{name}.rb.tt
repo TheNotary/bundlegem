@@ -3,6 +3,7 @@ See "lib/bundlegem/templates/test_template/#{name}.rb.tt"
 
 config[:name]:             <%= config[:name] %>
 config[:unprefixed_name]:  <%= config[:unprefixed_name] %>
+config[:unprefixed_pascal]:<%= config[:unprefixed_pascal] %>
 config[:underscored_name]: <%= config[:underscored_name] %>
 config[:pascal_name]:      <%= config[:pascal_name] %>
 config[:camel_name]:       <%= config[:camel_name] %>

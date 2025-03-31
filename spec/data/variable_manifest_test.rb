@@ -3,6 +3,7 @@ See "lib/bundlegem/templates/test_template/#{name}.rb.tt"
 
 config[:name]:             good-dog
 config[:unprefixed_name]:  good-dog
+config[:unprefixed_pascal]:GoodDog
 config[:underscored_name]: good_dog
 config[:pascal_name]:      GoodDog
 config[:camel_name]:       goodDog
