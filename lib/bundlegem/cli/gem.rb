@@ -26,6 +26,24 @@ module Bundlegem
       git_user_name = `git config user.name`.chomp
       git_user_email = `git config user.email`.chomp
 
+      # domain = provider.com
+      git_repo_domain = `git config user.repo-domain`.chomp
+
+      if git_repo_domain.empty?
+        git_repo_domain = "github.com"
+      end
+
+      if git_user_name.empty?
+        raise "git config user.name didn't return a value.  Please double check your username configurations in ~/.gitconfig"
+      else
+        # path = provider.com/user/name
+        git_repo_path = "#{git_repo_domain}/#{git_user_name}/#{name}".downcase # downcasing for languages like go that are creative
+      end
+
+      # url = https://provider.com/user/name
+      git_repo_url = "https://#{git_repo_domain}/#{git_user_name}/#{name}"
+
+
       config = {
         :name             => name,
         :unprefixed_name  => name.sub(/^#{@tconf[:prefix]}/, ''),
@@ -39,8 +57,9 @@ module Bundlegem
         :constant_array   => constant_array,
         :author           => git_user_name.empty? ? "TODO: Write your name" : git_user_name,
         :email            => git_user_email.empty? ? "TODO: Write your email address" : git_user_email,
-        :git_repo_url     => git_user_name.empty? ? "TODO: set your git username so link to repo is automatic" : "https://github.com/#{git_user_name}/#{name}",
-        :git_repo_domain  => git_user_name.empty? ? "TODO: set your git username so link to repo is automatic" : "github.com/#{git_user_name.downcase}/#{name}",
+        :git_repo_domain  => git_repo_domain,
+        :git_repo_url     => git_repo_url,
+        :git_repo_path    => git_repo_path,
         :template         => options[:template],
         :test             => options[:test],
         :ext              => options[:ext],

@@ -17,6 +17,17 @@ First install it:
 gem install bundlegem
 ```
 
+### Configuration
+
+Configuration comes from your gitconfig.  At the user level, this is set at `~/.gitconfig`.  These are the recommended minimal configurations to get the default templates to work ok:
+
+```
+[user]
+  email = me@example.com
+  name = Me
+  repo-domain = github.com
+```
+
 
 ### Usage
 

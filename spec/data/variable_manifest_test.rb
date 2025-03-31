@@ -13,5 +13,6 @@ config[:constant_name]:    Good::Dog
 config[:constant_array]:   ["Good", "Dog"]
 config[:author]:           Test
 config[:email]:            you@example.com
+config[:git_repo_domain]:  github.com
 config[:git_repo_url]:     https://github.com/Test/good-dog
-config[:git_repo_domain]:  github.com/test/good-dog
+config[:git_repo_path]:    github.com/test/good-dog

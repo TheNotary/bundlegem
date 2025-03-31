@@ -13,5 +13,6 @@ config[:constant_name]:    <%= config[:constant_name] %>
 config[:constant_array]:   <%= config[:constant_array] %>
 config[:author]:           <%= config[:author] %>
 config[:email]:            <%= config[:email] %>
-config[:git_repo_url]:     <%= config[:git_repo_url] %>
 config[:git_repo_domain]:  <%= config[:git_repo_domain] %>
+config[:git_repo_url]:     <%= config[:git_repo_url] %>
+config[:git_repo_path]:    <%= config[:git_repo_path] %>
