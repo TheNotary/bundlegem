@@ -49,7 +49,7 @@ describe Bundlegem do
     expect(File.exist?("#{@dst_dir}/#{gem_name}/ext/tmp_gem/#{gem_name}.c")).to be_truthy
   end
 
-  it "has a useful dynamically_generate_templates metho" do
+  it "has a useful dynamically_generate_template_directories method" do
     options = { "bin"=>false, "ext"=>false, :coc=> false, "template" => "test_template" }
     gem_name = "good-dog"
     my_gem = Bundlegem::CLI::Gem.new(options, gem_name)
@@ -57,16 +57,31 @@ describe Bundlegem do
     src_dst_map = my_gem.send('dynamically_generate_template_directories')
 
     expect(src_dst_map['#{name}']).to eq "good-dog"
-    expect(src_dst_map['#{underscored_name}']).to eq '#{underscored_name}'
+    expect(src_dst_map['#{underscored_name}']).to eq "good_dog"
     expect(src_dst_map['simple_dir']).to eq 'simple_dir'
   end
 
-  it "has a useful dynamically_generate_templates method" do
+  it "returns the expected interpolated string when substitute_template_values is called" do
     options = { "bin"=>false, "ext"=>false, :coc=> false, "template" => "test_template" }
     gem_name = "good-dog"
     my_gem = Bundlegem::CLI::Gem.new(options, gem_name)
 
-    src_dst_map = my_gem.send('dynamically_generate_templates')
+    short_path = '#{name}'
+    long_path = 'hello/#{name}/blah/#{name}'
+
+    short_interpolated_string = my_gem.send('substitute_template_values', short_path)
+    expect(short_interpolated_string).to eq gem_name
+
+    long_interpolated_string = my_gem.send('substitute_template_values', long_path)
+    expect(long_interpolated_string).to eq "hello/good-dog/blah/good-dog"
+  end
+
+  it "has a useful dynamically_generate_templates_files method" do
+    options = { "bin"=>false, "ext"=>false, :coc=> false, "template" => "test_template" }
+    gem_name = "good-dog"
+    my_gem = Bundlegem::CLI::Gem.new(options, gem_name)
+
+    src_dst_map = my_gem.send('dynamically_generate_templates_files')
 
     expect(src_dst_map['#{name}/keep.tt']).to eq "good-dog/keep"
     expect(src_dst_map['#{name}.rb.tt']).to eq 'good-dog.rb'

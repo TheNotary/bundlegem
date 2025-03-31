@@ -43,7 +43,6 @@ module Bundlegem
       # url = https://provider.com/user/name
       git_repo_url = "https://#{git_repo_domain}/#{git_user_name}/#{name}"
 
-
       config = {
         :name             => name,
         :unprefixed_name  => name.sub(/^#{@tconf[:prefix]}/, ''),
@@ -79,7 +78,7 @@ module Bundlegem
 
       template_src = match_template_src
       template_directories = dynamically_generate_template_directories
-      templates = dynamically_generate_templates
+      templates = dynamically_generate_templates_files
 
       puts "Creating new project folder '#{name}'\n\n"
       create_template_directories(template_directories, target)
@@ -90,13 +89,6 @@ module Bundlegem
 
       # Bundler.ui.info "Initializing git repo in #{target}"
       Dir.chdir(target) { `git init`; `git add .` }
-
-      # Disabled thanks to removal of thor, might not be helpful...
-      #if options[:edit]
-      #  # Open gemspec in editor
-      #
-      #  # thor.run("#{options["edit"]} \"#{target.join("#{name}.gemspec")}\"")
-      #end
 
       puts "\nComplete."
     end
@@ -128,7 +120,7 @@ module Bundlegem
       Dir.glob("#{@template_src}/**/*").each do |f|
         next unless File.directory? f
         base_path = f[@template_src.length+1..-1]
-        template_dirs.merge!(base_path => base_path.gsub('#{name}', "#{name}") )
+        template_dirs.merge!(base_path => substitute_template_values(base_path))
       end
       template_dirs
     end
@@ -152,7 +144,6 @@ module Bundlegem
         'bin/console.tt' => "bin/console"
       }
 
-
       prompt_coc!(templates)
       prompt_mit!(templates, config)
       prompt_test_framework!(templates, config)
@@ -169,17 +160,24 @@ module Bundlegem
       templates
     end
 
+    # Applies every possible substitution within config to the fs_obj_name
+    def substitute_template_values(fs_obj_name)
+      config.keys.inject(fs_obj_name) do |accu, key|
+        if config[key].class == String
+          accu.gsub(/\#\{#{key.to_s}\}/, config[key])
+        else
+          accu
+        end
+      end
+    end
+
     # Figures out the translation between all the .tt file to their
     # destination names
-    def dynamically_generate_templates
+    def dynamically_generate_templates_files
       templates = {}
       Dir.glob("#{@template_src}/**/{*,.*}.tt").each do |f|
         base_path = f[@template_src.length+1..-1]
-        templates.merge!(base_path => base_path
-                   .gsub(/\.tt$/, "")
-                   .gsub('#{name}', "#{name}")
-                   .gsub('#{underscored_name}', config[:underscored_name])
-        )
+        templates.merge!( base_path => substitute_template_values(base_path).sub(/\.tt$/, "") )
       end
 
       raise_no_files_in_template_error! if templates.empty?
