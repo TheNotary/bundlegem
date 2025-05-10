@@ -120,7 +120,8 @@ module Bundlegem
     # Returns a hash of source directory names and their destination mappings
     def dynamically_generate_template_directories
       template_dirs = {}
-      Dir.glob("#{@template_src}/**/*").each do |f|
+      Dir.glob("#{@template_src}/**/*", File::FNM_DOTMATCH).each do |f|
+        next if f == "#{@template_src}/." || f == "#{@template_src}/.."
         next unless File.directory? f
         base_path = f[@template_src.length+1..-1]
         template_dirs.merge!(base_path => substitute_template_values(base_path))
@@ -178,7 +179,7 @@ module Bundlegem
     # destination names
     def dynamically_generate_templates_files
       templates = {}
-      Dir.glob("#{@template_src}/**/{*,.*}.tt").each do |f|
+      Dir.glob("#{@template_src}/**/*.tt", File::FNM_DOTMATCH).each do |f|
         base_path = f[@template_src.length+1..-1]
         templates.merge!( base_path => substitute_template_values(base_path).sub(/\.tt$/, "") )
       end

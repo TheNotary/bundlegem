@@ -1,5 +1,6 @@
 require 'find'
 require 'open3'
+require 'shellwords'
 
 module Bundlegem::DirToTemplate
   class << self
@@ -28,10 +29,13 @@ module Bundlegem::DirToTemplate
     private
 
     def should_skip?(path)
+      return false if path == "./.gitignore" && !File.exist?("#{path}.tt")
+
       !File.file?(path) ||              # skip directories
         path.end_with?('.tt') ||        # skip if the file is a .tt already
         File.exist?("#{path}.tt") ||    # skip if a .tt variant of this file exists
         path.start_with?('./.git') ||   # skip the .git directory
+        ignored_by_git?(path) ||
         path == "./.bundlegem"          # skip the .bundlegem file
     end
 

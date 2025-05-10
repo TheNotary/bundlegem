@@ -66,6 +66,7 @@ describe Bundlegem do
 
     capture_stdout { Bundlegem.gem(options, gem_name) }
     expect(File).to exist("#{@dst_dir}/#{gem_name}/test_confirmed")
+    expect(File).to exist("#{@dst_dir}/#{gem_name}/.vscode/launch.json")
   end
 
 
