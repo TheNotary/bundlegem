@@ -60,14 +60,6 @@ module Bundlegem
       Bundlegem::CLI::Gem.new(options, gem_name).run
     end
 
-    def new_template(args)
-      template_name = args[1]
-      template_name = prompt_for_template_name if template_name.nil?
-
-      # Copy template_name from within the repo to ~/.bundlegem/templates/#{template_name}
-      TemplateManager.create_new_template(template_name)
-    end
-
     def prompt_for_template_name
       puts "Please specify a name for your template:  "
       template_name = STDIN.gets.chomp.strip.gsub(" ", "_")

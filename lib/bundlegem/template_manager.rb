@@ -8,22 +8,31 @@ module Bundlegem
   class TemplateManager
     class << self
 
-      def create_new_template(template_name)
-      end
-
-      def get_default_template_name
-        "cli_gem"
-      end
+      def internal_template_location() = File.expand_path("#{File.dirname(__FILE__)}/templates")
+      def custom_template_location() = File.expand_path("~/.bundlegem/templates")
+      def default_template_name() = "cli_gem"
 
       def get_template_src(options)
-        template_name = options["template"].nil? ? get_default_template_name : options["template"]
+        template_name = options["template"] || default_template_name
+        template_location = template_exists_within_repo?(template_name) ?
+                        internal_template_location :
+                        custom_template_location
 
-        if template_exists_within_repo?(template_name)
-          template_location = get_internal_template_location
-        else
-          template_location = File.expand_path("~/.bundlegem/templates")
-        end
-        try_template_src_locations(template_location, template_name)
+        resolve_template_path(template_location, template_name)
+      end
+
+      def template_exists_within_repo?(template_name)
+        file_in_source?(template_name) || file_in_source?("template-#{template_name}")
+      end
+
+      def resolve_template_path(location, name)
+        basic = "#{location}/#{name}"
+        prefixed = "#{location}/template-#{name}"
+
+        return basic if File.exist?(basic)
+        return prefixed if File.exist?(prefixed)
+
+        basic # fallback, even if it doesn't exist, will be caught downstream
       end
 
       def try_template_src_locations(template_location, template_name)
@@ -39,21 +48,9 @@ module Bundlegem
         end
       end
 
-      def get_internal_template_location
-        File.expand_path("#{File.dirname(__FILE__)}/templates")
-      end
-
-      def template_exists_within_repo?(template_name)
-        file_in_source?(template_name) || file_in_source?("template-#{template_name}")
-      end
-
-      #
-      # EDIT:  Reworked from Thor to not rely on Thor (or do so much unneeded stuff)
-      #
       def find_in_source_paths(target)
-        src_in_source_path = "#{File.dirname(__FILE__)}/templates/#{target}"
-        return src_in_source_path if File.exist?(src_in_source_path)
-        target # failed, hopefully full path to a user specified gem template file
+        path = "#{__dir__}/templates/#{target}"
+        File.exist?(path) ? path : target
       end
 
       # Get's path to 'target' from within the gem's "templates" folder
