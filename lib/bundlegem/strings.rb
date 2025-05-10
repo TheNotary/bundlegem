@@ -17,13 +17,13 @@ Usage Examples:
   # Download all my template files (configured in ~/.bundlegem/config)
   $ bundlegem --install-best-templates
 
-  # not implemented, should create a new gem template in ~/.bundlegem/templates
-  # that you'll love customizing to your personal preference
-  $ bundlegem --newtemplate
+  # Convert the current directory which represents a working project into a
+  # template meaning all files will be renamed to *.tt unless a *.tt of that
+  # name already exists
+  $ bundlegem --to-template
 
-  $ bundlegem --help              # shows this message
+  # shows this message
+  $ bundlegem --help
   HEREDOC
-
-
 
 end

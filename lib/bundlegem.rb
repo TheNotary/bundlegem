@@ -2,6 +2,7 @@ require "bundlegem/version"
 require "bundlegem/strings"
 require 'bundlegem/configurator'
 require 'bundlegem/template_manager'
+require 'bundlegem/dir_to_template'
 
 require 'bundlegem/cli'
 
@@ -51,6 +52,10 @@ module Bundlegem
           # Prompt to update the repo if they have a clean working state.
         end
       end
+    end
+
+    def dir_to_template
+      DirToTemplate.go
     end
 
     def gem(options, gem_name)

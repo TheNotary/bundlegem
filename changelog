@@ -1,12 +1,11 @@
 ** 0.0.x **
   - Add prompt "Would you care to summarize your gem for documentation purposes? (y/[n])
   - Add prompt for specifying java package org name
-  - CMD:  --newtemplate to start new template
-    - I'll need to write a basic starter template that is educational
   - Why have more than one built in template?  Only one is needed for testing, the rest should
     be pulled from the web and made easily customizable by the users.
+  - Is thor used in this project or not???
 
-Completed on Master:
+Completed on main:
   - Nothing yet
 
 ** 0.0.14 **
@@ -21,23 +20,15 @@ Completed on Master:
   - Feature:  java project template added to best templates
   - Feature:  python project template added to best templates
 
-
-
 ** 0.0.11 **
   - Bugfix: config[:bundler_version] was listing the version of bundlegem not bundler
-
-
 
 ** 0.0.10 **
   - Feature: tweaks built-in templates
 
-
-
 ** 0.0.9 **
   - Bugfix:  there were misconfigurations with the Rakefiles for cli_gems and c_ect gems that were corrected
   - Feature: `--version` option added
-
-
 
 ** 0.0.8 **
 
@@ -48,8 +39,6 @@ Completed on Master:
   - Bugfix: fixes bug where configuration wasn't loaded before running
     --install-best-templates
   - Bugfix:  fixes bug where require pry was left in
-
-
 
 ** 0.0.7 **
 
@@ -64,16 +53,12 @@ Completed on Master:
   - Bugfix: cli_gem and c_ext_gem now show up in the list
   - Bugfix: cli_gem and c_ext_gem had typos fixed
 
-
-
 ** 0.0.6 **
     - Feature:  List now indicates default template
     - CORE:  Created TemplateManager for working with templates
     - BUG:  Accidentally tracked in a test gem project and fixed tests to not
       change directory into a test area for creating new gems.
     - BUG:  newgem template didn't have a dot in .gitignore.tt
-
-
 
 ** 0.0.5 **
   - Bug in 0.0.3 that broke building template gems fixed
@@ -82,11 +67,9 @@ Completed on Master:
   - Added integration test just to make sure the built-in templates can be generated without problems
   - Cleaned up internal API and how the binary works
 
-
 ** 0.0.4 **
   - Tell the user what files are being created
   - Created config['git_repo_url'] variable to be used in templates
-
 
 ** 0.0.3 **
     - CMD:  --list to list templates (with descriptions)
@@ -94,14 +77,11 @@ Completed on Master:
     - Raises error if none of the files in the template directory end in .tt
     - Create even empty folders
 
-
 ** 0.0.2 **
     - Added default gem template 'service'
     - Better syntax of bundlegem gem_name -t template_name
     - CMD:  --help to display a help message
 
-
 ** 0.0.1 **
   - Very basic prototype that allows you to specify templates in
     ~/.bundlegem/templates
-

@@ -28,14 +28,13 @@ if ARGV[0] == "--version" or ARGV[0] == "-v"
   exit 0
 end
 
-if ARGV[0] == "--newtemplate"
-  puts "Sorry, I haven't been implemented, I don't have a lot of free time atm :("
-  exit 0
-  Bundlegem.newtemplate(ARGV)
-end
-
 if ARGV[0] == "--install-best-templates"
   Bundlegem.install_best_templates
+  exit 0
+end
+
+if ARGV[0] == "--to-template"
+  Bundlegem.dir_to_template
   exit 0
 end
 
