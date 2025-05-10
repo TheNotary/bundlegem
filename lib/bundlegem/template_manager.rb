@@ -6,13 +6,10 @@ module Bundlegem
   # in the user's dir, the gem's builtin templates
   # (and on the web some day)
   class TemplateManager
-
     class << self
 
       def create_new_template(template_name)
-
       end
-
 
       def get_default_template_name
         "cli_gem"
@@ -26,16 +23,28 @@ module Bundlegem
         else
           template_location = File.expand_path("~/.bundlegem/templates")
         end
-        template_src = "#{template_location}/#{template_name}"
+        try_template_src_locations(template_location, template_name)
       end
 
+      def try_template_src_locations(template_location, template_name)
+        basic_form = "#{template_location}/#{template_name}"
+        prefixed_form = "#{template_location}/template-#{template_name}"
+
+        if File.exist?(basic_form)
+          return basic_form
+        elsif File.exist?(prefixed_form)
+          return prefixed_form
+        else
+          "#{template_location}/#{template_name}"
+        end
+      end
 
       def get_internal_template_location
         File.expand_path("#{File.dirname(__FILE__)}/templates")
       end
 
       def template_exists_within_repo?(template_name)
-        TemplateManager.file_in_source?(template_name)
+        file_in_source?(template_name) || file_in_source?("template-#{template_name}")
       end
 
       #

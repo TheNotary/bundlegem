@@ -8,7 +8,6 @@ require 'bundlegem/cli'
 SOURCE_ROOT = File.expand_path("#{File.dirname(__FILE__)}/..")
 
 module Bundlegem
-
   class << self
 
     def version
@@ -135,5 +134,4 @@ module Bundlegem
     end
 
   end
-
 end

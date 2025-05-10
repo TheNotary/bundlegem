@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 describe Bundlegem do
-
   before :each do
     @mocked_home = "/tmp/bundlegem_mock_home"
     @template_root = "#{@mocked_home}/.bundlegem/templates"
@@ -21,7 +20,7 @@ describe Bundlegem do
     list_output = Bundlegem.list
 
     expect(list_output).to eq " PREDEFINED:\n * cli_gem       (default)\n   c_extension_gem\n\n MISC:\n   empty_template\n\n"
-    expect(File.exist?("#{ENV['HOME']}/.bundlegem")).to be true
+    expect(File).to exist("#{ENV['HOME']}/.bundlegem")
   end
 
   it "lists with good categories" do
@@ -29,7 +28,18 @@ describe Bundlegem do
     create_user_defined_template(category)
 
     list_output = Bundlegem.list
-    expect(list_output.include?(category)).to be true
+    expect(list_output).to include category
+  end
+
+  it "lists omit the prefix 'template-' if present in repo" do
+    category = "ANYTHING"
+    full_template_name = "template-happy-burger"
+    create_user_defined_template(category, "template-happy-burger")
+
+    list_output = Bundlegem.list
+    # expect(list_output.include?(full_template_name)).to be false
+    expect(list_output).not_to include full_template_name
+    expect(list_output).to include "happy-burger"
   end
 
   # This bulids the default gem template
@@ -38,7 +48,7 @@ describe Bundlegem do
     gem_name = "tmp_gem"
 
     capture_stdout { Bundlegem.gem(options, gem_name) }
-    expect(File.exist?("#{@dst_dir}/#{gem_name}/README.md")).to be_truthy
+    expect(File).to exist("#{@dst_dir}/#{gem_name}/README.md")
   end
 
   it "can generate the c_ext gem fine" do
@@ -46,8 +56,18 @@ describe Bundlegem do
     gem_name = "tmp_gem"
 
     capture_stdout { Bundlegem.gem(options, gem_name) }
-    expect(File.exist?("#{@dst_dir}/#{gem_name}/ext/tmp_gem/#{gem_name}.c")).to be_truthy
+    expect(File).to exist("#{@dst_dir}/#{gem_name}/ext/tmp_gem/#{gem_name}.c")
   end
+
+
+  it "finds the template-test template even if the template- prefix was omitted" do
+    options = {"bin"=>false, "ext"=>false, :coc=> false, "template" => "test"}
+    gem_name = "tmp_gem"
+
+    capture_stdout { Bundlegem.gem(options, gem_name) }
+    expect(File).to exist("#{@dst_dir}/#{gem_name}/test_confirmed")
+  end
+
 
   it "has a useful dynamically_generate_template_directories method" do
     options = { "bin"=>false, "ext"=>false, :coc=> false, "template" => "test_template" }
@@ -108,20 +128,17 @@ describe Bundlegem do
   end
 
   describe "install best templates" do
-
     before :each do
       setup_mock_web_template
     end
-
     after :each do
       remove_mock_web_template
     end
 
     it "can download best templates from the web" do
       capture_stdout { Bundlegem.install_best_templates }
-      expect(File.exist?("#{ENV['HOME']}/.bundlegem/templates/arduino/README.md")).to be_truthy
+      expect(File).to exist("#{ENV['HOME']}/.bundlegem/templates/arduino/README.md")
     end
-
   end
 
 end

@@ -30,7 +30,6 @@ module Bundlegem
     end
 
     def built_in_templates
-
     end
 
     # not implemented yet
@@ -59,8 +58,7 @@ module Bundlegem
         end
 
         category = "MISC" if category.nil?
-
-        pairs << {category => dir }
+        pairs << {category => dir.sub(/^template-/, "") }
       end
       pairs
     end

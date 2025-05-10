@@ -207,11 +207,9 @@ module Bundlegem
       end
     end
 
-
     def resolve_name(name)
       Pathname.pwd.join(name).basename.to_s
     end
-
 
     def validate_ext_name
       return unless gem_name.index('-')
@@ -223,16 +221,12 @@ module Bundlegem
       exit 1
     end
 
-
     def bundler_dependency_version
       v = Gem::Version.new(Bundler::VERSION)
       req = v.segments[0..1]
       req << 'a' if v.prerelease?
       req.join(".")
     end
-
-
-
 
 
     #
@@ -290,7 +284,7 @@ but no files within it ended in .tt.  Did you forget to rename the extensions of
 Exiting...
       HEREDOC
       puts err_no_files_in_template
-      exit
+      raise
     end
 
     def raise_project_with_that_name_already_exists!
@@ -301,14 +295,14 @@ Can't make project.  Either delete that folder or choose a new project name
 Exiting...
       HEREDOC
       puts err_project_with_that_name_exists
-      exit
+      raise
     end
 
     def raise_template_not_found!
       err_missing_template = "Could not find template folder '#{options["template"]}' in `~/.bundle/templates/`. Please check to make sure your desired template exists."
       puts err_missing_template
       Bundler.ui.error err_missing_template
-      exit 1
+      raise
     end
 
 
@@ -400,10 +394,10 @@ Exiting...
     def ensure_safe_gem_name(name, constant_array)
       if name =~ /^\d/
         Bundler.ui.error "Invalid gem name #{name} Please give a name which does not start with numbers."
-        exit 1
+        raise
       elsif Object.const_defined?(constant_array.first)
         Bundler.ui.error "Invalid gem name #{name} constant #{constant_array.join("::")} is already in use. Please choose another gem name."
-        exit 1
+        raise
       end
     end
 

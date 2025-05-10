@@ -23,8 +23,8 @@ def remove_mock_web_template
   FileUtils.rm_rf("#{ENV['HOME']}/arduino.git")
 end
 
-def create_user_defined_template(category = nil)
-  new_templates_dir = "#{@template_root}/empty_template"
+def create_user_defined_template(category = nil, template_name = "empty_template")
+  new_templates_dir = "#{@template_root}/#{template_name}"
 
   # Creates the gem template (empty folder)
   FileUtils.mkdir_p new_templates_dir

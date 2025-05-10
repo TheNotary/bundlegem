@@ -1,0 +1,19 @@
+This file shows all the variables in one place!
+See "lib/bundlegem/templates/test_template/#{name}.rb.tt"
+
+config[:name]:             <%= config[:name] %>
+config[:unprefixed_name]:  <%= config[:unprefixed_name] %>
+config[:unprefixed_pascal]:<%= config[:unprefixed_pascal] %>
+config[:underscored_name]: <%= config[:underscored_name] %>
+config[:pascal_name]:      <%= config[:pascal_name] %>
+config[:camel_name]:       <%= config[:camel_name] %>
+config[:screamcase_name]:  <%= config[:screamcase_name] %>
+config[:namespaced_path]:  <%= config[:namespaced_path] %>
+config[:makefile_path]:    <%= config[:makefile_path] %>
+config[:constant_name]:    <%= config[:constant_name] %>
+config[:constant_array]:   <%= config[:constant_array] %>
+config[:author]:           <%= config[:author] %>
+config[:email]:            <%= config[:email] %>
+config[:git_repo_domain]:  <%= config[:git_repo_domain] %>
+config[:git_repo_url]:     <%= config[:git_repo_url] %>
+config[:git_repo_path]:    <%= config[:git_repo_path] %>
