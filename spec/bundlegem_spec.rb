@@ -19,7 +19,7 @@ describe Bundlegem do
 
     list_output = Bundlegem.list
 
-    expect(list_output).to eq " PREDEFINED:\n * cli_gem       (default)\n   c_extension_gem\n\n MISC:\n   empty_template\n\n"
+    expect(list_output).to eq " MISC:\n   empty_template\n\n"
     expect(File).to exist("#{ENV['HOME']}/.bundlegem")
   end
 
@@ -138,7 +138,7 @@ describe Bundlegem do
 
     it "can download best templates from the web" do
       capture_stdout { Bundlegem.install_best_templates }
-      expect(File).to exist("#{ENV['HOME']}/.bundlegem/templates/arduino/README.md")
+      expect(File).to exist("#{ENV['HOME']}/.bundlegem/templates/template-arduino/README.md")
     end
   end
 

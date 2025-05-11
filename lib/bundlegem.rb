@@ -19,10 +19,7 @@ module Bundlegem
     def list
       configurator = Configurator.new
       # search through builtin
-      available_templates = [
-        { "predefined" => "cli_gem" },
-        { "predefined" => "c_extension_gem" },
-      ]
+      available_templates = []
 
       # search through user downloaded
       available_templates += configurator.user_downloaded_templates

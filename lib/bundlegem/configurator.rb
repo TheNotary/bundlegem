@@ -50,9 +50,8 @@ module Bundlegem
 
         begin
           f = File.read("#{@user_defined_templates_path}/#{dir}/.bundlegem")
-          /category:\s*([\w\s]*$)/ =~ f
 
-          category = $1.chomp
+          category = parse_out(:category, f)
         rescue
           category = "MISC"
         end
@@ -61,6 +60,11 @@ module Bundlegem
         pairs << {category => dir.sub(/^template-/, "") }
       end
       pairs
+    end
+
+    def parse_out(key, config_txt)
+      /#{key.to_s}:\s*([\w\s]*$)/ =~ config_txt
+      $1.chomp
     end
 
     def create_config_file_if_needed!
