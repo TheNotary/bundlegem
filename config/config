@@ -1,4 +1,4 @@
 # Comments made to this file will not be preserved
 ---
 default_template: cli_gem
-best_templates: https://github.com/TheNotary/template-ruby-cli-gem https://github.com/TheNotary/template-arduino.git https://github.com/TheNotary/template-raspberry-pi-c.git https://github.com/TheNotary/docker_repo.git https://github.com/TheNotary/template-html-css-js.git https://github.com/TheNotary/template-java-gradle-cli-app https://github.com/TheNotary/template-python-library
+best_templates: https://github.com/TheNotary/template-ruby-cli-gem https://github.com/TheNotary/template-arduino.git https://github.com/TheNotary/template-raspberry-pi-c.git https://github.com/TheNotary/docker_repo.git https://github.com/TheNotary/template-html-css-js.git https://github.com/TheNotary/template-java-gradle-cli-app
