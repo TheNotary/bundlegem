@@ -2,28 +2,27 @@ require 'find'
 require 'open3'
 require 'shellwords'
 
-module Bundlegem::DirToTemplate
+
+module Bundlegem::Core::DirToTemplate
   class << self
 
     def go
       validate_working_directory!
+      file_enumerator = Find.find('.')
 
-      🧙🪄
+      🧙🪄! file_enumerator
     end
 
-    def 🧙🪄
-      Find.find('.') do |path|
+    def 🧙🪄! file_enumerator, dry_run: false
+      files_changed = []
+      file_enumerator.each do |path|
         next if should_skip?(path)
 
-        # if path.start_with?('./.git')
-        #   Find.prune
-        #   next
-        # end
-
         new_path = "#{path}.tt"
-        File.rename(path, new_path)
-        puts "Renamed: #{path} -> #{new_path}"
+        File.rename(path, new_path) unless dry_run
+        files_changed << "Renamed: #{path} -> #{new_path}"
       end
+      files_changed
     end
 
     private
@@ -35,7 +34,7 @@ module Bundlegem::DirToTemplate
         path.end_with?('.tt') ||        # skip if the file is a .tt already
         File.exist?("#{path}.tt") ||    # skip if a .tt variant of this file exists
         path.start_with?('./.git') ||   # skip the .git directory
-        ignored_by_git?(path) ||
+        ignored_by_git?(path) ||        # skip things that are gitignored
         path == "./.bundlegem"          # skip the .bundlegem file
     end
 

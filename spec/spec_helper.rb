@@ -24,15 +24,17 @@ def remove_mock_web_template
 end
 
 def create_user_defined_template(category = nil, template_name = "empty_template")
-  new_templates_dir = "#{@template_root}/#{template_name}"
+  new_template_dir = "#{@template_root}/#{template_name}"
 
   # Creates the gem template (empty folder)
-  FileUtils.mkdir_p new_templates_dir
+  FileUtils.mkdir_p new_template_dir
 
   # Writes the category
-  File.open("#{new_templates_dir}/.bundlegem", "w+") do |f|
+  File.open("#{new_template_dir}/.bundlegem", "w+") do |f|
     f.puts "category: #{category}" unless category.nil?
   end
+
+  new_template_dir
 end
 
 

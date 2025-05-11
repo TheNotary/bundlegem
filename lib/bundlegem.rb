@@ -2,7 +2,8 @@ require "bundlegem/version"
 require "bundlegem/strings"
 require 'bundlegem/configurator'
 require 'bundlegem/template_manager'
-require 'bundlegem/dir_to_template'
+
+require 'bundlegem/core/core'
 
 require 'bundlegem/cli'
 
@@ -44,7 +45,7 @@ module Bundlegem
     end
 
     def dir_to_template
-      DirToTemplate.go
+      puts Core::DirToTemplate.go
     end
 
     def gem(options, gem_name)
