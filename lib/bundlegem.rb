@@ -18,14 +18,7 @@ module Bundlegem
     # lists available templates
     def list
       configurator = Configurator.new
-      # search through builtin
-      available_templates = []
-
-      # search through user downloaded
-      available_templates += configurator.user_downloaded_templates
-
-      # search through user defined
-      available_templates += configurator.user_defined_templates
+      available_templates = configurator.collect_user_defined_templates
 
       available_templates = group_hashes_by_key(available_templates)
       output_string = convert_grouped_hashes_to_output(available_templates)
@@ -45,8 +38,7 @@ module Bundlegem
           cmd += " 2> /dev/null" if $test_env
           `#{cmd}`
         else
-          # TODO:
-          # Prompt to update the repo if they have a clean working state.
+          puts "Warning: Skipping, template already exists #{ENV['HOME']}/.bundlegem/templates/#{template_folder_name}"
         end
       end
     end
@@ -60,11 +52,6 @@ module Bundlegem
       require 'bundlegem/cli/gem'
 
       Bundlegem::CLI::Gem.new(options, gem_name).run
-    end
-
-    def prompt_for_template_name
-      puts "Please specify a name for your template:  "
-      template_name = STDIN.gets.chomp.strip.gsub(" ", "_")
     end
 
     # input:  [ { "predefined" => "default" },

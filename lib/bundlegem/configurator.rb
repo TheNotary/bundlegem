@@ -4,7 +4,7 @@ require 'yaml'
 module Bundlegem
 
   class Configurator
-    attr_accessor :user_defined_templates, :user_downloaded_templates, :config_file_data
+    attr_accessor :config_file_data
 
     def initialize
       @config_directory_root = "#{ENV['HOME']}/.bundlegem"
@@ -12,9 +12,6 @@ module Bundlegem
       @user_defined_templates_path = "#{@config_directory_root}/templates"
 
       create_config_file_if_needed!
-
-      @user_defined_templates = get_user_defined_templates
-      @user_downloaded_templates = get_user_downloaded_templates
 
       # load configurations from config file
       @config_file_data = YAML.load_file @config_file
@@ -29,15 +26,7 @@ module Bundlegem
       File.write(@config_file, "# Comments made to this file will not be preserved\n#{YAML.dump(@config_file_data)}")
     end
 
-    def built_in_templates
-    end
-
-    # not implemented yet
-    def get_user_downloaded_templates
-      []
-    end
-
-    def get_user_defined_templates
+    def collect_user_defined_templates
       user_definition_directory = @user_defined_templates_path
       template_dirs = Dir.entries(user_definition_directory).select do |entry|
         File.directory?(File.join(user_definition_directory, entry)) and !(entry =='.' || entry == '..')
