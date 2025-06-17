@@ -1,5 +1,6 @@
 ** Planned 0.1.x **
   - TBD
+  - Bugfix: Changes working directory before running bootstrap_commands
 
 ** 0.1.0 **
   - Feature: Drops .bundlegem file in favor of bundlegem.yml in templates

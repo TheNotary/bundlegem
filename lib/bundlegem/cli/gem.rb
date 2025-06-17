@@ -96,7 +96,9 @@ module Bundlegem
       if @tconf[:bootstrap_command]
         puts "Executing bootstrap_command"
         puts @tconf[:bootstrap_command]
-        `#{@tconf[:bootstrap_command]}`
+        Dir.chdir(target) do
+          `#{@tconf[:bootstrap_command]}`
+        end
       end
 
       puts "\nComplete."
