@@ -93,13 +93,29 @@ module Bundlegem
       # Bundler.ui.info "Initializing git repo in #{target}"
       Dir.chdir(target) { `git init`; `git add .` }
 
+      if @tconf[:bootstrap_command]
+        puts "Executing bootstrap_command"
+        puts @tconf[:bootstrap_command]
+        `#{@tconf[:bootstrap_command]}`
+      end
+
       puts "\nComplete."
     end
 
     private
 
+    # TODO: Extract these notes to the docs or delete them
+    # The language and purpose configurations of the bundlegem.yml file
+    # can be used to make sure when you create a folder named
+    # `bundlegem -t blah tool-go-ollama-find`, the internal name
+    # that the app has for itself can become simply `ollama-find`, dropping the prefix
+    # which is intended to exist only at the repostory name and shouldn't impact
+    # the package naming... much...
+    #
+    # I didn't document this feature originally so it may not have been fully fleshed out...
     def load_template_configs
       template_config_path = File.join(@template_src, "bundlegem.yml")
+
       if File.exist?(template_config_path)
         t_config = YAML.load_file(template_config_path, symbolize_names: true)
       else

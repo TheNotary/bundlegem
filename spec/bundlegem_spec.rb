@@ -129,6 +129,20 @@ describe Bundlegem do
     expect(File).not_to exist "#{@dst_dir}/#{gem_name}/node_modules"
   end
 
+  it "executes the bootstrap_command if supplied" do
+    template_dir = create_user_defined_template("testing", "template-user-supplied")
+    options = { "bin"=>false, "ext"=>false, :coc=> false, "template" => "template-user-supplied" }
+    gem_name = "good-dog"
+
+    File.write("#{template_dir}/bundlegem.yml", "bootstrap_command: echo hihihi")
+    File.write("#{template_dir}/README.md.tt", "# Readme...")
+    `git init #{template_dir}`
+
+    output = capture_stdout { Bundlegem.gem(options, gem_name) }
+
+    expect(output).to include "hihihi"
+  end
+
   it "has a test proving every interpolation in one file" do
     options = { "bin"=>false, "ext"=>false, :coc=> false, "template" => "test_template" }
     gem_name = "good-dog"
