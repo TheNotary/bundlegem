@@ -14,6 +14,8 @@ describe Bundlegem do
     expect(Bundlegem::VERSION).not_to be nil
   end
 
+  # List
+
   it 'creates a config file if needed and lists properly' do
     create_user_defined_template
 
@@ -42,6 +44,8 @@ describe Bundlegem do
     expect(list_output).to include "happy-burger"
   end
 
+  # Generate
+
   # This bulids the default gem template
   it "can generate the default built-in gem fine" do
     options = {"bin"=>false, "ext"=>false, :coc=> false}
@@ -59,7 +63,6 @@ describe Bundlegem do
     expect(File).to exist("#{@dst_dir}/#{gem_name}/ext/tmp_gem/#{gem_name}.c")
   end
 
-
   it "finds the template-test template even if the template- prefix was omitted" do
     options = {"bin"=>false, "ext"=>false, :coc=> false, "template" => "test"}
     gem_name = "tmp_gem"
@@ -68,7 +71,6 @@ describe Bundlegem do
     expect(File).to exist("#{@dst_dir}/#{gem_name}/test_confirmed")
     expect(File).to exist("#{@dst_dir}/#{gem_name}/.vscode/launch.json")
   end
-
 
   it "has a useful dynamically_generate_template_directories method" do
     options = { "bin"=>false, "ext"=>false, :coc=> false, "template" => "test_template" }
@@ -108,6 +110,23 @@ describe Bundlegem do
     expect(src_dst_map['#{name}.rb.tt']).to eq 'good-dog.rb'
     expect(src_dst_map['#{underscored_name}/keep.tt']).to eq 'good_dog/keep'
     expect(src_dst_map['simple_dir/keep.tt']).to eq 'simple_dir/keep'
+  end
+
+  it "won't generate template files that are listed under the gitignore" do
+    template_dir = create_user_defined_template("testing", "template-user-supplied")
+    options = { "bin"=>false, "ext"=>false, :coc=> false, "template" => "template-user-supplied" }
+    gem_name = "good-dog"
+
+    File.write("#{template_dir}/.gitignore", "node_modules/")
+    File.write("#{template_dir}/README.md.tt", "Hello")
+    FileUtils.mkdir("#{template_dir}/node_modules")
+    File.write("#{template_dir}/node_modules/dont_template.rb.tt", "I must not be interpretted")
+    `git init #{template_dir}`
+
+    capture_stdout { Bundlegem.gem(options, gem_name) }
+
+    expect(File).not_to exist "#{@dst_dir}/#{gem_name}/node_modules/dont_template.rb"
+    expect(File).not_to exist "#{@dst_dir}/#{gem_name}/node_modules"
   end
 
   it "has a test proving every interpolation in one file" do

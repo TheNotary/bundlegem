@@ -124,6 +124,7 @@ module Bundlegem
         next if f == "#{@template_src}/." || f == "#{@template_src}/.."
         next unless File.directory? f
         base_path = f[@template_src.length+1..-1]
+        next if ignored_by_git?(@template_src, base_path)
         template_dirs.merge!(base_path => substitute_template_values(base_path))
       end
       template_dirs
@@ -181,12 +182,18 @@ module Bundlegem
       templates = {}
       Dir.glob("#{@template_src}/**/*.tt", File::FNM_DOTMATCH).each do |f|
         base_path = f[@template_src.length+1..-1]
+        next if ignored_by_git?(@template_src, base_path)
         templates.merge!( base_path => substitute_template_values(base_path).sub(/\.tt$/, "") )
       end
 
       raise_no_files_in_template_error! if templates.empty?
 
       return templates
+    end
+
+    def ignored_by_git?(repo_root, path)
+      stdout, _, status = Open3.capture3("git -C #{repo_root} check-ignore #{Shellwords.escape(path)}")
+      status.success? && !stdout.strip.empty?
     end
 
     def create_template_directories(template_directories, target)
