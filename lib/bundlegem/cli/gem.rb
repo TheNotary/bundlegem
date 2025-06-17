@@ -137,13 +137,13 @@ module Bundlegem
     def generate_templates_for_built_in_gems(config)
       # Hmmm... generate dynamically instead?  Yes, overwritten below
       templates = {
-        'Gemfile.tt' => "Gemfile",
+        'Gemfile.tt'   => "Gemfile",
         'changelog.tt' => "changelog",
         'gitignore.tt' => ".gitignore",
         'lib/#{name}.rb.tt' => "lib/#{config[:namespaced_path]}.rb",
         'lib/#{name}/version.rb.tt' => "lib/#{config[:namespaced_path]}/version.rb",
         '#{name}.gemspec.tt' => "#{config[:name]}.gemspec",
-        'Rakefile.tt' => "Rakefile",
+        'Rakefile.tt'  => "Rakefile",
         'README.md.tt' => "README.md",
         'bin/console.tt' => "bin/console"
       }

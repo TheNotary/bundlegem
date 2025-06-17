@@ -17,12 +17,21 @@ module Bundlegem::Core::DirToTemplate
 
         new_path = "#{path}.tt"
         File.rename(path, new_path) unless dry_run
+        repopulate_gitignore(path, new_path) unless dry_run
+
         files_changed << "Renamed: #{path} -> #{new_path}"
       end
       files_changed
     end
 
     private
+
+    # Hack for putting the gitignore file back if it's been templatized...
+    def repopulate_gitignore(path, new_path)
+      if new_path == "./.gitignore.tt"
+        FileUtils.cp(new_path, path)
+      end
+    end
 
     def conduct_pkg_name_to_template_variable_replacements!(path)
       # TODO: Conduct text replacements:
@@ -33,12 +42,10 @@ module Bundlegem::Core::DirToTemplate
     end
 
     def should_skip?(path)
-      return false if path == "./.gitignore" && !File.exist?("#{path}.tt")
-
       !File.file?(path) ||              # skip directories
         path.end_with?('.tt') ||        # skip if the file is a .tt already
         File.exist?("#{path}.tt") ||    # skip if a .tt variant of this file exists
-        path.start_with?('./.git') ||   # skip the .git directory
+        path.start_with?('./.git/') ||  # skip the .git directory
         ignored_by_git?(path) ||        # skip things that are gitignored
         path == "./.bundlegem"          # skip the .bundlegem file
     end
