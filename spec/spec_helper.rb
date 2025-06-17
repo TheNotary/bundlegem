@@ -30,7 +30,7 @@ def create_user_defined_template(category = nil, template_name = "empty_template
   FileUtils.mkdir_p new_template_dir
 
   # Writes the category
-  File.open("#{new_template_dir}/.bundlegem", "w+") do |f|
+  File.open("#{new_template_dir}/bundlegem.yml", "w+") do |f|
     f.puts "category: #{category}" unless category.nil?
   end
 

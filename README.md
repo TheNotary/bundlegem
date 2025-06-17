@@ -57,7 +57,7 @@ EMBEDDED:
 You'll find a project skeleton in ~/.bundlegem/templates/my_service that you can customize to your liking.
 
 
-### Create Your Own Template
+## Create Your Own Template
 
 You can create a new template for a project class you expect to use more than once:
 
@@ -73,12 +73,12 @@ Cloning base project structure into ~/.bundlegem/templates/my_service
 
 You can now get to work making changes to the my_service gem.  All you need to know is that any file that ends in .tt in that folder will be copied into new projects when you create a new project based on that template, however the .tt extension will obviously be stripped out of the resulting file name.
 
-## TODO: Did you actually implement this?
+### Categorizing Your Template
 
-Also, you can specify the `category` of the gem by editing the .bundlegem file in each template's root.  Categories are just used for organizing the output when you run `bundlegem --list`.  Here, I'll show you an example:
+Also, you can specify the `category` of the gem by editing the bundlegem.yml file in each template's root.  Categories are just used for organizing the output when you run `bundlegem --list`.  Here, I'll show you an example:
 
 
-## Customizing Your Own Templates
+### Customizing Your Own Templates
 
 Place your own templates in `~/.bunglegem/templates`.  You can populate it with examples by running `bundlegem --install-best-templates` which will effectively clone down a few sample git repos into the templates folder for you such as [Go-Cli](https://github.com/TheNotary/go-cli) for instance.
 
@@ -92,6 +92,6 @@ Quick Tips:
 - Have a look [under the hood](https://github.com/TheNotary/bundlegem/blob/master/lib/bundlegem/cli/gem.rb#L30-L43) to see other options and the context where the ERB.new takes place.
 
 
-### Gem Backstory
+## Gem Backstory
 
 A lot of the code here was extracted from Bundler's `bundle gem` command, so credits to the Bundler folks.  Originally I planned to make the new features accessible to the Bundler team and went out of my way to keep the code as similar to their project as possible, but ultimately realized two thing.  First they don't want to grow the project creation feature because good tools should do a single thing very well (manage dependencies), not many things (manage dependencies and also do random other helpful stuff).  And second Bundler is a profoundly common dependency meaning every change is enormously high stakes.

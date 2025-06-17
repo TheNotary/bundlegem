@@ -1,12 +1,16 @@
-** 0.0.x **
-  - Add prompt "Would you care to summarize your gem for documentation purposes? (y/[n])
-  - Add prompt for specifying java package org name
-  - Why have more than one built in template?  Only one is needed for testing, the rest should
-    be pulled from the web and made easily customizable by the users.
-  - Is thor used in this project or not???
+** Planned 0.1.x **
+  - TBD
 
-Completed on main:
-  - Nothing yet
+** 0.1.0 **
+  - Feature: Drops .bundlegem file in favor of bundlegem.yml in templates
+  - Feature: Introduces `--to-template` switch to add a `.tt` extension to all files in the current directory
+  - Feature: Enables execution of bootstrap_commands listing in bundlegem.yml
+  - Feature: Cleans out built-in templates in favor of externally managed templates
+  - Bugfix:  Prevents creation of template files that are gitignored
+
+** 1.0.0 **
+  - Feature: Greatly expands the template interpolation values
+  - Bugfix: misc cleanup
 
 ** 0.0.14 **
   - Bugfix:  The project didn't work with ruby 3 due to use of the method `exists?`???

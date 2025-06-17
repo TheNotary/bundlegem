@@ -8,8 +8,6 @@ module Bundlegem
 
       output = TemplateManager.get_template_src(options)
 
-      # binding.pry
-
       expect(File.basename(output)).to eq "template-test"
     end
 

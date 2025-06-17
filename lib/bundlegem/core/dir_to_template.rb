@@ -47,13 +47,13 @@ module Bundlegem::Core::DirToTemplate
         File.exist?("#{path}.tt") ||    # skip if a .tt variant of this file exists
         path.start_with?('./.git/') ||  # skip the .git directory
         ignored_by_git?(path) ||        # skip things that are gitignored
-        path == "./.bundlegem"          # skip the .bundlegem file
+        path == "./bundlegem.yml"          # skip the bundlegem.yml file
     end
 
     def validate_working_directory!
-      # check for the existence of a .bundlegem file which won't ordinarily exist
-      if !File.exist?(".bundlegem")
-        raise "error: .bundlegem file not found in current directory.  Create it or run this command in the folder you thought you were in."
+      # check for the existence of a bundlegem.yml file which won't ordinarily exist
+      if !File.exist?("bundlegem.yml")
+        raise "error: bundlegem.yml file not found in current directory.  Create it or run this command in the folder you thought you were in."
       end
     end
 
