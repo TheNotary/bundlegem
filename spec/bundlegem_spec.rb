@@ -144,11 +144,14 @@ describe Bundlegem do
   end
 
   it "has a test proving every interpolation in one file" do
+    expected_manifest = File.read("#{ENV['SPEC_DATA_DIR']}/variable_manifest_test.rb")
     options = { "bin"=>false, "ext"=>false, :coc=> false, "template" => "test_template" }
     gem_name = "good-dog"
 
     capture_stdout { Bundlegem.gem(options, gem_name) }
-    expect(File.read("#{@dst_dir}/#{gem_name}/#{gem_name}.rb")).to eq File.read("#{ENV['SPEC_DATA_DIR']}/variable_manifest_test.rb")
+
+    resulting_manifest = File.read("#{@dst_dir}/#{gem_name}/#{gem_name}.rb")
+    expect(resulting_manifest).to eq expected_manifest
   end
 
   it "has config[:unprefixed_name] removing purpose-tool- from name" do

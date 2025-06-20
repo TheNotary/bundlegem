@@ -21,6 +21,7 @@ module Bundlegem
     def build_interpolation_config
       pascal_name = name.tr('-', '_').split('_').map(&:capitalize).join
       unprefixed_name = name.sub(/^#{@tconf[:prefix]}/, '')
+      title = unprefixed_name.tr('-', '_').split('_').map(&:capitalize).join(" ")
       underscored_name = name.tr('-', '_')
       constant_name = name.split('_').map{|p| p[0..0].upcase + p[1..-1] unless p.empty?}.join
       constant_name = constant_name.split('-').map{|q| q[0..0].upcase + q[1..-1] }.join('::') if constant_name =~ /-/
@@ -47,6 +48,7 @@ module Bundlegem
 
       config = {
         :name             => name,
+        :title            => title,
         :unprefixed_name  => unprefixed_name,
         :unprefixed_pascal=> unprefixed_name.tr('-', '_').split('_').map(&:capitalize).join,
         :underscored_name => underscored_name,

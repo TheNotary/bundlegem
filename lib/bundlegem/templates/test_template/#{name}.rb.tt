@@ -2,6 +2,7 @@ This file shows all the variables in one place!
 See "lib/bundlegem/templates/test_template/#{name}.rb.tt"
 
 config[:name]:             <%= config[:name] %>
+config[:title]:            <%= config[:title] %>
 config[:unprefixed_name]:  <%= config[:unprefixed_name] %>
 config[:unprefixed_pascal]:<%= config[:unprefixed_pascal] %>
 config[:underscored_name]: <%= config[:underscored_name] %>
