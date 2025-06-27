@@ -143,6 +143,21 @@ describe Bundlegem do
     expect(output).to include "hihihi"
   end
 
+  it "interpolates variables into the bootstrap_command" do
+    # this is quite pointless, we're literally allowing the user to execute a command on their shell...
+    template_dir = create_user_defined_template("testing", "template-user-supplied")
+    options = { "bin"=>false, "ext"=>false, :coc=> false, "template" => "template-user-supplied" }
+    gem_name = "good-dog"
+
+    File.write("#{template_dir}/bundlegem.yml", 'bootstrap_command: "echo #{config[:name]}"')
+    File.write("#{template_dir}/README.md.tt", "# Readme...")
+    `git init #{template_dir}`
+
+    output = capture_stdout { Bundlegem.gem(options, gem_name) }
+
+    expect(output).to include "echo #{gem_name}"
+  end
+
   it "has a test proving every interpolation in one file" do
     expected_manifest = File.read("#{ENV['SPEC_DATA_DIR']}/variable_manifest_test.rb")
     options = { "bin"=>false, "ext"=>false, :coc=> false, "template" => "test_template" }

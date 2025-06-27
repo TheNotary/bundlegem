@@ -19,9 +19,9 @@ module Bundlegem
     end
 
     def build_interpolation_config
+      title = name.tr('-', '_').split('_').map(&:capitalize).join(" ")
       pascal_name = name.tr('-', '_').split('_').map(&:capitalize).join
       unprefixed_name = name.sub(/^#{@tconf[:prefix]}/, '')
-      title = unprefixed_name.tr('-', '_').split('_').map(&:capitalize).join(" ")
       underscored_name = name.tr('-', '_')
       constant_name = name.split('_').map{|p| p[0..0].upcase + p[1..-1] unless p.empty?}.join
       constant_name = constant_name.split('-').map{|q| q[0..0].upcase + q[1..-1] }.join('::') if constant_name =~ /-/
@@ -97,9 +97,10 @@ module Bundlegem
 
       if @tconf[:bootstrap_command]
         puts "Executing bootstrap_command"
-        puts @tconf[:bootstrap_command]
+        cmd = safe_gsub_template_variables(@tconf[:bootstrap_command])
+        puts cmd
         Dir.chdir(target) do
-          `#{@tconf[:bootstrap_command]}`
+          `#{cmd}`
         end
       end
 
@@ -107,6 +108,10 @@ module Bundlegem
     end
 
     private
+
+    def safe_gsub_template_variables(user_string)
+      user_string.gsub(/\#{\s*config\[\s*:(\w+)\s*\]\s*}/) { |m| config[$1.to_sym] }
+    end
 
     # TODO: Extract these notes to the docs or delete them
     # The language and purpose configurations of the bundlegem.yml file
