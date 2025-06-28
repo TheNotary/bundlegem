@@ -1,6 +1,8 @@
 require 'pathname'
 require 'yaml'
 
+$TRACE = false
+
 module Bundlegem
   class CLI::Gem
     attr_reader :options, :gem_name, :name, :target
@@ -77,16 +79,24 @@ module Bundlegem
     end
 
     def run
+      puts "Beginning run" if $TRACE
       raise_project_with_that_name_already_exists! if File.exist?(target)
 
+      puts "ensure_safe_gem_name" if $TRACE
       ensure_safe_gem_name(name, config[:constant_array])
 
       template_src = match_template_src
-      template_directories = dynamically_generate_template_directories
+
+      puts "dynamically_generate_template_directories" if $TRACE
+      time_it("dynamically_generate_template_directories") do
+        @template_directories = dynamically_generate_template_directories
+      end
+
+      puts "dynamically_generate_templates_files" if $TRACE
       templates = dynamically_generate_templates_files
 
       puts "Creating new project folder '#{name}'\n\n"
-      create_template_directories(template_directories, target)
+      create_template_directories(@template_directories, target)
 
       templates.each do |src, dst|
         template("#{template_src}/#{src}", target.join(dst), config)
@@ -143,17 +153,36 @@ module Bundlegem
     end
 
     # Returns a hash of source directory names and their destination mappings
+    # This might not be needed???
     def dynamically_generate_template_directories
-      template_dirs = {}
-      Dir.glob("#{@template_src}/**/*", File::FNM_DOTMATCH).each do |f|
+      template_dirs = Dir.glob("#{@template_src}/**/*", File::FNM_DOTMATCH).filter_map do |f|
         base_path = f[@template_src.length+1..-1]
         next if base_path.start_with?(".git" + File::SEPARATOR) || base_path == ".git"
         next if f == "#{@template_src}/." || f == "#{@template_src}/.."
         next unless File.directory?(f)
-        next if ignored_by_git?(@template_src, base_path)
-        template_dirs.merge!(base_path => substitute_template_values(base_path))
-      end
+        # next if ignored_by_git?(@template_src, base_path)
+
+        [base_path, substitute_template_values(base_path)]
+      end.to_h
+      filter_ignored_files!(@template_src, template_dirs)
+
       template_dirs
+    end
+
+    # Figures out the translation between all the .tt file to their
+    # destination names
+    def dynamically_generate_templates_files
+      template_files = Dir.glob("#{@template_src}/**/*.tt", File::FNM_DOTMATCH).filter_map do |f|
+        base_path = f[@template_src.length+1..-1]
+        # next if ignored_by_git?(@template_src, base_path)
+
+        [base_path, substitute_template_values(base_path).sub(/\.tt$/, "")]
+      end.to_h
+
+      raise_no_files_in_template_error! if template_files.empty?
+      filter_ignored_files!(@template_src, template_files)
+
+      return template_files
     end
 
     # This function should be eliminated over time so that other methods conform to the
@@ -202,19 +231,14 @@ module Bundlegem
       end
     end
 
-    # Figures out the translation between all the .tt file to their
-    # destination names
-    def dynamically_generate_templates_files
-      templates = {}
-      Dir.glob("#{@template_src}/**/*.tt", File::FNM_DOTMATCH).each do |f|
-        base_path = f[@template_src.length+1..-1]
-        next if ignored_by_git?(@template_src, base_path)
-        templates.merge!( base_path => substitute_template_values(base_path).sub(/\.tt$/, "") )
-      end
 
-      raise_no_files_in_template_error! if templates.empty?
 
-      return templates
+    def filter_ignored_files!(repo_root, path_hash)
+      cmd = "git -C #{repo_root} check-ignore #{Shellwords.join(path_hash.keys)}"
+      stdout, _, status = Open3.capture3(cmd)
+      filter_these_paths = stdout.split
+
+      path_hash.delete_if { |key, _| filter_these_paths.include?(key) }
     end
 
     def ignored_by_git?(repo_root, path)
@@ -433,6 +457,14 @@ Exiting...
         Bundler.ui.error "Invalid gem name #{name} constant #{constant_array.join("::")} is already in use. Please choose another gem name."
         raise
       end
+    end
+
+    def time_it(label = nil)
+      start_time = Process.clock_gettime(Process::CLOCK_MONOTONIC)
+      yield
+      end_time = Process.clock_gettime(Process::CLOCK_MONOTONIC)
+      elapsed_ms = ((end_time - start_time) * 1000).round(2)
+      puts "#{label || 'Elapsed'}: #{elapsed_ms} ms"
     end
 
   end
