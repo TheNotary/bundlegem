@@ -146,9 +146,10 @@ module Bundlegem
     def dynamically_generate_template_directories
       template_dirs = {}
       Dir.glob("#{@template_src}/**/*", File::FNM_DOTMATCH).each do |f|
-        next if f == "#{@template_src}/." || f == "#{@template_src}/.."
-        next unless File.directory? f
         base_path = f[@template_src.length+1..-1]
+        next if base_path.start_with?(".git" + File::SEPARATOR) || base_path == ".git"
+        next if f == "#{@template_src}/." || f == "#{@template_src}/.."
+        next unless File.directory?(f)
         next if ignored_by_git?(@template_src, base_path)
         template_dirs.merge!(base_path => substitute_template_values(base_path))
       end
