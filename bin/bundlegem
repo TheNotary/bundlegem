@@ -42,6 +42,8 @@ options = {"bin"=>false, "ext"=>false, :coc=> false}
 gem_name = ""
 skip_i = -99
 
+
+
 # Loop over CLI parameters
 ARGV.each_with_index do |arg, i|
   next if skip_i == i
@@ -49,9 +51,14 @@ ARGV.each_with_index do |arg, i|
     options.merge!({"template" => ARGV[i+1]})
     skip_i = i+1
     next
-  elsif !(arg =~ /^-/) # this must be what they want as the gem_name
+  elsif !(arg =~ /^-/) # this code is basically obfuscated... I hope I didn't write this
     gem_name = arg
   end
+end
+
+if gem_name.empty?
+  puts "Syntax Error: Please specify the gem's name"
+  exit
 end
 
 Bundlegem.gem(options, gem_name)
