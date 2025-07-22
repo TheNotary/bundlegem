@@ -27,7 +27,7 @@ Gem::Specification.new do |s|
   s.test_files    = s.files.grep(%r{^(test|spec|features)/})
   s.require_paths = ["lib"]
 
-  s.add_dependency "thor", "0.19.1"
+  s.add_dependency "thor", "1.4.0"
   s.add_dependency "bundler", "~> 2.5"
   s.add_dependency "ostruct"
   s.add_dependency "reline"

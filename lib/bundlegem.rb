@@ -7,6 +7,7 @@ require 'bundlegem/core/core'
 require 'bundlegem/cli/cli'
 
 require 'bundlegem/cli'
+require 'uri'
 
 SOURCE_ROOT = File.expand_path("#{File.dirname(__FILE__)}/..")
 
