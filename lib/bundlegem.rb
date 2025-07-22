@@ -80,17 +80,16 @@ module Bundlegem
     #           { "MISC" => ["my_thing"] }
     #         ]
     def convert_grouped_hashes_to_output(available_templates)
-      s = ""
-      available_templates.each do |hash|
-        k = hash.first.upcase
-        a = hash.last
-        s << " #{k}:\n"
-        a.each do |el|
-          s << "   #{el}\n"
+      template_list_output = ""
+      available_templates.each do |category, template_names|
+
+        template_list_output << " #{category&.upcase || "UNSPECIFIED"}:\n"
+        template_names.each do |el|
+          template_list_output << "   #{el}\n"
         end
-        s << "\n"
+        template_list_output << "\n"
       end
-      s
+      template_list_output
     end
 
     def mark_default_template(output_string, default_template)
