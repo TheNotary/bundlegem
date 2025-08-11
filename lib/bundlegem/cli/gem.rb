@@ -31,7 +31,7 @@ module Bundlegem
       git_user_name = `git config user.name`.chomp
       git_user_email = `git config user.email`.chomp
 
-      # domain = provider.com
+      # git_repo_domain = provider.com
       git_repo_domain = `git config user.repo-domain`.chomp
 
       if git_repo_domain.empty?
@@ -41,11 +41,11 @@ module Bundlegem
       if git_user_name.empty?
         raise "git config user.name didn't return a value.  Please double check your username configurations in ~/.gitconfig"
       else
-        # path = provider.com/user/name
+        # git_repo_path = provider.com/user/name
         git_repo_path = "#{git_repo_domain}/#{git_user_name}/#{name}".downcase # downcasing for languages like go that are creative
       end
 
-      # url = https://provider.com/user/name
+      # git_repo_url = https://provider.com/user/name
       git_repo_url = "https://#{git_repo_domain}/#{git_user_name}/#{name}"
 
       config = {
@@ -185,40 +185,6 @@ module Bundlegem
       return template_files
     end
 
-    # This function should be eliminated over time so that other methods conform to the
-    # new algo for generating templates automatically.
-    # Really, this function generates a template_src to template_dst naming
-    # structure so that a later method can copy all the template files from the
-    # source and rename them properly
-    def generate_templates_for_built_in_gems(config)
-      # Hmmm... generate dynamically instead?  Yes, overwritten below
-      templates = {
-        'Gemfile.tt'   => "Gemfile",
-        'changelog.tt' => "changelog",
-        'gitignore.tt' => ".gitignore",
-        'lib/#{name}.rb.tt' => "lib/#{config[:namespaced_path]}.rb",
-        'lib/#{name}/version.rb.tt' => "lib/#{config[:namespaced_path]}/version.rb",
-        '#{name}.gemspec.tt' => "#{config[:name]}.gemspec",
-        'Rakefile.tt'  => "Rakefile",
-        'README.md.tt' => "README.md",
-        'bin/console.tt' => "bin/console"
-      }
-
-      prompt_coc!(templates)
-      prompt_mit!(templates, config)
-      prompt_test_framework!(templates, config)
-
-      templates.merge!("exe/newgem.tt" => "exe/#{config[:name]}") if config[:bin]
-
-      if config[:ext]
-        templates.merge!(
-          "ext/newgem/extconf.rb.tt" => "ext/#{config[:name]}/extconf.rb",
-          "ext/newgem/newgem.h.tt" => "ext/#{config[:name]}/#{config[:underscored_name]}.h",
-          "ext/newgem/newgem.c.tt" => "ext/#{config[:name]}/#{config[:underscored_name]}.c"
-        )
-      end
-      templates
-    end
 
     # Applies every possible substitution within config to the fs_obj_name
     def substitute_template_values(fs_obj_name)
@@ -230,8 +196,6 @@ module Bundlegem
         end
       end
     end
-
-
 
     def filter_ignored_files!(repo_root, path_hash)
       cmd = "git -C #{repo_root} check-ignore #{Shellwords.join(path_hash.keys)}"
@@ -357,6 +321,13 @@ Exiting...
       raise
     end
 
+    def time_it(label = nil)
+      start_time = Process.clock_gettime(Process::CLOCK_MONOTONIC)
+      yield
+      end_time = Process.clock_gettime(Process::CLOCK_MONOTONIC)
+      elapsed_ms = ((end_time - start_time) * 1000).round(2)
+      puts "#{label || 'Elapsed'}: #{elapsed_ms} ms"
+    end
 
     # This checks to see that the gem_name is a valid ruby gem name and will 'work'
     # and won't overlap with a bundlegem constant apparently...
@@ -369,96 +340,6 @@ Exiting...
       elsif Object.const_defined?(constant_array.first)
         Bundler.ui.error "Invalid gem name #{name} constant #{constant_array.join("::")} is already in use. Please choose another gem name."
         raise
-      end
-    end
-
-    def time_it(label = nil)
-      start_time = Process.clock_gettime(Process::CLOCK_MONOTONIC)
-      yield
-      end_time = Process.clock_gettime(Process::CLOCK_MONOTONIC)
-      elapsed_ms = ((end_time - start_time) * 1000).round(2)
-      puts "#{label || 'Elapsed'}: #{elapsed_ms} ms"
-    end
-
-
-    ############# FIXME: STUFF THAT SHOULD BE REMOVED DOWN THE ROAD
-
-    # This asks the user if they want to setup rspec or test...
-    # It's not class based, it's additive based... Plus bundlegem does this already
-    def ask_and_set_test_framework
-      test_framework = options[:test] || Bundler.settings["gem.test"]
-
-      if test_framework.nil?
-        Bundler.ui.confirm "Do you want to generate tests with your gem?"
-        result = Bundler.ui.ask "Type 'rspec' or 'minitest' to generate those test files now and " \
-          "in the future. rspec/minitest/(none):"
-        if result =~ /rspec|minitest/
-          test_framework = result
-        else
-          test_framework = false
-        end
-      end
-
-      if Bundler.settings["gem.test"].nil?
-        Bundler.settings.set_global("gem.test", test_framework)
-      end
-
-      test_framework
-    end
-
-    def ask_and_set(key, header, message)
-      choice = options[key]  # || Bundler.settings["gem.#{key}"]
-
-      if choice.nil?
-        Bundler.ui.confirm header
-        choice = (Bundler.ui.ask("#{message} y/(n):") =~ /y|yes/)
-        Bundler.settings.set_global("gem.#{key}", choice)
-      end
-
-      choice
-    end
-
-    def prompt_coc!(templates)
-      if ask_and_set(:coc, "Do you want to include a code of conduct in gems you generate?",
-          "Codes of conduct can increase contributions to your project by contributors who " \
-          "prefer collaborative, safe spaces. You can read more about the code of conduct at " \
-          "contributor-covenant.org. Having a code of conduct means agreeing to the responsibility " \
-          "of enforcing it, so be sure that you are prepared to do that. For suggestions about " \
-          "how to enforce codes of conduct, see bit.ly/coc-enforcement."
-        )
-        templates.merge!("CODE_OF_CONDUCT.md.tt" => "CODE_OF_CONDUCT.md")
-      end
-    end
-
-    def prompt_mit!(templates, config)
-      if ask_and_set(:mit, "Do you want to license your code permissively under the MIT license?",
-          "This means that any other developer or company will be legally allowed to use your code " \
-          "for free as long as they admit you created it. You can read more about the MIT license " \
-          "at choosealicense.com/licenses/mit."
-        )
-        config[:mit] = true
-        templates.merge!("LICENSE.txt.tt" => "LICENSE.txt")
-      end
-    end
-
-    def prompt_test_framework!(templates, config)
-      namespaced_path = config[:namespaced_path]
-      if test_framework = ask_and_set_test_framework
-        templates.merge!(".travis.yml.tt" => ".travis.yml")
-
-        case test_framework
-        when 'rspec'
-          templates.merge!(
-            "rspec.tt" => ".rspec",
-            "spec/spec_helper.rb.tt" => "spec/spec_helper.rb",
-            'spec/#{name}_spec.rb.tt' => "spec/#{namespaced_path}_spec.rb"
-          )
-        when 'minitest'
-          templates.merge!(
-            "test/minitest_helper.rb.tt" => "test/minitest_helper.rb",
-            "test/test_newgem.rb.tt" => "test/test_#{namespaced_path}.rb"
-          )
-        end
       end
     end
 
