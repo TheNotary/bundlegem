@@ -23,9 +23,16 @@ module Bundlegem
       available_templates = configurator.collect_user_defined_templates
 
       available_templates = group_hashes_by_key(available_templates)
-      output_string = convert_grouped_hashes_to_output(available_templates)
+      output = convert_grouped_hashes_to_output(available_templates)
 
-      mark_default_template(output_string, configurator.default_template)
+      if output.empty?
+        empty_output_msg = "You have no templates.  You can install the public example templates with\n"
+        empty_output_msg += "the below command\n\n"
+        empty_output_msg += "bundlegem --install-public-templates"
+        return empty_output_msg
+      end
+
+      mark_default_template(output, configurator.default_template)
     end
 
     def install_public_templates

@@ -5,20 +5,11 @@ module Bundlegem::CLI
   module DirToTemplate
     class << self
 
-      # returns the list of templates currently available as a well formatted string
       def go
         validate_working_directory!
         file_enumerator = Find.find('.')
 
-        output = Bundlegem::Core::DirToTemplate.🧙🪄! file_enumerator
-
-        if output.empty?
-          output = "You have no templates.  You can install the public example templates with\n"
-          output += "the below command\n\n"
-          output += "bundlegem --install-public-templates"
-        end
-
-        output
+        Bundlegem::Core::DirToTemplate.🧙🪄! file_enumerator
       end
 
       private

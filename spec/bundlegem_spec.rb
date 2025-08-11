@@ -16,6 +16,13 @@ describe Bundlegem do
 
   # List
 
+  it 'gives the user a helpful output when there are no templates installed' do
+    list_output = Bundlegem.list
+
+    expect(list_output).to start_with "You have no templates."
+    expect(File).to exist("#{ENV['HOME']}/.bundlegem")
+  end
+
   it 'creates a config file if needed and lists properly' do
     create_user_defined_template
 

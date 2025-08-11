@@ -20,7 +20,7 @@ module Bundlegem::Core::DirToTemplate
         repopulate_gitignore(path, new_path) unless dry_run
 
         files_changed << "Renamed: #{path} -> #{new_path}"
-      end
+      end      
       files_changed
     end
 
