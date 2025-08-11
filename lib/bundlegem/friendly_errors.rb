@@ -5,26 +5,26 @@ require "bundlegem/vendored_thor"
 module Bundlegem
   def self.with_friendly_errors
     yield
-  rescue Bundlegem::Dsl::DSLError => e
+  rescue Bundlegem::Dsl:DSLError:  e
     Bundlegem.ui.error e.message
     exit e.status_code
-  rescue Bundlegem::BundlegemError => e
-    Bundlegem.ui.error e.message, :wrap => true
+  rescue Bundlegem:BundlegemError:  e
+    Bundlegem.ui.error e.message, wrap:  true
     Bundlegem.ui.trace e
     exit e.status_code
-  rescue Thor::AmbiguousTaskError => e
+  rescue Thor:AmbiguousTaskError:  e
     Bundlegem.ui.error e.message
     exit 15
-  rescue Thor::UndefinedTaskError => e
+  rescue Thor:UndefinedTaskError:  e
     Bundlegem.ui.error e.message
     exit 15
-  rescue Thor::Error => e
+  rescue Thor:Error:  e
     Bundlegem.ui.error e.message
     exit 1
   rescue LoadError => e
     raise e unless e.message =~ /cannot load such file -- openssl|openssl.so|libcrypto.so/
     Bundlegem.ui.error "\nCould not load OpenSSL."
-    Bundlegem.ui.warn <<-WARN, :wrap => true
+    Bundlegem.ui.warn <<-WARN, wrap:  true
       You must recompile Ruby with OpenSSL support or change the sources in your \
       Gemfile from 'https' to 'http'. Instructions for compiling with OpenSSL \
       using RVM are available at http://rvm.io/packages/openssl.
@@ -54,7 +54,7 @@ module Bundlegem
           #{e.class}: #{e.message}
           #{e.backtrace.join("\n          ")}
 
-      #{Bundlegem::Env.new.report(:print_gemfile => false).gsub(/\n/, "\n      ").strip}
+      #{Bundlegem::Env.new.report(print_gemfile:  false).gsub(/\n/, "\n      ").strip}
       #{'――― TEMPLATE END ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――'}
 
     EOS

@@ -52,8 +52,8 @@ module Bundlegem
         :name             => name,
         :title            => title,
         :unprefixed_name  => unprefixed_name,
-        :unprefixed_pascal=> unprefixed_name.tr('-', '_').split('_').map(&:capitalize).join,
-        :underscored_name => underscored_name,
+        unprefixed_pascal:  unprefixed_name.tr('-', '_').split('_').map(&:capitalize).join,
+        underscored_name:  underscored_name,
         :pascal_name      => pascal_name,
         :camel_name       => pascal_name.sub(/^./, &:downcase),
         :screamcase_name  => name.tr('-', '_').upcase,
@@ -261,7 +261,7 @@ module Bundlegem
     # ==== Parameters
     # source<String>:: the relative path to the source root.
     # destination<String>:: the relative path to the destination root.
-    # config<Hash>:: give :verbose => false to not log the status.
+    # config<Hash>:: give verbose:  false to not log the status.
     #
     # ==== Examples
     #
