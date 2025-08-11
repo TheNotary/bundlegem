@@ -17,7 +17,8 @@ module Bundlegem::CLI
       def validate_working_directory!
         # check for the existence of a bundlegem.yml file which won't ordinarily exist
         if !File.exist?("bundlegem.yml")
-          raise "error: bundlegem.yml file not found in current directory.  Create it or run this command in the folder you thought you were in."
+          puts "error: bundlegem.yml file not found in current directory.  Create it or run this command in the folder you thought you were in."
+          exit 1
         end
       end
 
