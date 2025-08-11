@@ -29,6 +29,7 @@ module Bundlegem
     end
 
     def install_public_templates
+      validate_git_is_installed!
       configurator = Configurator.new
       config_file_data = configurator.config_file_data
       puts "Downloading templates from the following locations: \n  #{config_file_data['public_templates'].split(" ").join("\n  ")}"
@@ -43,6 +44,19 @@ module Bundlegem
           puts "Warning: Skipping, template already exists #{ENV['HOME']}/.bundlegem/templates/#{template_folder_name}"
         end
       end
+    end
+
+    def validate_git_is_installed!
+      exts = ENV['PATHEXT'] ? ENV['PATHEXT'].split(';') : ['']
+      ENV['PATH'].split(File::PATH_SEPARATOR).each do |path|
+        exts.each do |ext|
+          exe = File.join(path, "git#{ext}")
+          return if File.executable?(exe) && !File.directory?(exe)
+        end
+      end
+
+      puts "Error: `git` command not found. Please install Git and ensure it's in your PATH."
+      exit 1
     end
 
     def dir_to_template

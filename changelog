@@ -2,6 +2,7 @@
   - TBD
 
 ** 0.2.0 **
+  - Feature: improves stdout feedback to enhance UX
   - Feature: hides stack trace when user is simply missing a bundlegem.yml file
   - Feature: allows interpolation of template variables within bootstrap_command
   - Feature: adds a 'config[:title]' variable
