@@ -11,7 +11,7 @@ ENV['SPEC_DATA_DIR'] = File.expand_path("./spec/data") # I fell into this from s
 
 
 def setup_mock_web_template
-  ENV['best_templates'] = "#{ENV['HOME']}/arduino.git"
+  ENV['public_templates'] = "#{ENV['HOME']}/arduino.git"
   FileUtils.mkdir("#{ENV['HOME']}/arduino.git")
   FileUtils.touch("#{ENV['HOME']}/arduino.git/README.md")
 

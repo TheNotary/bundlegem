@@ -162,7 +162,7 @@ describe Bundlegem do
     expect(config[:unprefixed_name]).to eq "good-dog"
   end
 
-  describe "install best templates" do
+  describe "install public templates" do
     before :each do
       setup_mock_web_template
     end
@@ -170,8 +170,8 @@ describe Bundlegem do
       remove_mock_web_template
     end
 
-    it "can download best templates from the web" do
-      capture_stdout { Bundlegem.install_best_templates }
+    it "can download public templates from the web" do
+      capture_stdout { Bundlegem.install_public_templates }
       expect(File).to exist("#{ENV['HOME']}/.bundlegem/templates/template-arduino/README.md")
     end
   end

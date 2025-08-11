@@ -6,7 +6,7 @@ Use bundlegem to start a new project folder based on a predefined template.
 Usage Examples:
 
   # Download all my template files (configured in ~/.bundlegem/config)
-  $ bundlegem --install-best-templates
+  $ bundlegem --install-public-templates
 
   # List available teplates
   $  bundlegem --list

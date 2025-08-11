@@ -42,12 +42,12 @@
   - Bugfix: fixes bug where I thought I was using something cool like figaro
     but was not
   - Bugfix: fixes bug where configuration wasn't loaded before running
-    --install-best-templates
+    --install-public-templates
   - Bugfix:  fixes bug where require pry was left in
 
 ** 0.0.7 **
 
-  - Feature:  Ability to load templates from github via --install-best-templates
+  - Feature:  Ability to load templates from github via --install-public-templates
   - Feature:  Make each user defined gem have a subfolder that is the exact
     project structure, so the readme for the gem can exist without fear of it
     being copied into new projects

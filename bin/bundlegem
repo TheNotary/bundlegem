@@ -25,8 +25,8 @@ parser = OptionParser.new do |opts|
     exit
   end
 
-  opts.on("--install-best-templates", "Install best templates") do
-    Bundlegem.install_best_templates
+  opts.on("--install-public-templates", "Install public templates") do
+    Bundlegem.install_public_templates
     exit
   end
 

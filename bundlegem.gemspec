@@ -11,7 +11,7 @@ Gem::Specification.new do |s|
   s.authors       = ["TheNotary"]
   s.email         = ["no@mail.plz"]
   s.summary       = %q{This gem makes more gems!}
-  s.description   = %q{ This is a gem for making more gems!  I KNOW!  ISN'T THAT LIKE WISHING FOR MORE WISHES!}
+  s.description   = %q{ This is a gem for making more gems!  I know!  It's like asking a genie for more wishes but it actually works!}
   s.homepage      = "https://github.com/thenotary/bundlegem"
   s.license       = "MIT"
 

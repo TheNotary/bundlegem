@@ -28,11 +28,11 @@ module Bundlegem
       mark_default_template(output_string, configurator.default_template)
     end
 
-    def install_best_templates
+    def install_public_templates
       configurator = Configurator.new
       config_file_data = configurator.config_file_data
-      puts "Downloading templates from the following locations: \n  #{config_file_data['best_templates'].split(" ").join("\n  ")}"
-      config_file_data['best_templates'].split.each do |url|
+      puts "Downloading templates from the following locations: \n  #{config_file_data['public_templates'].split(" ").join("\n  ")}"
+      config_file_data['public_templates'].split.each do |url|
         uri = URI.parse(url)
         template_folder_name = File.basename(uri.path).sub(/\.git$/, "")
         if !File.exist?("#{ENV['HOME']}/.bundlegem/templates/#{template_folder_name}")
