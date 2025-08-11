@@ -1,14 +1,11 @@
 # BundleGem: A Gem Project Generator with User Defined Templates
 [![Gem Version](https://badge.fury.io/rb/bundlegem.svg)](https://badge.fury.io/rb/bundlegem)
 
-The goal of the project is to allow users to define templates in the most native form to all technologist: Directory Structures, short commands, and helpful commands which make the gem's usage completely visible!
+The goal of the project is to allow users to define templates in the most native form to all technologist: Directory Structures, short commands, and helpful commands which make the project's usage completely visible!
 
-The benefits of using this repo to create gems rather than bundler is that you can choose to create 'classes' of gems.  By classes, I mean that there are different types of 'gems', there are basic library gems, that are just code and can only be used from other code, there are command line application gems, those are gems that are run on the command line and include a binary file, and there are also web interface gems, those are gems which spin up a simple web interface and request that the user connect to it's server on what ever port it has spun up on.  Depending on your field of specialty, you may be able to imagine other classes of gems that will aid you in your work.
+Programming often involves a lot of boilerplate and configuration "boot strapping" before you can get going actually writing any code.  To automate this aspect of creating new projects and microservices, bundlegem allows you to run a simple command `bundlegem -t my-c-embedded-template project-name` and it will clone a template you've made with exact specifications, update the names of files and references within the files to match your project name, run any commands specified in your template.  What once would have been a 5-10 minute distraction of remembering and implementing all those little patterns, testing dependencies, and pipeline definitions now happens immediately with a single command.
 
-All of these 'classes of gems' as I refer to them, start out with a different code base, consistent with all other gems of the same class.  This 'class based' approach to gem creation is different from the adaptive approach that other gem generators are based on.
-
-The most beneficial aspect of this gem is that it allows you to specify exactly how you want your 'default starting gem' to look, rather than rely on what someone else thought would be generally helpful.
-
+The most beneficial aspect of BundleGem is that it allows you to specify exactly how you want your 'default starting project' to look, rather than rely on what someone else thought would be generally helpful.
 
 ### Installation
 
@@ -28,18 +25,17 @@ Configuration comes from your gitconfig.  At the user level, this is set at `~/.
   repo-domain = github.com
 ```
 
-
 ### Usage
 
 These commands will create a new gem named `project_name` in `/tmp/project_name`:
 
 ```
 $  cd /tmp
-$  bundlegem project_name -t arduino
+$  bundlegem -t arduino project_name
 ```
 
 
-### List Available Templates
+#### List Available Templates
 
 ```
 $  bundlegem --list
@@ -57,7 +53,7 @@ EMBEDDED:
 You'll find a project skeleton in ~/.bundlegem/templates/my_service that you can customize to your liking.
 
 
-## Create Your Own Template
+#### Create Your Own Template
 
 You can create a new template for a project class you expect to use more than once:
 
@@ -91,7 +87,3 @@ Quick Tips:
 - Within files, use `<%=config[:namespaced_path]%>` to have that reinterpreted as just the file name with underscores
 - Have a look [under the hood](https://github.com/TheNotary/bundlegem/blob/master/lib/bundlegem/cli/gem.rb#L30-L43) to see other options and the context where the ERB.new takes place.
 
-
-## Gem Backstory
-
-A lot of the code here was extracted from Bundler's `bundle gem` command, so credits to the Bundler folks.  Originally I planned to make the new features accessible to the Bundler team and went out of my way to keep the code as similar to their project as possible, but ultimately realized two thing.  First they don't want to grow the project creation feature because good tools should do a single thing very well (manage dependencies), not many things (manage dependencies and also do random other helpful stuff).  And second Bundler is a profoundly common dependency meaning every change is enormously high stakes.
