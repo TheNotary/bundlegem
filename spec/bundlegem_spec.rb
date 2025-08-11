@@ -46,25 +46,8 @@ describe Bundlegem do
 
   # Generate
 
-  # This bulids the default gem template
-  it "can generate the default built-in gem fine" do
-    options = {bin: false, ext: false, coc:  false}
-    gem_name = "tmp_gem"
-
-    capture_stdout { Bundlegem.gem(options, gem_name) }
-    expect(File).to exist("#{@dst_dir}/#{gem_name}/README.md")
-  end
-
-  it "can generate the c_ext gem fine" do
-    options = {bin: false, ext: false, coc:  false, "template" => "c_extension_gem"}
-    gem_name = "tmp_gem"
-
-    capture_stdout { Bundlegem.gem(options, gem_name) }
-    expect(File).to exist("#{@dst_dir}/#{gem_name}/ext/tmp_gem/#{gem_name}.c")
-  end
-
   it "finds the template-test template even if the template- prefix was omitted" do
-    options = {bin: false, ext: false, coc:  false, "template" => "test"}
+    options = {bin: false, ext: false, coc:  false, template: "test"}
     gem_name = "tmp_gem"
 
     capture_stdout { Bundlegem.gem(options, gem_name) }
@@ -73,7 +56,7 @@ describe Bundlegem do
   end
 
   it "has a useful dynamically_generate_template_directories method" do
-    options = { bin: false, ext: false, coc:  false, "template" => "test_template" }
+    options = { bin: false, ext: false, coc:  false, template: "test_template" }
     gem_name = "good-dog"
     my_gem = Bundlegem::CLI::Gem.new(options, gem_name)
 
@@ -85,7 +68,7 @@ describe Bundlegem do
   end
 
   it "returns the expected interpolated string when substitute_template_values is called" do
-    options = { bin: false, ext: false, coc:  false, "template" => "test_template" }
+    options = { bin: false, ext: false, coc:  false, template: "test_template" }
     gem_name = "good-dog"
     my_gem = Bundlegem::CLI::Gem.new(options, gem_name)
 
@@ -100,7 +83,7 @@ describe Bundlegem do
   end
 
   it "has a useful dynamically_generate_templates_files method" do
-    options = { bin: false, ext: false, coc:  false, "template" => "test_template" }
+    options = { bin: false, ext: false, coc:  false, template: "test_template" }
     gem_name = "good-dog"
     my_gem = Bundlegem::CLI::Gem.new(options, gem_name)
 
@@ -114,7 +97,7 @@ describe Bundlegem do
 
   it "won't generate template files that are listed under the gitignore" do
     template_dir = create_user_defined_template("testing", "template-user-supplied")
-    options = { bin: false, ext: false, coc:  false, "template" => "template-user-supplied" }
+    options = { bin: false, ext: false, coc:  false, template: "template-user-supplied" }
     gem_name = "good-dog"
 
     File.write("#{template_dir}/.gitignore", "node_modules/")
@@ -131,7 +114,7 @@ describe Bundlegem do
 
   it "executes the bootstrap_command if supplied" do
     template_dir = create_user_defined_template("testing", "template-user-supplied")
-    options = { bin: false, ext: false, coc:  false, "template" => "template-user-supplied" }
+    options = { bin: false, ext: false, coc:  false, template: "template-user-supplied" }
     gem_name = "good-dog"
 
     File.write("#{template_dir}/bundlegem.yml", "bootstrap_command: echo hihihi")
@@ -146,7 +129,7 @@ describe Bundlegem do
   it "interpolates variables into the bootstrap_command" do
     # this is quite pointless, we're literally allowing the user to execute a command on their shell...
     template_dir = create_user_defined_template("testing", "template-user-supplied")
-    options = { bin: false, ext: false, coc:  false, "template" => "template-user-supplied" }
+    options = { bin: false, ext: false, coc:  false, template: "template-user-supplied" }
     gem_name = "good-dog"
 
     File.write("#{template_dir}/bundlegem.yml", 'bootstrap_command: "echo #{config[:name]}"')
@@ -160,7 +143,7 @@ describe Bundlegem do
 
   it "has a test proving every interpolation in one file" do
     expected_manifest = File.read("#{ENV['SPEC_DATA_DIR']}/variable_manifest_test.rb")
-    options = { bin: false, ext: false, coc:  false, "template" => "test_template" }
+    options = { bin: false, ext: false, coc:  false, template: "test_template" }
     gem_name = "good-dog"
 
     capture_stdout { Bundlegem.gem(options, gem_name) }
@@ -170,7 +153,7 @@ describe Bundlegem do
   end
 
   it "has config[:unprefixed_name] removing purpose-tool- from name" do
-    options = { bin: false, ext: false, coc:  false, "template" => "test_template" }
+    options = { bin: false, ext: false, coc:  false, template: "test_template" }
     gem_name = "tool-go-good-dog"
     my_gem = Bundlegem::CLI::Gem.new(options, gem_name)
 

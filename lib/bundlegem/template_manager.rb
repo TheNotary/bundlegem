@@ -10,10 +10,10 @@ module Bundlegem
 
       def internal_template_location() = File.expand_path("#{File.dirname(__FILE__)}/templates")
       def custom_template_location() = File.expand_path("~/.bundlegem/templates")
-      def default_template_name() = "cli_gem"
+      def default_template_name() = "ruby-cli-gem"
 
       def get_template_src(options)
-        template_name = options["template"] || default_template_name
+        template_name = options[:template] || default_template_name
         template_location = template_exists_within_repo?(template_name) ?
                         internal_template_location :
                         custom_template_location

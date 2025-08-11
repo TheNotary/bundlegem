@@ -18,7 +18,7 @@ module Bundlegem::CLI
 
       @tconf = load_template_configs
 
-      validate_ext_name if options[:ext]
+      validate_ext_name if options[:ext] # FIXME: Useless now?
     end
 
     def build_interpolation_config
@@ -67,10 +67,10 @@ module Bundlegem::CLI
         :git_repo_domain  => git_repo_domain,
         :git_repo_url     => git_repo_url,
         :git_repo_path    => git_repo_path,
-        :template         => options[:template],
-        :test             => options[:test],
-        :ext              => options[:ext],
-        :bin              => options[:bin],
+        :template         => @options[:template],
+        :test             => @options[:test],
+        :ext              => @options[:ext],
+        :bin              => @options[:bin],
         :bundler_version  => bundler_dependency_version
       }
     end
@@ -221,7 +221,7 @@ module Bundlegem::CLI
 
     # returns the full path of the template source
     def match_template_src
-      template_src = ::Bundlegem::TemplateManager.get_template_src(options)
+      template_src = ::Bundlegem::TemplateManager.get_template_src(@options)
 
       if File.exist?(template_src)
         return template_src    # 'newgem' refers to the built in template that comes with the gem
@@ -295,7 +295,7 @@ module Bundlegem::CLI
 
     def raise_no_files_in_template_error!
       err_no_files_in_template = <<-HEREDOC
-Ooops, the template was found for '#{options['template']}' in ~/.bundlegem/templates,
+Ooops, the template was found for '#{@options[:template]}' in ~/.bundlegem/templates,
 but no files within it ended in .tt.  Did you forget to rename the extensions of your files?
 
 Exiting...
@@ -316,7 +316,7 @@ Exiting...
     end
 
     def raise_template_not_found!
-      err_missing_template = "Could not find template folder '#{options["template"]}' in `~/.bundle/templates/`. Please check to make sure your desired template exists."
+      err_missing_template = "Could not find template folder '#{@options[:template]}' in `~/.bundle/templates/`. Please check to make sure your desired template exists."
       puts err_missing_template
       Bundler.ui.error err_missing_template
       raise
