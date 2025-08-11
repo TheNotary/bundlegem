@@ -1,3 +1,3 @@
 module Bundlegem
-  VERSION = "1.1.2-rc.1"
+  VERSION = "1.2.0-rc.1"
 end
