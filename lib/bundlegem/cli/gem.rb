@@ -322,17 +322,11 @@ module Bundlegem
       File.chmod(original_mode, destination)
     end
 
-
-    #
-    # EDIT:  Reworked from Thor to not rely on Thor (or do so much unneeded stuff)
-    #
     def make_file(destination, config, &block)
       FileUtils.mkdir_p(File.dirname(destination))
       puts " Writing   #{destination} ..."
       File.open(destination, "wb") { |f| f.write block.call }
     end
-
-
 
     def raise_no_files_in_template_error!
       err_no_files_in_template = <<-HEREDOC
@@ -364,7 +358,30 @@ Exiting...
     end
 
 
-    ############# STUFF THAT SHOULD BE REMOVED DOWN THE ROAD
+    # This checks to see that the gem_name is a valid ruby gem name and will 'work'
+    # and won't overlap with a bundlegem constant apparently...
+    #
+    # TODO:  This should be defined within the template itself in some way possibly, may have security implications
+    def ensure_safe_gem_name(name, constant_array)
+      if name =~ /^\d/
+        Bundler.ui.error "Invalid gem name #{name} Please give a name which does not start with numbers."
+        raise
+      elsif Object.const_defined?(constant_array.first)
+        Bundler.ui.error "Invalid gem name #{name} constant #{constant_array.join("::")} is already in use. Please choose another gem name."
+        raise
+      end
+    end
+
+    def time_it(label = nil)
+      start_time = Process.clock_gettime(Process::CLOCK_MONOTONIC)
+      yield
+      end_time = Process.clock_gettime(Process::CLOCK_MONOTONIC)
+      elapsed_ms = ((end_time - start_time) * 1000).round(2)
+      puts "#{label || 'Elapsed'}: #{elapsed_ms} ms"
+    end
+
+
+    ############# FIXME: STUFF THAT SHOULD BE REMOVED DOWN THE ROAD
 
     # This asks the user if they want to setup rspec or test...
     # It's not class based, it's additive based... Plus bundlegem does this already
@@ -443,28 +460,6 @@ Exiting...
           )
         end
       end
-    end
-
-    # This checks to see that the gem_name is a valid ruby gem name and will 'work'
-    # and won't overlap with a bundlegem constant apparently...
-    #
-    # TODO:  This should be defined within the template itself in some way possibly, may have security implications
-    def ensure_safe_gem_name(name, constant_array)
-      if name =~ /^\d/
-        Bundler.ui.error "Invalid gem name #{name} Please give a name which does not start with numbers."
-        raise
-      elsif Object.const_defined?(constant_array.first)
-        Bundler.ui.error "Invalid gem name #{name} constant #{constant_array.join("::")} is already in use. Please choose another gem name."
-        raise
-      end
-    end
-
-    def time_it(label = nil)
-      start_time = Process.clock_gettime(Process::CLOCK_MONOTONIC)
-      yield
-      end_time = Process.clock_gettime(Process::CLOCK_MONOTONIC)
-      elapsed_ms = ((end_time - start_time) * 1000).round(2)
-      puts "#{label || 'Elapsed'}: #{elapsed_ms} ms"
     end
 
   end
