@@ -1,5 +1,15 @@
-** Planned 0.1.x **
+** Planned 0.2.x **
   - TBD
+
+** 0.2.0 **
+  - Feature: hides stack trace when user is simply missing a bundlegem.yml file
+  - Feature: allows interpolation of template variables within bootstrap_command
+  - Feature: adds a 'config[:title]' variable
+  - Bugfix: fixes issue where .git and it's subfolders were being created from the source template repo which wasted time
+  - Bugfix: fixes a performance issue where shelling out to git check-ignored was being performed many times within high frequency loops
+  - Bugfix: fixes bug where not specifying the category of a template apparently causes the list function to crash
+  - Bugfix: Cleans out dependencies that are no longer used
+  - Bugfix: Cleaned out tons of dead code and addressed tech debt I've been putting off since 1.8.5
   - Bugfix: Changes working directory before running bootstrap_commands
 
 ** 0.1.0 **

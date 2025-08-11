@@ -36,5 +36,3 @@ end
 
 task default:  :spec
 task test:  :spec
-
-

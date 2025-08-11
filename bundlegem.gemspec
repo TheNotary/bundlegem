@@ -15,12 +15,10 @@ Gem::Specification.new do |s|
   s.homepage      = "https://github.com/thenotary/bundlegem"
   s.license       = "MIT"
 
-  s.metadata = {
-    "bug_tracker_uri"   => "https://github.com/TheNotary/bundlegem/issues",
-    "changelog_uri"     => "https://github.com/TheNotary/bundlegem/releases/tag/v#{version}",
-    "documentation_uri" => "https://api.rubyonrails.org/v#{version}/",
-    "source_code_uri"   => "https://github.com/TheNotary/bundlegem/tree/v#{version}",
-  }
+  s.metadata["bug_tracker_uri"] = "https://github.com/TheNotary/bundlegem/issues"
+  s.metadata["changelog_uri"] = "https://github.com/TheNotary/bundlegem/releases/tag/v#{version}"
+  s.metadata["documentation_uri"] = "https://api.rubyonrails.org/v#{version}/"
+  s.metadata["source_code_uri"] = "https://github.com/TheNotary/bundlegem/tree/v#{version}"
 
   s.files         = `git ls-files -z`.split("\x0")
   s.executables   = s.files.grep(%r{^bin/}) { |f| File.basename(f) }
