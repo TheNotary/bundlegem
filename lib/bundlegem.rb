@@ -27,7 +27,7 @@ module Bundlegem
 
       if output.empty?
         empty_output_msg = "You have no templates.  You can install the public example templates with\n"
-        empty_output_msg += "the below command\n\n"
+        empty_output_msg += "the below command:\n\n"
         empty_output_msg += "bundlegem --install-public-templates"
         return empty_output_msg
       end

@@ -51,6 +51,14 @@ Configuration is optional and comes from your gitconfig file.  At the user level
   repo-domain = github.com
 ```
 
+Alternatively, run these commands:
+
+```
+git config --global user.email your-public-gh@email.com
+git config --global user.name YOUR_GH_NAME
+git config --global user.repo-domain github.com
+```
+
 #### Create Your Own Template
 
 You can create a new template for a project class you expect to use more than once:
