@@ -1,7 +1,6 @@
 $LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
 $test_env = true
 require 'bundlegem'
-require 'bundlegem/cli'
 require 'bundlegem/cli/gem'
 require 'fileutils'
 require 'pry'

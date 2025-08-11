@@ -6,7 +6,6 @@ require 'bundlegem/template_manager'
 require 'bundlegem/core/core'
 require 'bundlegem/cli/cli'
 
-require 'bundlegem/cli'
 require 'uri'
 
 SOURCE_ROOT = File.expand_path("#{File.dirname(__FILE__)}/..")
@@ -47,11 +46,10 @@ module Bundlegem
     end
 
     def dir_to_template
-      puts Cli::DirToTemplate.go
+      puts CLI::DirToTemplate.go
     end
 
     def gem(options, gem_name)
-      require 'bundlegem/cli'
       require 'bundlegem/cli/gem'
 
       Bundlegem::CLI::Gem.new(options, gem_name).run

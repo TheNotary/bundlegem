@@ -1,10 +1,11 @@
 require 'pathname'
 require 'yaml'
+require 'erb'
 
 $TRACE = false
 
-module Bundlegem
-  class CLI::Gem
+module Bundlegem::CLI
+  class Gem
     attr_reader :options, :gem_name, :name, :target
 
     def initialize(options, gem_name)
@@ -13,7 +14,7 @@ module Bundlegem
 
       @name = @gem_name
       @target = Pathname.pwd.join(gem_name)
-      @template_src = TemplateManager.get_template_src(options)
+      @template_src = ::Bundlegem::TemplateManager.get_template_src(options)
 
       @tconf = load_template_configs
 
@@ -52,7 +53,7 @@ module Bundlegem
         :name             => name,
         :title            => title,
         :unprefixed_name  => unprefixed_name,
-        unprefixed_pascal:  unprefixed_name.tr('-', '_').split('_').map(&:capitalize).join,
+        unprefixed_pascal: unprefixed_name.tr('-', '_').split('_').map(&:capitalize).join,
         underscored_name:  underscored_name,
         :pascal_name      => pascal_name,
         :camel_name       => pascal_name.sub(/^./, &:downcase),
@@ -220,7 +221,7 @@ module Bundlegem
 
     # returns the full path of the template source
     def match_template_src
-      template_src = TemplateManager.get_template_src(options)
+      template_src = ::Bundlegem::TemplateManager.get_template_src(options)
 
       if File.exist?(template_src)
         return template_src    # 'newgem' refers to the built in template that comes with the gem
@@ -244,7 +245,7 @@ module Bundlegem
     end
 
     def bundler_dependency_version
-      v = Gem::Version.new(Bundler::VERSION)
+      v = ::Gem::Version.new(Bundler::VERSION)
       req = v.segments[0..1]
       req << 'a' if v.prerelease?
       req.join(".")
@@ -273,7 +274,7 @@ module Bundlegem
       config = args.last.is_a?(Hash) ? args.pop : {}
       destination = args.first || source.sub(/#{TEMPLATE_EXTNAME}$/, "")
 
-      source  = File.expand_path(TemplateManager.find_in_source_paths(source.to_s))
+      source  = File.expand_path(::Bundlegem::TemplateManager.find_in_source_paths(source.to_s))
       context = instance_eval("binding")
 
       make_file(destination, config) do

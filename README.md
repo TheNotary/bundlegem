@@ -80,7 +80,7 @@ Also, you can specify the `category` of the gem by editing the bundlegem.yml fil
 
 ### Customizing Your Own Templates
 
-Place your own templates in `~/.bunglegem/templates`.  You can populate it with examples by running `bundlegem --install-best-templates` which will effectively clone down a few sample git repos into the templates folder for you such as [Go-Cli](https://github.com/TheNotary/go-cli) for instance.
+Place your own templates in `~/.bunglegem/templates`.  You can populate it with examples by running `bundlegem --install-best-templates` which will effectively clone down a few sample git repos into the templates folder for you such as [Go-cli](https://github.com/TheNotary/template-go-cli) for instance.
 
 You'll get a good idea as to the possibilities by inspecting the files in [templates](https://github.com/TheNotary/bundlegem/tree/master/lib/bundlegem/templates/cli_gem).  Check out the [reference](/spec/data/variable_manifest_test.rb) test file to see what kind of interpolations are possible.
 
