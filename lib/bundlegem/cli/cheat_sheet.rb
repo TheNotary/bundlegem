@@ -1,5 +1,3 @@
-
-
 module Bundlegem::CLI
   module CheatSheet
     class << self

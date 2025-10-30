@@ -31,6 +31,7 @@ module Bundlegem::CLI
       constant_array = constant_name.split('::')
       git_user_name = `git config user.name`.chomp
       git_user_email = `git config user.email`.chomp
+      registry_domain = `git config user.registry-domain`.chomp
 
       # git_repo_domain = provider.com
       git_repo_domain = `git config user.repo-domain`.chomp
@@ -53,6 +54,7 @@ module Bundlegem::CLI
       git_repo_url = "https://#{git_repo_domain}/#{git_user_name}/#{name}"
 
       image_path = "#{git_user_name}/#{name}".downcase
+      registry_repo_path = "#{registry_domain}/#{image_path}".downcase
 
       config = {
         :name             => name,
@@ -73,6 +75,8 @@ module Bundlegem::CLI
         :git_repo_url     => git_repo_url,
         :git_repo_path    => git_repo_path,
         :image_path       => image_path,
+        :registry_domain  => registry_domain,
+        :registry_repo_path => registry_repo_path,
         :template         => @options[:template],
         :test             => @options[:test],
         :ext              => @options[:ext],

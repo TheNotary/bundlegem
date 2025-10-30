@@ -44,7 +44,9 @@ def reset_test_env
   FileUtils.mkdir_p @dst_dir
   FileUtils.mkdir_p @template_root
   FileUtils.cd @dst_dir
-  auth_settings = 'git config --global user.email "you@example.com" && git config --global user.name "Test"'
+  auth_settings  = '    git config --global user.email "you@example.com"'
+  auth_settings += ' && git config --global user.name "Test"'
+  auth_settings += ' && git config --global user.registry-domain "my-registry.example.com"'
 
   `git config --global init.defaultBranch main && #{auth_settings}`
 end

@@ -49,6 +49,7 @@ Configuration is optional and comes from your gitconfig file.  At the user level
   email = me@example.com
   name = Me
   repo-domain = github.com
+  registry-domain = quay.io
 ```
 
 Alternatively, run these commands:
