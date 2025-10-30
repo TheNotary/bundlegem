@@ -17,6 +17,10 @@ module Bundlegem
       Bundlegem::VERSION
     end
 
+    def cheat_sheet
+      CLI::CheatSheet.go
+    end
+
     # lists available templates
     def list
       configurator = Configurator.new

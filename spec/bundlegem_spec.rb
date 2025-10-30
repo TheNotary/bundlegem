@@ -14,6 +14,14 @@ describe Bundlegem do
     expect(Bundlegem::VERSION).not_to be nil
   end
 
+  it 'has a cheat sheet it will share' do
+    output = Bundlegem.cheat_sheet
+
+    expect(output).to include("config[:name]:             good-dog")
+    expect(output).to include("config[:screamcase_name]:  GOOD_DOG")
+    expect(output).to include("config[:image_path]:       test/good-dog")
+  end
+
   # List
 
   it 'gives the user a helpful output when there are no templates installed' do

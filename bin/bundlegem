@@ -20,6 +20,11 @@ parser = OptionParser.new do |opts|
     exit
   end
 
+  opts.on("-c", "--cheat-sheet", "Show list of variables available in templates") do
+    puts Bundlegem.cheat_sheet
+    exit
+  end
+
   opts.on("-v", "--version", "Show version") do
     puts Bundlegem.version
     exit
