@@ -21,3 +21,4 @@ config[:git_repo_path]:       github.com/test/good-dog
 config[:image_path]:          test/good-dog
 config[:registry_domain]:     my-registry.example.com
 config[:registry_repo_path]:  my-registry.example.com/test/good-dog
+config[:k8s_domain]:          my-k8s.example.com

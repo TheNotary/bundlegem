@@ -21,3 +21,4 @@ config[:git_repo_path]:       <%= config[:git_repo_path] %>
 config[:image_path]:          <%= config[:image_path] %>
 config[:registry_domain]:     <%= config[:registry_domain] %>
 config[:registry_repo_path]:  <%= config[:registry_repo_path] %>
+config[:k8s_domain]:          <%= config[:k8s_domain] %>

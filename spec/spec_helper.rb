@@ -47,6 +47,9 @@ def reset_test_env
   auth_settings  = '    git config --global user.email "you@example.com"'
   auth_settings += ' && git config --global user.name "Test"'
   auth_settings += ' && git config --global user.registry-domain "my-registry.example.com"'
+  auth_settings += ' && git config --global user.k8s-domain "my-k8s.example.com"'
+
+
 
   `git config --global init.defaultBranch main && #{auth_settings}`
 end

@@ -32,6 +32,7 @@ module Bundlegem::CLI
       git_user_name = `git config user.name`.chomp
       git_user_email = `git config user.email`.chomp
       registry_domain = `git config user.registry-domain`.chomp
+      k8s_domain = `git config user.k8s-domain`.chomp
 
       # git_repo_domain = provider.com
       git_repo_domain = `git config user.repo-domain`.chomp
@@ -77,6 +78,7 @@ module Bundlegem::CLI
         :image_path       => image_path,
         :registry_domain  => registry_domain,
         :registry_repo_path => registry_repo_path,
+        :k8s_domain       => k8s_domain.empty? ? "k8s.domain.missing.from.gitconfig.local" : k8s_domain,
         :template         => @options[:template],
         :test             => @options[:test],
         :ext              => @options[:ext],
