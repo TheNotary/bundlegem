@@ -40,7 +40,7 @@ parser = OptionParser.new do |opts|
     exit
   end
 
-  opts.on("--help", "Show help") do
+  opts.on(nil, "--help", "Show help") do
     puts opts
     puts Bundlegem::HELP_MSG
     exit
@@ -50,7 +50,7 @@ end
 parser.parse!
 
 if ARGV.empty?
-  puts "Error: you need to specify a name for the project being created\n\n"
+  puts parser
   puts Bundlegem::HELP_MSG
   exit 1
 end
