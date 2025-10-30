@@ -52,6 +52,8 @@ module Bundlegem::CLI
       # git_repo_url = https://provider.com/user/name
       git_repo_url = "https://#{git_repo_domain}/#{git_user_name}/#{name}"
 
+      image_path = "#{git_user_name}/#{name}".downcase
+
       config = {
         :name             => name,
         :title            => title,
@@ -70,6 +72,7 @@ module Bundlegem::CLI
         :git_repo_domain  => git_repo_domain,
         :git_repo_url     => git_repo_url,
         :git_repo_path    => git_repo_path,
+        :image_path       => image_path,
         :template         => @options[:template],
         :test             => @options[:test],
         :ext              => @options[:ext],

@@ -18,3 +18,4 @@ config[:email]:            <%= config[:email] %>
 config[:git_repo_domain]:  <%= config[:git_repo_domain] %>
 config[:git_repo_url]:     <%= config[:git_repo_url] %>
 config[:git_repo_path]:    <%= config[:git_repo_path] %>
+config[:image_path]:       <%= config[:image_path] %>
