@@ -96,6 +96,7 @@ module Bundlegem::CLI
       puts "ensure_safe_gem_name" if $TRACE
       ensure_safe_gem_name(name, config[:constant_array])
 
+
       template_src = match_template_src
 
       puts "dynamically_generate_template_directories" if $TRACE
@@ -399,16 +400,21 @@ Exiting...
       puts "#{label || 'Elapsed'}: #{elapsed_ms} ms"
     end
 
-    # Validates that the gem_name won't cause conflicts with Ruby constants.
-    # Core safety checks are kept hardcoded; templates may add additional
-    # validation rules via bundlegem.yml in the future.
+    # This checks to see that the gem_name is a valid ruby gem name and will 'work'
+    # and won't overlap with a bundlegem constant apparently...
     def ensure_safe_gem_name(name, constant_array)
       if name =~ /^\d/
         $stderr.puts "Invalid gem name #{name} Please give a name which does not start with numbers."
         raise
-      elsif Object.const_defined?(constant_array.first)
-        $stderr.puts "Invalid gem name #{name} constant #{constant_array.join("::")} is already in use. Please choose another gem name."
-        raise
+      end
+
+      # TODO:  This validation should be defined within the template itself in some way
+      # may have security implications
+      if config[:template] == "ruby-cli-gem"
+        if Object.const_defined?(constant_array.first)
+          $stderr.puts "Invalid gem name #{name} constant #{constant_array.join("::")} is already in use. Please choose another gem name."
+          raise
+        end
       end
     end
 
