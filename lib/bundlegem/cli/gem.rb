@@ -83,7 +83,6 @@ module Bundlegem::CLI
         :test             => @options[:test],
         :ext              => @options[:ext],
         :bin              => @options[:bin],
-        :bundler_version  => bundler_dependency_version
       }
     end
 
@@ -115,7 +114,6 @@ module Bundlegem::CLI
         template("#{template_src}/#{src}", target.join(dst), config)
       end
 
-      # Bundler.ui.info "Initializing git repo in #{target}"
       Dir.chdir(target) { `git init`; `git add .` }
 
       if @tconf[:bootstrap_command]
@@ -249,20 +247,12 @@ module Bundlegem::CLI
     def validate_ext_name
       return unless gem_name.index('-')
 
-      Bundler.ui.error "You have specified a gem name which does not conform to the \n" \
-                       "naming guidelines for C extensions. For more information, \n" \
-                       "see the 'Extension Naming' section at the following URL:\n" \
-                       "http://guides.rubygems.org/gems-with-extensions/\n"
+      $stderr.puts "You have specified a gem name which does not conform to the \n" \
+                   "naming guidelines for C extensions. For more information, \n" \
+                   "see the 'Extension Naming' section at the following URL:\n" \
+                   "http://guides.rubygems.org/gems-with-extensions/\n"
       exit 1
     end
-
-    def bundler_dependency_version
-      v = ::Gem::Version.new(Bundler::VERSION)
-      req = v.segments[0..1]
-      req << 'a' if v.prerelease?
-      req.join(".")
-    end
-
 
     #
     # EDIT:  Reworked from Thor to not rely on Thor (or do so much unneeded stuff)
@@ -329,8 +319,7 @@ Exiting...
 
     def raise_template_not_found!
       err_missing_template = "Could not find template folder '#{@options[:template]}' in `~/.bundle/templates/`. Please check to make sure your desired template exists."
-      puts err_missing_template
-      Bundler.ui.error err_missing_template
+      $stderr.puts err_missing_template
       raise
     end
 
@@ -348,10 +337,10 @@ Exiting...
     # TODO:  This should be defined within the template itself in some way possibly, may have security implications
     def ensure_safe_gem_name(name, constant_array)
       if name =~ /^\d/
-        Bundler.ui.error "Invalid gem name #{name} Please give a name which does not start with numbers."
+        $stderr.puts "Invalid gem name #{name} Please give a name which does not start with numbers."
         raise
       elsif Object.const_defined?(constant_array.first)
-        Bundler.ui.error "Invalid gem name #{name} constant #{constant_array.join("::")} is already in use. Please choose another gem name."
+        $stderr.puts "Invalid gem name #{name} constant #{constant_array.join("::")} is already in use. Please choose another gem name."
         raise
       end
     end

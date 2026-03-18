@@ -1,9 +1,26 @@
 require 'rake'
-
-require 'bundler'
-Bundler::GemHelper.install_tasks
-
 require 'rspec/core/rake_task'
+
+GEM_NAME = "bundlegem"
+GEM_SPEC = "#{GEM_NAME}.gemspec"
+
+desc "Build #{GEM_NAME} gem"
+task :build do
+  system "gem build #{GEM_SPEC}"
+  FileUtils.mkdir_p "pkg"
+  FileUtils.mv Dir.glob("#{GEM_NAME}-*.gem"), "pkg/"
+end
+
+desc "Install #{GEM_NAME} gem locally"
+task install: :build do
+  system "gem install pkg/#{Dir.children('pkg').sort.last}"
+end
+
+desc "Build and push #{GEM_NAME} gem to RubyGems"
+task release: :build do
+  gem_file = Dir.glob("pkg/#{GEM_NAME}-*.gem").sort.last
+  system "gem push #{gem_file}"
+end
 
 desc "Run unit specs"
 RSpec::Core::RakeTask.new(:unit) do |t|
