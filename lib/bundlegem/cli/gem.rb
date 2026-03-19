@@ -1,6 +1,5 @@
 require 'pathname'
 require 'yaml'
-require 'erb'
 require 'open3'
 require 'shellwords'
 
@@ -8,7 +7,6 @@ $TRACE = false
 
 module Bundlegem::CLI
   class Gem
-    TEMPLATE_EXTNAME = ".tt"
 
     attr_reader :options, :gem_name, :name, :target
 
@@ -170,14 +168,17 @@ module Bundlegem::CLI
       template_dirs
     end
 
-    # Figures out the translation between all the .tt file to their
+    # Figures out the translation between all template files and their
     # destination names
     def dynamically_generate_templates_files
-      template_files = Dir.glob("#{@template_src}/**/*.tt", File::FNM_DOTMATCH).filter_map do |f|
+      template_files = Dir.glob("#{@template_src}/**/*", File::FNM_DOTMATCH).filter_map do |f|
         base_path = f[@template_src.length+1..-1]
-        # next if ignored_by_git?(@template_src, base_path)
+        next if base_path.nil?
+        next if base_path.start_with?(".git" + File::SEPARATOR) || base_path == ".git"
+        next if base_path == "bundlegem.yml"
+        next unless File.file?(f)
 
-        [base_path, substitute_template_values(base_path).sub(/\.tt$/, "")]
+        [base_path, substitute_template_values(base_path)]
       end.to_h
 
       raise_no_files_in_template_error! if template_files.empty?
@@ -187,15 +188,50 @@ module Bundlegem::CLI
     end
 
 
-    # Applies every possible substitution within config to the fs_obj_name
-    def substitute_template_values(fs_obj_name)
-      config.keys.inject(fs_obj_name) do |accu, key|
-        if config[key].class == String
-          accu.gsub(/\#\{#{key.to_s}\}/, config[key])
-        else
-          accu
-        end
+    # Applies literal foo-bar variant substitutions to path strings
+    def substitute_template_values(path_str)
+      build_filename_replacement_pairs.inject(path_str) do |result, (find, replace)|
+        result.gsub(find, replace)
       end
+    end
+
+    def build_filename_replacement_pairs
+      [
+        ['FOO_BAR',   config[:screamcase_name]],
+        ['FooBar',    config[:pascal_name]],
+        ['fooBar',    config[:camel_name]],
+        ['foo-bar',   config[:name]],
+        ['foo_bar',   config[:underscored_name]],
+      ]
+    end
+
+    def build_content_replacement_pairs
+      [
+        # FOO_ prefixed non-name variables
+        ['FOO_REGISTRY_REPO_PATH', config[:registry_repo_path]],
+        ['FOO_GIT_REPO_DOMAIN',    config[:git_repo_domain]],
+        ['FOO_GIT_REPO_PATH',      config[:git_repo_path]],
+        ['FOO_GIT_REPO_URL',       config[:git_repo_url]],
+        ['FOO_REGISTRY_DOMAIN',    config[:registry_domain]],
+        ['FOO_IMAGE_PATH',         config[:image_path]],
+        ['FOO_K8S_DOMAIN',         config[:k8s_domain]],
+        ['FOO_AUTHOR',             config[:author]],
+        ['FOO_EMAIL',              config[:email]],
+        # Name-derived: compound/longer patterns first
+        ['Foo::Bar',               config[:constant_name]],
+        ['FOO_BAR',                config[:screamcase_name]],
+        ['FooBar',                 config[:pascal_name]],
+        ['fooBar',                 config[:camel_name]],
+        ['Foo Bar',                config[:title]],
+        ['foo/bar',                config[:namespaced_path]],
+        ['foo-bar',                config[:name]],
+        ['foo_bar',                config[:underscored_name]],
+      ]
+    end
+
+    def binary_file?(path)
+      chunk = File.binread(path, 8192)
+      chunk.nil? || chunk.include?("\x00")
     end
 
     def filter_ignored_files!(repo_root, path_hash)
@@ -231,35 +267,21 @@ module Bundlegem::CLI
 
 
 
-    #
-    # EDIT:  Reworked from Thor to not rely on Thor (or do so much unneeded stuff)
-    #
-    # Gets an ERB template at the relative source, executes it and makes a copy
-    # at the relative destination. If the destination is not given it's assumed
-    # to be equal to the source removing .tt from the filename.
-    #
-    # ==== Parameters
-    # source<String>:: the relative path to the source root.
-    # destination<String>:: the relative path to the destination root.
-    # config<Hash>:: give verbose:  false to not log the status.
-    #
-    # ==== Examples
-    #
-    #   template "README", "doc/README"
-    #
-    #   template "doc/README"
-    #
-    def template(source, *args, &block)
-      config = args.last.is_a?(Hash) ? args.pop : {}
-      destination = args.first || source.sub(/#{TEMPLATE_EXTNAME}$/, "")
+    # Reads a template source file, performs literal string replacements
+    # of foo-bar variants and FOO_ prefixed placeholders, and writes
+    # the result to the destination.
+    def template(source, destination, _config = {})
+      source = File.expand_path(source.to_s)
 
-      source  = File.expand_path(::Bundlegem::TemplateManager.find_in_source_paths(source.to_s))
-      context = instance_eval("binding")
-
-      make_file(destination, config) do
-        content = ERB.new(::File.binread(source), trim_mode: "-", eoutvar: "@output_buffer").result(context)
-        content = block.call(content) if block
-        content
+      if binary_file?(source)
+        FileUtils.mkdir_p(File.dirname(destination))
+        FileUtils.cp(source, destination)
+      else
+        content = File.read(source)
+        build_content_replacement_pairs.each do |find, replace|
+          content = content.gsub(find, replace)
+        end
+        make_file(destination, {}) { content }
       end
 
       original_mode = File.stat(source).mode
@@ -275,7 +297,7 @@ module Bundlegem::CLI
     def raise_no_files_in_template_error!
       err_no_files_in_template = <<-HEREDOC
 Ooops, the template was found for '#{@options[:template]}' in ~/.bundlegem/templates,
-but no files within it ended in .tt.  Did you forget to rename the extensions of your files?
+but no files were found within it.
 
 Exiting...
       HEREDOC

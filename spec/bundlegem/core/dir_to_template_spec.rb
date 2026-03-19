@@ -17,7 +17,7 @@ module Bundlegem::Core
       FileUtils.cd(@initial_dir)
     end
 
-    it 'will rename the expected files and ignore the ones that should be ignored' do
+    it 'will process the expected files and ignore the ones that should be ignored' do
       template_dir = create_user_defined_template(category: "wizardly_tools")
 
       gitignored_file = "something.toignore"
@@ -31,7 +31,7 @@ module Bundlegem::Core
 
       files_changed = DirToTemplate.🧙🪄! Find.find("."), dry_run: true
 
-      expect(files_changed[0]).to eq "Renamed: ./README.md -> ./README.md.tt"
+      expect(files_changed[0]).to eq "Processed: ./README.md"
       expect(File).to exist "#{template_dir}/.gitignore"
       expect(files_changed.count).to eq 1
     end
@@ -47,12 +47,12 @@ module Bundlegem::Core
 
       DirToTemplate.🧙🪄! Find.find("."), template_name: template_name
 
-      content = File.read("#{template_dir}/main.go.tt")
-      expect(content).to include '<%=config[:underscored_name]%>'
-      expect(content).to include '<%=config[:name]%>'
-      expect(content).to include '<%=config[:screamcase_name]%>'
-      expect(content).to include '<%=config[:pascal_name]%>'
-      expect(content).to include '<%=config[:camel_name]%>'
+      content = File.read("#{template_dir}/main.go")
+      expect(content).to include 'foo_bar'
+      expect(content).to include 'foo-bar'
+      expect(content).to include 'FOO_BAR'
+      expect(content).to include 'FooBar'
+      expect(content).to include 'fooBar'
       expect(content).not_to include 'cool-app'
       expect(content).not_to include 'cool_app'
       expect(content).not_to include 'COOL_APP'

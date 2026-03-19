@@ -7,7 +7,8 @@ module Bundlegem::Core::DirToTemplate
   class << self
 
     # Takes in a file_enumerator such as Find.find('.') and
-    # renames all the files
+    # performs literal string replacements of project name variants
+    # with foo-bar template placeholders
     def 🧙🪄! file_enumerator, template_name: "asdf-pkg", dry_run: false
       replacements = build_replacement_pairs(template_name)
       files_changed = []
@@ -16,10 +17,7 @@ module Bundlegem::Core::DirToTemplate
 
         conduct_pkg_name_to_template_variable_replacements!(path, replacements) unless dry_run
 
-        new_path = "#{path}.tt"
-        File.rename(path, new_path) unless dry_run
-
-        files_changed << "Renamed: #{path} -> #{new_path}"
+        files_changed << "Processed: #{path}"
       end      
       files_changed
     end
@@ -34,11 +32,11 @@ module Bundlegem::Core::DirToTemplate
 
       # Order: longer/more-specific patterns first to avoid partial matches
       [
-        [screamcase,    '<%=config[:screamcase_name]%>'],
-        [pascal,        '<%=config[:pascal_name]%>'],
-        [camel,         '<%=config[:camel_name]%>'],
-        [template_name, '<%=config[:name]%>'],
-        [underscored,   '<%=config[:underscored_name]%>'],
+        [screamcase,    'FOO_BAR'],
+        [pascal,        'FooBar'],
+        [camel,         'fooBar'],
+        [template_name, 'foo-bar'],
+        [underscored,   'foo_bar'],
       ]
     end
 
@@ -55,8 +53,6 @@ module Bundlegem::Core::DirToTemplate
 
     def should_skip?(path)
       !File.file?(path) ||              # skip directories
-        path.end_with?('.tt') ||        # skip if the file is a .tt already
-        File.exist?("#{path}.tt") ||    # skip if a .tt variant of this file exists
         path.start_with?('./.git/') ||  # skip the .git directory
         path == './.gitignore' ||        # skip .gitignore (must remain for git to work)
         ignored_by_git?(path) ||        # skip things that are gitignored

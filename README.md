@@ -63,12 +63,14 @@ git config --global user.repo-domain github.com
 
 ## Create Your Own Template
 
+> **WIP:** We're actively refactoring the template system. `constant_array` has been dropped and this may cause the ruby template to break. `unprefixed_name` and `unprefixed_pascal` have also been removed.
+
 ###### Overview
-- Define the project in a repo as you normally would
-- Commit the project once it's building/ testing the way you'd like
+- Define the project as a working codebase using `foo-bar` as the project name
+- All name variants (`foo_bar`, `FooBar`, `FOO_BAR`, etc.) will be auto-replaced when generating a new project
+- Use `FOO_` prefixed placeholders for non-name variables (e.g., `FOO_AUTHOR`, `FOO_EMAIL`)
 - Add a `bundlegem.yml` file to the template to make it available for use
-- Run `bundlegem --to-template` which adds a `.tt` suffix to the files
-- Add any template variables to the project. See: `bundlegem --cheat-sheet`
+- Run `bundlegem --to-template` to convert an existing project's name variants into foo-bar placeholders
 - Use the template to kick off a new project, `bundlegem -t my-template first-test`
 
 To create your own template, just create a new project using the technologies you'd like.  Place this project in `~/.bundlegem/templates/my-template`.  Once it's done, it's a good idea to create a git commit.  Then run something to the effect...
@@ -81,7 +83,7 @@ $  echo "language: javascript" >> bundlegem.yml
 $  bundlegem --to-template
 ```
 
-Change the bundlegem.yml contents to what makes sense for your template.  The `--to-template` command will add a `.tt` to the end of all the files in the project.  To keep you and I safe, it will only run if there is a `bundlegem.yml` file in the current directory.
+Change the bundlegem.yml contents to what makes sense for your template.  The `--to-template` command will replace all occurrences of your project's name variants with `foo-bar` template placeholders.  To keep you and I safe, it will only run if there is a `bundlegem.yml` file in the current directory.
 
 #### Categorizing Your Template
 
@@ -118,7 +120,8 @@ If you would find additional variables handy, set me up with a PR and assuming i
 
 #### Quick Tips Regarding Project Templates
 
-- Files ending with a `.tt` extension will by written to new projects
+- Templates are working code using `foo-bar` as the canonical project name
+- Name variants (`foo_bar`, `FooBar`, `fooBar`, `FOO_BAR`, `Foo::Bar`, `Foo Bar`, `foo/bar`) are all auto-replaced
+- Use `FOO_` prefixed placeholders for non-name variables: `FOO_AUTHOR`, `FOO_EMAIL`, `FOO_GIT_REPO_URL`, etc.
 - Running `bundlegem --cheat-sheet` will list off available template variables
-- File **names** containing `#{name}` will have that symbol replaced by the project name defined on the CLI
-- Example: within a `.tt` file, use `<%=config[:namespaced_path]%>` to have that reinterpreted as just the file name with underscores
+- File **names** containing `foo-bar` or `foo_bar` will have those replaced by the project name

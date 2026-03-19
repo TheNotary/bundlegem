@@ -77,8 +77,8 @@ describe Bundlegem do
 
     src_dst_map = my_gem.send('dynamically_generate_template_directories')
 
-    expect(src_dst_map['#{name}']).to eq "good-dog"
-    expect(src_dst_map['#{underscored_name}']).to eq "good_dog"
+    expect(src_dst_map['foo-bar']).to eq "good-dog"
+    expect(src_dst_map['foo_bar']).to eq "good_dog"
     expect(src_dst_map['simple_dir']).to eq 'simple_dir'
   end
 
@@ -87,8 +87,8 @@ describe Bundlegem do
     gem_name = "good-dog"
     my_gem = Bundlegem::CLI::Gem.new(options, gem_name)
 
-    short_path = '#{name}'
-    long_path = 'hello/#{name}/blah/#{name}'
+    short_path = 'foo-bar'
+    long_path = 'hello/foo-bar/blah/foo-bar'
 
     short_interpolated_string = my_gem.send('substitute_template_values', short_path)
     expect(short_interpolated_string).to eq gem_name
@@ -104,10 +104,10 @@ describe Bundlegem do
 
     src_dst_map = my_gem.send('dynamically_generate_templates_files')
 
-    expect(src_dst_map['#{name}/keep.tt']).to eq "good-dog/keep"
-    expect(src_dst_map['#{name}.rb.tt']).to eq 'good-dog.rb'
-    expect(src_dst_map['#{underscored_name}/keep.tt']).to eq 'good_dog/keep'
-    expect(src_dst_map['simple_dir/keep.tt']).to eq 'simple_dir/keep'
+    expect(src_dst_map['foo-bar/keep']).to eq "good-dog/keep"
+    expect(src_dst_map['foo-bar.rb']).to eq 'good-dog.rb'
+    expect(src_dst_map['foo_bar/keep']).to eq 'good_dog/keep'
+    expect(src_dst_map['simple_dir/keep']).to eq 'simple_dir/keep'
   end
 
   it "won't generate template files that are listed under the gitignore" do
@@ -116,9 +116,9 @@ describe Bundlegem do
     gem_name = "good-dog"
 
     File.write("#{template_dir}/.gitignore", "node_modules/")
-    File.write("#{template_dir}/README.md.tt", "Hello")
+    File.write("#{template_dir}/README.md", "Hello")
     FileUtils.mkdir("#{template_dir}/node_modules")
-    File.write("#{template_dir}/node_modules/dont_template.rb.tt", "I must not be interpretted")
+    File.write("#{template_dir}/node_modules/dont_template.rb", "I must not be interpretted")
     `git init #{template_dir}`
 
     capture_stdout { Bundlegem.gem(options, gem_name) }
@@ -133,7 +133,7 @@ describe Bundlegem do
     gem_name = "good-dog"
 
     File.write("#{template_dir}/bundlegem.yml", "bootstrap_command: echo hihihi")
-    File.write("#{template_dir}/README.md.tt", "# Readme...")
+    File.write("#{template_dir}/README.md", "# Readme...")
     `git init #{template_dir}`
 
     output = capture_stdout { Bundlegem.gem(options, gem_name) }
@@ -148,7 +148,7 @@ describe Bundlegem do
     gem_name = "good-dog"
 
     File.write("#{template_dir}/bundlegem.yml", 'bootstrap_command: "echo #{config[:name]}"')
-    File.write("#{template_dir}/README.md.tt", "# Readme...")
+    File.write("#{template_dir}/README.md", "# Readme...")
     `git init #{template_dir}`
 
     output = capture_stdout { Bundlegem.gem(options, gem_name) }

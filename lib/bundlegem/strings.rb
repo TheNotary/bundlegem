@@ -15,8 +15,7 @@ Usage Examples:
   $ bundlegem --template service your_gem_name
 
   # Convert the current directory which represents a working project into a
-  # template meaning all files will be renamed to *.tt unless a *.tt of that
-  # name already exists
+  # template by replacing project name variants with foo-bar placeholders
   $ bundlegem --to-template
 
   # shows this message
