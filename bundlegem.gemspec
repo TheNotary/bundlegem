@@ -17,7 +17,7 @@ Gem::Specification.new do |s|
 
   s.metadata["bug_tracker_uri"] = "https://github.com/TheNotary/bundlegem/issues"
   s.metadata["changelog_uri"] = "https://github.com/TheNotary/bundlegem/releases/tag/v#{version}"
-  s.metadata["documentation_uri"] = "https://api.rubyonrails.org/v#{version}/"
+  s.metadata["documentation_uri"] = "https://github.com/TheNotary/bundlegem"
   s.metadata["source_code_uri"] = "https://github.com/TheNotary/bundlegem/tree/v#{version}"
 
   s.files         = `git ls-files -z`.split("\x0")

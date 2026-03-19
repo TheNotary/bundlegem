@@ -1,6 +1,8 @@
 require 'pathname'
 require 'yaml'
 require 'erb'
+require 'open3'
+require 'shellwords'
 
 $TRACE = false
 
@@ -153,7 +155,6 @@ module Bundlegem::CLI
     end
 
     # Returns a hash of source directory names and their destination mappings
-    # This might not be needed???
     def dynamically_generate_template_directories
       template_dirs = Dir.glob("#{@template_src}/**/*", File::FNM_DOTMATCH).filter_map do |f|
         base_path = f[@template_src.length+1..-1]
@@ -203,11 +204,6 @@ module Bundlegem::CLI
       filter_these_paths = stdout.split
 
       path_hash.delete_if { |key, _| filter_these_paths.include?(key) }
-    end
-
-    def ignored_by_git?(repo_root, path)
-      stdout, _, status = Open3.capture3("git -C #{repo_root} check-ignore #{Shellwords.escape(path)}")
-      status.success? && !stdout.strip.empty?
     end
 
     def create_template_directories(template_directories, target)
@@ -299,7 +295,7 @@ Exiting...
     end
 
     def raise_template_not_found!
-      err_missing_template = "Could not find template folder '#{@options[:template]}' in `~/.bundle/templates/`. Please check to make sure your desired template exists."
+      err_missing_template = "Could not find template folder '#{@options[:template]}' in `~/.bundlegem/templates/`. Please check to make sure your desired template exists."
       $stderr.puts err_missing_template
       raise
     end

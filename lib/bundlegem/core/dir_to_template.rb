@@ -63,13 +63,6 @@ module Bundlegem::Core::DirToTemplate
         path == "./bundlegem.yml"          # skip the bundlegem.yml file
     end
 
-    def validate_working_directory!
-      # check for the existence of a bundlegem.yml file which won't ordinarily exist
-      if !File.exist?("bundlegem.yml")
-        raise "error: bundlegem.yml file not found in current directory.  Create it or run this command in the folder you thought you were in."
-      end
-    end
-
     def ignored_by_git?(path)
       stdout, _, status = Open3.capture3("git check-ignore #{Shellwords.escape(path)}")
       status.success? && !stdout.strip.empty?

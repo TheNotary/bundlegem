@@ -35,19 +35,6 @@ module Bundlegem
         basic # fallback, even if it doesn't exist, will be caught downstream
       end
 
-      def try_template_src_locations(template_location, template_name)
-        basic_form = "#{template_location}/#{template_name}"
-        prefixed_form = "#{template_location}/template-#{template_name}"
-
-        if File.exist?(basic_form)
-          return basic_form
-        elsif File.exist?(prefixed_form)
-          return prefixed_form
-        else
-          "#{template_location}/#{template_name}"
-        end
-      end
-
       def find_in_source_paths(target)
         path = "#{__dir__}/templates/#{target}"
         File.exist?(path) ? path : target

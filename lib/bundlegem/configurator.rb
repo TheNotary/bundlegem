@@ -48,18 +48,9 @@ module Bundlegem
       pairs
     end
 
-    def parse_out(key, config_txt)
-      /#{key.to_s}:\s*([\w\s]*$)/ =~ config_txt
-      $1.chomp
-    end
-
     def create_config_file_if_needed!
       FileUtils.mkdir_p @user_defined_templates_path
       FileUtils.cp("#{SOURCE_ROOT}/config/config", @config_file) unless File.exist? @config_file
-    end
-
-    def create_new_template(template_name)
-      puts "i'm still a stub"
     end
 
   end
