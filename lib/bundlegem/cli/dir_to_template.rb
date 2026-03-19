@@ -8,8 +8,9 @@ module Bundlegem::CLI
       def go
         validate_working_directory!
         file_enumerator = Find.find('.')
+        template_name = File.basename(Dir.pwd)
 
-        Bundlegem::Core::DirToTemplate.🧙🪄! file_enumerator
+        Bundlegem::Core::DirToTemplate.🧙🪄! file_enumerator, template_name: template_name
       end
 
       private

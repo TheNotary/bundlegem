@@ -6,6 +6,8 @@ $TRACE = false
 
 module Bundlegem::CLI
   class Gem
+    TEMPLATE_EXTNAME = ".tt"
+
     attr_reader :options, :gem_name, :name, :target
 
     def initialize(options, gem_name)
@@ -17,8 +19,6 @@ module Bundlegem::CLI
       @template_src = ::Bundlegem::TemplateManager.get_template_src(options)
 
       @tconf = load_template_configs
-
-      validate_ext_name if options[:ext] # FIXME: Useless now?
     end
 
     def build_interpolation_config
@@ -81,8 +81,6 @@ module Bundlegem::CLI
         :k8s_domain       => k8s_domain.empty? ? "k8s.domain.missing.from.gitconfig.local" : k8s_domain,
         :template         => @options[:template],
         :test             => @options[:test],
-        :ext              => @options[:ext],
-        :bin              => @options[:bin],
       }
     end
 
@@ -134,15 +132,6 @@ module Bundlegem::CLI
       user_string.gsub(/\#{\s*config\[\s*:(\w+)\s*\]\s*}/) { |m| config[$1.to_sym] }
     end
 
-    # TODO: Extract these notes to the docs or delete them
-    # The language and purpose configurations of the bundlegem.yml file
-    # can be used to make sure when you create a folder named
-    # `bundlegem -t blah tool-go-ollama-find`, the internal name
-    # that the app has for itself can become simply `ollama-find`, dropping the prefix
-    # which is intended to exist only at the repostory name and shouldn't impact
-    # the package naming... much...
-    #
-    # I didn't document this feature originally so it may not have been fully fleshed out...
     def load_template_configs
       template_config_path = File.join(@template_src, "bundlegem.yml")
 
@@ -244,15 +233,7 @@ module Bundlegem::CLI
       Pathname.pwd.join(name).basename.to_s
     end
 
-    def validate_ext_name
-      return unless gem_name.index('-')
 
-      $stderr.puts "You have specified a gem name which does not conform to the \n" \
-                   "naming guidelines for C extensions. For more information, \n" \
-                   "see the 'Extension Naming' section at the following URL:\n" \
-                   "http://guides.rubygems.org/gems-with-extensions/\n"
-      exit 1
-    end
 
     #
     # EDIT:  Reworked from Thor to not rely on Thor (or do so much unneeded stuff)
@@ -331,10 +312,9 @@ Exiting...
       puts "#{label || 'Elapsed'}: #{elapsed_ms} ms"
     end
 
-    # This checks to see that the gem_name is a valid ruby gem name and will 'work'
-    # and won't overlap with a bundlegem constant apparently...
-    #
-    # TODO:  This should be defined within the template itself in some way possibly, may have security implications
+    # Validates that the gem_name won't cause conflicts with Ruby constants.
+    # Core safety checks are kept hardcoded; templates may add additional
+    # validation rules via bundlegem.yml in the future.
     def ensure_safe_gem_name(name, constant_array)
       if name =~ /^\d/
         $stderr.puts "Invalid gem name #{name} Please give a name which does not start with numbers."

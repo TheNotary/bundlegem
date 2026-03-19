@@ -31,10 +31,33 @@ module Bundlegem::Core
 
       files_changed = DirToTemplate.🧙🪄! Find.find("."), dry_run: true
 
-      expect(files_changed[0]).to eq "Renamed: ./.gitignore -> ./.gitignore.tt"
-      expect(files_changed[1]).to eq "Renamed: ./README.md -> ./README.md.tt"
+      expect(files_changed[0]).to eq "Renamed: ./README.md -> ./README.md.tt"
       expect(File).to exist "#{template_dir}/.gitignore"
-      expect(files_changed.count).to eq 2
+      expect(files_changed.count).to eq 1
+    end
+
+    it 'conducts text replacements of package name variants' do
+      template_dir = create_user_defined_template(category: "wizardly_tools")
+      template_name = "cool-app"
+
+      FileUtils.cd(template_dir)
+      File.write("#{template_dir}/main.go", "package cool_app\nconst Name = \"cool-app\"\nconst ENV = \"COOL_APP_ENV\"\nclass CoolApp\n  def coolApp\n  end\nend\n")
+      File.write("#{template_dir}/.gitignore", "")
+      `git init`
+
+      DirToTemplate.🧙🪄! Find.find("."), template_name: template_name
+
+      content = File.read("#{template_dir}/main.go.tt")
+      expect(content).to include '<%=config[:underscored_name]%>'
+      expect(content).to include '<%=config[:name]%>'
+      expect(content).to include '<%=config[:screamcase_name]%>'
+      expect(content).to include '<%=config[:pascal_name]%>'
+      expect(content).to include '<%=config[:camel_name]%>'
+      expect(content).not_to include 'cool-app'
+      expect(content).not_to include 'cool_app'
+      expect(content).not_to include 'COOL_APP'
+      expect(content).not_to include 'CoolApp'
+      expect(content).not_to include 'coolApp'
     end
   end
 end

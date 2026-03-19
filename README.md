@@ -87,6 +87,21 @@ Change the bundlegem.yml contents to what makes sense for your template.  The `-
 
 You can specify the `category` of the gem by editing the `bundlegem.yml` file in each template's root.  Categories are just used for organizing the output when you run `bundlegem --list`.  Here's an [example](https://github.com/TheNotary/template-html-css-js/blob/main/bundlegem.yml).
 
+#### Template Prefix Stripping
+
+Some people sort their repos with prefixes...  For instance, you might want to create a repo named `tool-go-my-tool` but have the project file take on the name `my-tool` and ignore those descriptive prefixes?  
+
+You can do that!  Just setup your `bundlegem.yml` as below:
+```yaml
+purpose: tool
+language: go
+```
+
+You can also set the prefix explicitly in `bundlegem.yml`:
+```yaml
+prefix: "my-custom-prefix-"
+```
+
 #### Customizing Your Own Templates
 
 Place your own templates in `~/.bunglegem/templates`.  You can populate it with examples by running `bundlegem --install-public-templates` which will effectively clone down a few sample git repos into the templates folder for you such as [Go-cli](https://github.com/TheNotary/template-go-cli) for instance.

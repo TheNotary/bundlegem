@@ -5,7 +5,7 @@ require 'bundlegem'
 
 
 Signal.trap("INT") { exit 1 }
-options = { bin: false, ext: false, coc: false }
+options = {}
 
 parser = OptionParser.new do |opts|
   opts.banner = "Usage: #{File.basename($0)} [options] GEM_NAME"
