@@ -1,4 +1,4 @@
-# BundleGem: A Gem Project Generator with User Defined Templates
+# BundleGem: An Easy to Template Project Generator
 [![Gem Version](https://badge.fury.io/rb/bundlegem.svg)](https://badge.fury.io/rb/bundlegem)
 
 BundleGem allow users to define project templates in the most native form to all technologist: Directory Structures, short commands, and helpful commands that make the tool's usage completely visible!
