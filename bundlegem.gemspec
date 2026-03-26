@@ -14,6 +14,7 @@ Gem::Specification.new do |s|
   s.description   = %q{ This is a gem for making more gems!  I know!  It's like asking a genie for more wishes but it actually works!}
   s.homepage      = "https://github.com/thenotary/bundlegem"
   s.license       = "MIT"
+  s.required_ruby_version = '>= 3.0'
 
   s.metadata["bug_tracker_uri"] = "https://github.com/TheNotary/bundlegem/issues"
   s.metadata["changelog_uri"] = "https://github.com/TheNotary/bundlegem/releases/tag/v#{version}"
@@ -27,6 +28,6 @@ Gem::Specification.new do |s|
 
   s.add_development_dependency "rake", "~> 13.2"
   s.add_development_dependency "rdoc", "~> 7.2"
-  s.add_development_dependency "rspec"
-  s.add_development_dependency "pry"
+  s.add_development_dependency "rspec", "~> 3.13"
+  s.add_development_dependency "pry", "~> 0.16"
 end
