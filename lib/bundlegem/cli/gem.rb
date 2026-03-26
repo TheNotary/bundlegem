@@ -278,9 +278,11 @@ module Bundlegem::CLI
         FileUtils.cp(source, destination)
       else
         content = File.read(source)
+        content = content.gsub(/>>>\s+(\S+)/) { $1.chars.join("\x00") }
         build_content_replacement_pairs.each do |find, replace|
           content = content.gsub(find, replace)
         end
+        content = content.gsub("\x00", '')
         make_file(destination, {}) { content }
       end
 

@@ -17,9 +17,9 @@ describe Bundlegem do
   it 'has a cheat sheet it will share' do
     output = Bundlegem.cheat_sheet
 
-    expect(output).to match(/config\[:name\]: \W* good-dog/x)
-    expect(output).to match(/config\[:screamcase_name\]: \W* GOOD_DOG/x)
-    expect(output).to match(/config\[:image_path\]: \W* test\/good-dog/x)
+    expect(output).to match(/foo-bar: \W* good-dog/x)
+    expect(output).to match(/FOO_BAR: \W* GOOD_DOG/x)
+    expect(output).to match(/FOO_IMAGE_PATH: \W* test\/good-dog/x)
   end
 
   # List
