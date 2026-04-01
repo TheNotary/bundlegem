@@ -2,6 +2,7 @@ require 'pathname'
 require 'yaml'
 require 'open3'
 require 'shellwords'
+require 'set'
 
 $TRACE = false
 
@@ -17,6 +18,7 @@ module Bundlegem::CLI
       @name = @gem_name
       @target = Pathname.pwd.join(gem_name)
       @template_src = ::Bundlegem::TemplateManager.get_template_src(options)
+      @configurator = ::Bundlegem::Configurator.new
 
       @tconf = load_template_configs
     end
@@ -31,15 +33,14 @@ module Bundlegem::CLI
       constant_array = constant_name.split('::')
       git_user_name = `git config user.name`.chomp
       git_user_email = `git config user.email`.chomp
-      registry_domain = `git config user.registry-domain`.chomp
-      k8s_domain = `git config user.k8s-domain`.chomp
 
-      # git_repo_domain = provider.com
-      git_repo_domain = `git config user.repo-domain`.chomp
+      # Resolve domain values from ~/.bundlegem/config, prompting if needed
+      required_domains = scan_template_for_required_domains
+      prompt_for_missing_domains(required_domains)
 
-      if git_repo_domain.empty?
-        git_repo_domain = "github.com"
-      end
+      registry_domain = @configurator.domain('registry_domain')
+      k8s_domain = @configurator.domain('k8s_domain')
+      git_repo_domain = @configurator.domain('repo_domain') || 'github.com'
 
       if git_user_name.empty?
         puts "Error: git config user.name didn't return a value.  You'll probably want to make sure that's configured with your github username:"
@@ -78,7 +79,7 @@ module Bundlegem::CLI
         :image_path       => image_path,
         :registry_domain  => registry_domain,
         :registry_repo_path => registry_repo_path,
-        :k8s_domain       => k8s_domain.empty? ? "k8s.domain.missing.from.gitconfig.local" : k8s_domain,
+        :k8s_domain       => k8s_domain,
         :template         => @options[:template],
         :test             => @options[:test],
       }
@@ -130,6 +131,72 @@ module Bundlegem::CLI
 
     def safe_gsub_template_variables(user_string)
       user_string.gsub(/\#{\s*config\[\s*:(\w+)\s*\]\s*}/) { |m| config[$1.to_sym] }
+    end
+
+    # Domain placeholder → config key mapping
+    DOMAIN_PLACEHOLDERS = {
+      'registry_domain' => %w[FOO_REGISTRY_DOMAIN FOO_REGISTRY_REPO_PATH],
+      'k8s_domain'      => %w[FOO_K8S_DOMAIN],
+      'repo_domain'     => %w[FOO_GIT_REPO_DOMAIN FOO_GIT_REPO_PATH FOO_GIT_REPO_URL],
+    }.freeze
+
+    # Human-readable names for prompting
+    DOMAIN_DISPLAY_NAMES = {
+      'registry_domain' => 'registry-domain',
+      'k8s_domain'      => 'k8s-domain',
+      'repo_domain'     => 'repo-domain',
+    }.freeze
+
+    DOMAIN_DEFAULTS = {
+      'repo_domain' => 'github.com',
+    }.freeze
+
+    def scan_template_for_required_domains
+      all_placeholders = DOMAIN_PLACEHOLDERS.values.flatten
+      pattern = Regexp.union(all_placeholders)
+      found_placeholders = Set.new
+
+      Dir.glob("#{@template_src}/**/*", File::FNM_DOTMATCH).each do |f|
+        next unless File.file?(f)
+        base_path = f[@template_src.length+1..-1]
+        next if base_path.nil?
+        next if base_path.start_with?(".git" + File::SEPARATOR) || base_path == ".git"
+        next if binary_file?(f)
+
+        content = File.read(f)
+        all_placeholders.each do |ph|
+          found_placeholders << ph if content.include?(ph)
+        end
+      end
+
+      # Map found placeholders back to domain config keys
+      required = Set.new
+      DOMAIN_PLACEHOLDERS.each do |domain_key, placeholders|
+        required << domain_key if placeholders.any? { |ph| found_placeholders.include?(ph) }
+      end
+      required.to_a
+    end
+
+    def prompt_for_missing_domains(required_domains)
+      required_domains.each do |domain_key|
+        next if @configurator.domain(domain_key) && !@configurator.domain(domain_key).empty?
+
+        display_name = DOMAIN_DISPLAY_NAMES[domain_key]
+        default = DOMAIN_DEFAULTS[domain_key]
+        default_hint = default ? " (default: #{default})" : ""
+
+        puts "This template requires '#{display_name}'. The value will be saved to ~/.bundlegem/config for future use."
+        print "Enter #{display_name}#{default_hint}: "
+        value = $stdin.gets&.chomp || ''
+
+        value = default if value.empty? && default
+
+        if value.empty?
+          puts "Warning: No value provided for '#{display_name}'. Template placeholders may not be fully resolved."
+        end
+
+        @configurator.set_domain(domain_key, value)
+      end
     end
 
     def load_template_configs

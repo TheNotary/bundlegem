@@ -42,23 +42,11 @@ You'll find a project skeleton in ~/.bundlegem/templates/my_service that you can
 
 ### Configuration
 
-Configuration is optional and comes from your gitconfig file.  At the user level, this is set at `~/.gitconfig`.  These are the recommended minimal configurations to get the default templates to work ok:
-
-```
-[user]
-  email = me@example.com
-  name = Me
-  repo-domain = github.com
-  registry-domain = optional.quay.io
-  k8s-domain = optional.example.com
-```
-
-Alternatively, run these commands:
+Configuration is stored in `~/.bundlegem/config` (created automatically on first run). At minimum, you need your git user name and email configured:
 
 ```
 git config --global user.email your-public-gh@email.com
 git config --global user.name YOUR_GH_NAME
-git config --global user.repo-domain github.com
 ```
 
 ## Create Your Own Template
@@ -91,7 +79,7 @@ You can specify the `category` of the gem by editing the `bundlegem.yml` file in
 
 #### Template Prefix Stripping
 
-Some people sort their repos with prefixes...  For instance, you might want to create a repo named `tool-go-my-tool` but have the project file take on the name `my-tool` and ignore those descriptive prefixes?  
+Some people sort their repos with prefixes...  For instance, you might want to create a repo named `tool-go-my-tool` but have the project file take on the name `my-tool` and ignore those descriptive prefixes?
 
 You can do that!  Just setup your `bundlegem.yml` as below:
 ```yaml
@@ -108,7 +96,7 @@ prefix: "my-custom-prefix-"
 
 Place your own templates in `~/.bunglegem/templates`.  You can populate it with examples by running `bundlegem --install-public-templates` which will effectively clone down a few sample git repos into the templates folder for you such as [Go-cli](https://github.com/TheNotary/template-go-cli) for instance.
 
-You'll get a good idea as to the possibilities by inspecting the various templates I've opensourced under my github org, e.g. [template-ruby-cli-gem](https://github.com/TheNotary/template-ruby-cli-gem).  
+You'll get a good idea as to the possibilities by inspecting the various templates I've opensourced under my github org, e.g. [template-ruby-cli-gem](https://github.com/TheNotary/template-ruby-cli-gem).
 
 To pull up a list of available variables, run this command
 

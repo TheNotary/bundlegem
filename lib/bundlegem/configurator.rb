@@ -23,7 +23,16 @@ module Bundlegem
 
     def default_template=(val)
       @config_file_data["default_template"] = val
-      File.write(@config_file, "# Comments made to this file will not be preserved\n#{YAML.dump(@config_file_data)}")
+      save_config!
+    end
+
+    def domain(key)
+      @config_file_data[key.to_s]
+    end
+
+    def set_domain(key, value)
+      @config_file_data[key.to_s] = value
+      save_config!
     end
 
     def collect_user_defined_templates
@@ -51,6 +60,12 @@ module Bundlegem
     def create_config_file_if_needed!
       FileUtils.mkdir_p @user_defined_templates_path
       FileUtils.cp("#{SOURCE_ROOT}/config/config", @config_file) unless File.exist? @config_file
+    end
+
+    private
+
+    def save_config!
+      File.write(@config_file, "# Comments made to this file will not be preserved\n#{YAML.dump(@config_file_data)}")
     end
 
   end

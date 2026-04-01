@@ -3,6 +3,7 @@ $test_env = true
 require 'bundlegem'
 require 'bundlegem/cli/gem'
 require 'fileutils'
+require 'yaml'
 require 'pry'
 
 # Mock our home directory
@@ -11,15 +12,21 @@ ENV['SPEC_DATA_DIR'] = File.expand_path("./spec/data") # I fell into this from s
 
 
 def setup_mock_web_template
-  ENV['public_templates'] = "#{ENV['HOME']}/arduino.git"
-  FileUtils.mkdir("#{ENV['HOME']}/arduino.git")
-  FileUtils.touch("#{ENV['HOME']}/arduino.git/README.md")
+  mock_repo = "#{ENV['HOME']}/template-arduino.git"
+  FileUtils.mkdir(mock_repo)
+  FileUtils.touch("#{mock_repo}/README.md")
 
-  `cd "#{ENV['HOME']}/arduino.git" && git init && git add . && git commit -m "haxing"`
+  `cd "#{mock_repo}" && git init && git add . && git commit -m "haxing"`
+
+  # Update the config file so install_public_templates finds our mock repo
+  config_path = "#{ENV['HOME']}/.bundlegem/config"
+  config_data = YAML.load_file(config_path)
+  config_data['public_templates'] = mock_repo
+  File.write(config_path, "# Comments made to this file will not be preserved\n#{YAML.dump(config_data)}")
 end
 
 def remove_mock_web_template
-  FileUtils.rm_rf("#{ENV['HOME']}/arduino.git")
+  FileUtils.rm_rf("#{ENV['HOME']}/template-arduino.git")
 end
 
 def create_user_defined_template(category = nil, template_name = "empty_template")
@@ -46,12 +53,19 @@ def reset_test_env
   FileUtils.cd @dst_dir
   auth_settings  = '    git config --global user.email "you@example.com"'
   auth_settings += ' && git config --global user.name "Test"'
-  auth_settings += ' && git config --global user.registry-domain "my-registry.example.com"'
-  auth_settings += ' && git config --global user.k8s-domain "my-k8s.example.com"'
-
-
 
   `git config --global init.defaultBranch main && #{auth_settings}`
+
+  # Write domain config to ~/.bundlegem/config instead of git config
+  config_data = {
+    'default_template' => 'cli_gem',
+    'public_templates' => '',
+    'registry_domain' => 'my-registry.example.com',
+    'k8s_domain' => 'my-k8s.example.com',
+    'repo_domain' => 'github.com',
+  }
+  FileUtils.mkdir_p "#{@mocked_home}/.bundlegem"
+  File.write("#{@mocked_home}/.bundlegem/config", "# Comments made to this file will not be preserved\n#{YAML.dump(config_data)}")
 end
 
 # squelch stdout

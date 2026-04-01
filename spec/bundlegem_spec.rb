@@ -177,6 +177,83 @@ describe Bundlegem do
     expect(config[:unprefixed_name]).to eq "good-dog"
   end
 
+  describe "domain config prompting" do
+    it "prompts for missing domain values when template requires them" do
+      template_dir = create_user_defined_template("testing", "template-needs-registry")
+      File.write("#{template_dir}/README.md", "Deploy to FOO_REGISTRY_DOMAIN please")
+      `git init #{template_dir}`
+
+      # Remove registry_domain from config so it triggers a prompt
+      config_path = "#{@mocked_home}/.bundlegem/config"
+      config_data = YAML.load_file(config_path)
+      config_data.delete('registry_domain')
+      File.write(config_path, "# Comments made to this file will not be preserved\n#{YAML.dump(config_data)}")
+
+      options = { bin: false, ext: false, coc: false, template: "template-needs-registry" }
+      gem_name = "prompted-app"
+
+      # Simulate user typing "my-prompted-registry.io"
+      allow($stdin).to receive(:gets).and_return("my-prompted-registry.io\n")
+
+      output = capture_stdout { Bundlegem.gem(options, gem_name) }
+
+      expect(output).to include "registry-domain"
+      expect(output).to include "~/.bundlegem/config"
+
+      # Verify value was saved to config
+      saved_config = YAML.load_file(config_path)
+      expect(saved_config['registry_domain']).to eq "my-prompted-registry.io"
+    end
+
+    it "does not prompt when domain values are already configured" do
+      template_dir = create_user_defined_template("testing", "template-has-domains")
+      File.write("#{template_dir}/README.md", "FOO_REGISTRY_DOMAIN and FOO_K8S_DOMAIN")
+      `git init #{template_dir}`
+
+      options = { bin: false, ext: false, coc: false, template: "template-has-domains" }
+      gem_name = "no-prompt-app"
+
+      # $stdin.gets should NOT be called
+      expect($stdin).not_to receive(:gets)
+
+      capture_stdout { Bundlegem.gem(options, gem_name) }
+    end
+
+    it "does not prompt for templates without domain placeholders" do
+      template_dir = create_user_defined_template("testing", "template-simple")
+      File.write("#{template_dir}/README.md", "Just a simple template with foo-bar name")
+      `git init #{template_dir}`
+
+      options = { bin: false, ext: false, coc: false, template: "template-simple" }
+      gem_name = "simple-app"
+
+      expect($stdin).not_to receive(:gets)
+
+      capture_stdout { Bundlegem.gem(options, gem_name) }
+    end
+
+    it "defaults repo_domain to github.com when user enters empty string" do
+      template_dir = create_user_defined_template("testing", "template-needs-repo")
+      File.write("#{template_dir}/README.md", "Clone from FOO_GIT_REPO_URL")
+      `git init #{template_dir}`
+
+      config_path = "#{@mocked_home}/.bundlegem/config"
+      config_data = YAML.load_file(config_path)
+      config_data.delete('repo_domain')
+      File.write(config_path, "# Comments made to this file will not be preserved\n#{YAML.dump(config_data)}")
+
+      options = { bin: false, ext: false, coc: false, template: "template-needs-repo" }
+      gem_name = "default-repo-app"
+
+      allow($stdin).to receive(:gets).and_return("\n")
+
+      capture_stdout { Bundlegem.gem(options, gem_name) }
+
+      saved_config = YAML.load_file(config_path)
+      expect(saved_config['repo_domain']).to eq "github.com"
+    end
+  end
+
   describe "install public templates" do
     before :each do
       setup_mock_web_template
