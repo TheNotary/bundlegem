@@ -36,25 +36,9 @@ module Bundlegem
     end
 
     def collect_user_defined_templates
-      user_definition_directory = @user_defined_templates_path
-      templates = Dir.entries(user_definition_directory).select do |entry|
-        File.directory?(File.join(user_definition_directory, entry)) and !(entry =='.' || entry == '..')
+      immediate_subdirectories(@user_defined_templates_path).flat_map do |template_dir|
+        collect_templates_from_path(template_dir)
       end
-
-      pairs = []
-      templates.each do |template_path|
-        # open the template_path and read the bundlegem.yml file to see what class of file it is
-        # If there's no bundlegem.yml file in there, mark it misc
-
-        template_config_path = "#{@user_defined_templates_path}/#{template_path}/bundlegem.yml"
-        if File.exist?(template_config_path)
-          obj = YAML.load_file(template_config_path, symbolize_names: true) || { category: "misc" }
-          category = obj[:category]
-        end
-
-        pairs << {category => template_path.sub(/^template-/, "") }
-      end
-      pairs
     end
 
     def create_config_file_if_needed!
@@ -63,6 +47,40 @@ module Bundlegem
     end
 
     private
+
+    def collect_templates_from_path(template_dir)
+      config = read_template_config(template_dir)
+
+      if monorepo_template?(config)
+        immediate_subdirectories(template_dir).flat_map do |child_dir|
+          collect_templates_from_path(child_dir)
+        end
+      else
+        category = config[:category] || "misc"
+        [{ category => File.basename(template_dir).sub(/^template-/, "") }]
+      end
+    end
+
+    def monorepo_template?(config)
+      config[:monorepo] == true
+    end
+
+    def read_template_config(template_dir)
+      template_config_path = File.join(template_dir, "bundlegem.yml")
+      return {} unless File.exist?(template_config_path)
+
+      raw_config = YAML.load_file(template_config_path, symbolize_names: true)
+      raw_config.is_a?(Hash) ? raw_config : {}
+    rescue StandardError
+      {}
+    end
+
+    def immediate_subdirectories(dir)
+      Dir.children(dir).filter_map do |entry|
+        path = File.join(dir, entry)
+        File.directory?(path) ? path : nil
+      end
+    end
 
     def save_config!
       File.write(@config_file, "# Comments made to this file will not be preserved\n#{YAML.dump(@config_file_data)}")

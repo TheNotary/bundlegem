@@ -1,0 +1,29 @@
+---
+id: 3
+title: Implement monorepo-aware recursive template inventory
+type: feature
+status: closed
+priority: 1
+parent: 2
+assignees:
+- kind-prism
+created_at: 2026-04-01T03:29:28.883340322Z
+updated_at: 2026-04-01T03:32:36.142758994Z
+closed_at: 2026-04-01T03:32:36.142758236Z
+---
+
+Discovered from #2.
+
+Implement recursive template inventory in configurator:
+- Add safe bundlegem.yml config loading helper
+- Classify directories as monorepo containers (monorepo: true) vs leaf templates
+- Recurse only through monorepo-marked directories
+- Emit only leaf templates for listing, preserving category behavior
+- Ensure monorepo container root files are not treated as template sources
+
+---
+COMMENT
+2026-04-01T03:32:36.139335553Z
+author: kind-prism
+
+Implemented recursive monorepo-aware template inventory in Configurator. Added safe bundlegem.yml loading, monorepo container detection via monorepo: true, recursive traversal only through monorepo containers, and leaf-only template emission for list output. Added specs for direct and nested monorepo listing behavior and helper fixture creation. Validation: bundle exec rspec passed (25 examples, 0 failures).

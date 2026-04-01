@@ -77,6 +77,40 @@ Change the bundlegem.yml contents to what makes sense for your template.  The `-
 
 You can specify the `category` of the gem by editing the `bundlegem.yml` file in each template's root.  Categories are just used for organizing the output when you run `bundlegem --list`.  Here's an [example](https://github.com/TheNotary/template-html-css-js/blob/main/bundlegem.yml).
 
+#### Monorepo Template Collections
+
+You can organize templates in nested directories by marking a directory as a monorepo container:
+
+```yaml
+monorepo: true
+```
+
+When a directory is marked with `monorepo: true`, BundleGem treats it as a container and recursively scans child directories for templates. A child is treated as a template when it has its own `bundlegem.yml` and is not marked `monorepo: true`.
+
+Container-level files are ignored for generation. Only discovered leaf templates are selectable and usable with `bundlegem`.
+
+Example layout:
+
+```text
+~/.bundlegem/templates/template-platform/
+  bundlegem.yml              # monorepo: true
+  template-api/
+    bundlegem.yml            # normal template config
+    foo-bar.rb
+  template-ui/
+    bundlegem.yml            # normal template config
+    foo-bar.rb
+```
+
+In this example, select templates by leaf name:
+
+```bash
+bundlegem -t api my-service
+bundlegem -t ui my-frontend
+```
+
+If multiple monorepo leaves share the same name, BundleGem fails with an ambiguity error and shows the conflicting paths so one can be renamed.
+
 #### Template Prefix Stripping
 
 Some people sort their repos with prefixes...  For instance, you might want to create a repo named `tool-go-my-tool` but have the project file take on the name `my-tool` and ignore those descriptive prefixes?

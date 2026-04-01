@@ -43,6 +43,18 @@ def create_user_defined_template(category = nil, template_name = "empty_template
   new_template_dir
 end
 
+def create_monorepo_template(path_segments, monorepo: true, category: nil)
+  template_dir = File.join(@template_root, *path_segments)
+  FileUtils.mkdir_p(template_dir)
+
+  config = []
+  config << "monorepo: true" if monorepo
+  config << "category: #{category}" unless category.nil?
+  File.write("#{template_dir}/bundlegem.yml", config.join("\n"))
+
+  template_dir
+end
+
 
 def reset_test_env
   FileUtils.rm_rf @mocked_home

@@ -1,0 +1,13 @@
+---
+id: 1
+title: Support Flexible Template Topologies
+type: epic
+status: todo
+priority: 1
+assignees:
+- kind-prism
+created_at: 2026-04-01T03:29:28.803231289Z
+updated_at: 2026-04-01T03:29:50.080568982Z
+---
+
+Broader effort to support evolving template repository structures (single-template repos and monorepo-style template collections) while preserving backward compatibility.

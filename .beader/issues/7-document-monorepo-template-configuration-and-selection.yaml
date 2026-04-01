@@ -1,0 +1,30 @@
+---
+id: 7
+title: Document monorepo template configuration and selection
+type: task
+status: closed
+priority: 2
+parent: 2
+blocked_by:
+- 5
+assignees:
+- kind-prism
+created_at: 2026-04-01T03:29:29.005536422Z
+updated_at: 2026-04-01T03:35:05.533255090Z
+closed_at: 2026-04-01T03:35:05.533254332Z
+---
+
+Discovered from #2.
+
+Document monorepo usage in README:
+- Describe monorepo: true semantics
+- Describe recursive traversal behavior through monorepo containers
+- Describe subtemplate-only selection behavior
+- Document ambiguity error behavior and expected resolution
+
+---
+COMMENT
+2026-04-01T03:35:05.529805865Z
+author: kind-prism
+
+Updated README with a new monorepo template section documenting monorepo: true semantics, recursive traversal through monorepo containers, leaf-only template selection using subtemplate names, and ambiguity error behavior when duplicate leaf names exist. Validation: bundle exec rspec passed (29 examples, 0 failures).

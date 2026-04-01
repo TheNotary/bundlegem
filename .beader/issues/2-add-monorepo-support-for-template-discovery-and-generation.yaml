@@ -1,0 +1,33 @@
+---
+id: 2
+title: Add monorepo support for template discovery and generation
+type: feature
+status: closed
+priority: 1
+parent: 1
+assignees:
+- kind-prism
+created_at: 2026-04-01T03:29:28.848153656Z
+updated_at: 2026-04-01T03:35:18.475324707Z
+closed_at: 2026-04-01T03:35:18.475323732Z
+---
+
+## User Message
+We need a syntax for bundlegem.yml file that allows us to specify that this is a monorepo with multiple templates within it. Maybe something like this...
+
+monorepo: true
+
+If that file is set, then we look for subdirectories that have their own bundlegem.yml file following the usual configurations.
+
+## Context
+Implementation plan source: /memories/session/plan.md
+
+## Goal
+Add opt-in monorepo support to template discovery and generation while preserving existing single-template behavior.
+
+---
+COMMENT
+2026-04-01T03:35:18.472408807Z
+author: kind-prism
+
+Completed monorepo support for template discovery and generation. Implemented recursive monorepo-aware inventory from monorepo: true containers, leaf-template selection by subtemplate name, actionable ambiguity and not-found errors, and generation behavior validated to use leaf template config. Added unit/integration coverage and README documentation updates. Validation: bundle exec rspec passed (29 examples, 0 failures).

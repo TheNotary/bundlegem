@@ -59,7 +59,52 @@ describe Bundlegem do
     expect(list_output).to include "happy-burger"
   end
 
+  it "lists leaf templates inside monorepo containers" do
+    create_monorepo_template(["template-platform"], monorepo: true)
+    create_monorepo_template(["template-platform", "template-api"], monorepo: false, category: "services")
+    create_monorepo_template(["template-platform", "template-ui"], monorepo: false, category: "frontend")
+
+    list_output = Bundlegem.list
+
+    expect(list_output).to include "api"
+    expect(list_output).to include "ui"
+    expect(list_output).not_to include "platform"
+    expect(list_output).to include "SERVICES"
+    expect(list_output).to include "FRONTEND"
+  end
+
+  it "recursively traverses nested monorepo containers" do
+    create_monorepo_template(["template-org"], monorepo: true)
+    create_monorepo_template(["template-org", "template-team"], monorepo: true)
+    create_monorepo_template(["template-org", "template-team", "template-console"], monorepo: false, category: "cli")
+
+    list_output = Bundlegem.list
+
+    expect(list_output).to include "console"
+    expect(list_output).to include "CLI"
+    expect(list_output).not_to include "org"
+    expect(list_output).not_to include "team"
+  end
+
   # Generate
+
+  it "generates from a monorepo leaf template and uses leaf bootstrap config" do
+    root_dir = create_monorepo_template(["template-platform"], monorepo: true)
+    leaf_dir = create_monorepo_template(["template-platform", "template-api"], monorepo: false, category: "services")
+
+    File.write("#{root_dir}/bundlegem.yml", "monorepo: true\nbootstrap_command: echo root-config\n")
+    File.write("#{leaf_dir}/bundlegem.yml", "bootstrap_command: echo leaf-config\n")
+    File.write("#{leaf_dir}/foo-bar.rb", "puts 'foo-bar'\n")
+
+    options = { bin: false, ext: false, coc: false, template: "api" }
+    gem_name = "tool-go-good-dog"
+
+    output = capture_stdout { Bundlegem.gem(options, gem_name) }
+
+    expect(output).to include "leaf-config"
+    expect(output).not_to include "root-config"
+    expect(File).to exist("#{@dst_dir}/#{gem_name}/#{gem_name}.rb")
+  end
 
   it "finds the template-test template even if the template- prefix was omitted" do
     options = {bin: false, ext: false, coc:  false, template: "test"}

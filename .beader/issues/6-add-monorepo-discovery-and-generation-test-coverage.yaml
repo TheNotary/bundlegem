@@ -1,0 +1,31 @@
+---
+id: 6
+title: Add monorepo discovery and generation test coverage
+type: task
+status: closed
+priority: 1
+parent: 2
+blocked_by:
+- 5
+assignees:
+- kind-prism
+created_at: 2026-04-01T03:29:28.976366156Z
+updated_at: 2026-04-01T03:34:38.442683072Z
+closed_at: 2026-04-01T03:34:38.442681989Z
+---
+
+Discovered from #2.
+
+Add and update tests:
+- Unit tests for recursive discovery and recursion boundaries
+- Unit tests for ambiguous leaf-name selection failures
+- Integration tests for list output with monorepo leaf templates
+- Integration tests for end-to-end generation from discovered leaf templates
+- Add helper fixtures/utilities for nested monorepo test trees
+
+---
+COMMENT
+2026-04-01T03:34:38.439580189Z
+author: kind-prism
+
+Completed test coverage for monorepo behavior: added list integration tests for leaf-template discovery and nested recursion boundaries, added template-manager unit tests for ambiguous leaf-name failures and monorepo not-found behavior, added end-to-end generation integration test from discovered monorepo leaf templates, and added helper fixture utility create_monorepo_template for nested monorepo trees. Validation: bundle exec rspec passed (29 examples, 0 failures).

@@ -1,0 +1,30 @@
+---
+id: 5
+title: Integrate leaf template resolution into generation flow
+type: task
+status: closed
+priority: 1
+parent: 2
+blocked_by:
+- 4
+assignees:
+- kind-prism
+created_at: 2026-04-01T03:29:28.945867072Z
+updated_at: 2026-04-01T03:34:24.818985978Z
+closed_at: 2026-04-01T03:34:24.818985111Z
+---
+
+Discovered from #2.
+
+Integrate generation with leaf template paths:
+- Ensure resolved template source is a leaf template directory
+- Keep CLI::Gem config loading based on the leaf bundlegem.yml
+- Ensure bootstrap and prefix behavior come from leaf config only
+- Preserve existing single-template generation flow
+
+---
+COMMENT
+2026-04-01T03:34:24.815837053Z
+author: kind-prism
+
+Integrated monorepo leaf-template resolution into generation flow by relying on leaf path selection in TemplateManager and validating behavior end-to-end. Added integration coverage proving generation runs from a selected leaf template and uses leaf bootstrap configuration while ignoring container-level monorepo config. Validation: bundle exec rspec passed (29 examples, 0 failures).

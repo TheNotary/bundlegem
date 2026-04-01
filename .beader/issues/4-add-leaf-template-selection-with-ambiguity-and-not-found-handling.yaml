@@ -1,0 +1,30 @@
+---
+id: 4
+title: Add leaf-template selection with ambiguity and not-found handling
+type: feature
+status: closed
+priority: 1
+parent: 2
+blocked_by:
+- 3
+assignees:
+- kind-prism
+created_at: 2026-04-01T03:29:28.915988414Z
+updated_at: 2026-04-01T03:33:38.342992036Z
+closed_at: 2026-04-01T03:33:38.342991170Z
+---
+
+Discovered from #2.
+
+Update template selection logic:
+- Resolve template by subtemplate-only leaf name
+- Fail with actionable not-found error when no match exists
+- Fail with actionable ambiguity error when multiple leaf templates share a name
+- Keep existing non-monorepo template selection behavior unchanged
+
+---
+COMMENT
+2026-04-01T03:33:38.339552995Z
+author: kind-prism
+
+Implemented monorepo leaf-template selection in TemplateManager. Added recursive leaf discovery rooted at monorepo: true containers, unique subtemplate-only name matching, actionable not-found errors listing available leaves, and actionable ambiguity errors listing conflicting paths. Added focused unit tests covering unique match, duplicate-name ambiguity, and monorepo not-found behavior. Validation: bundle exec rspec passed (28 examples, 0 failures).
