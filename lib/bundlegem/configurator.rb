@@ -76,9 +76,14 @@ module Bundlegem
     end
 
     def immediate_subdirectories(dir)
-      Dir.children(dir).filter_map do |entry|
-        path = File.join(dir, entry)
-        File.directory?(path) ? path : nil
+      Dir.children(dir).filter_map do |child_dir|
+        case child_dir.downcase
+        when ".ds_store", ".git"
+          nil
+        else
+          dir_path = File.join(dir, child_dir)
+          File.directory?(dir_path) ? dir_path : nil
+        end
       end
     end
 
