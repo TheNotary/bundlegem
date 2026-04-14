@@ -348,6 +348,9 @@ module Bundlegem::CLI
         content = File.read(source)
         content = content.gsub(/>>>\s+(\S+)/) { $1.chars.join("\x00") }
         build_content_replacement_pairs.each do |find, replace|
+          # TODO: Figure out nil can happened with bundlegem -t rubycli git_lasso
+          next if find.nil? || replace.nil?
+
           content = content.gsub(find, replace)
         end
         content = content.gsub("\x00", '')
