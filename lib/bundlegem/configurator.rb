@@ -77,8 +77,8 @@ module Bundlegem
 
     def immediate_subdirectories(dir)
       Dir.children(dir).filter_map do |child_dir|
-        case child_dir.downcase
-        when ".ds_store", ".git"
+        # Skip hidden files and dirs like .ds_store, etc.
+        if child_dir.start_with?(".")
           nil
         else
           dir_path = File.join(dir, child_dir)
