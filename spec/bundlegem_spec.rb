@@ -299,6 +299,64 @@ describe Bundlegem do
     end
   end
 
+  describe "git init behavior" do
+    it "skips git init when generating inside an existing git repo" do
+      # Initialize a git repo in the destination directory
+      `git init #{@dst_dir}`
+
+      template_dir = create_user_defined_template("testing", "template-git-test")
+      File.write("#{template_dir}/README.md", "Hello foo-bar")
+      `git init #{template_dir}`
+
+      options = { bin: false, ext: false, coc: false, template: "template-git-test" }
+      gem_name = "git-skip-app"
+
+      capture_stdout { Bundlegem.gem(options, gem_name) }
+
+      # The generated project should NOT have its own .git directory
+      expect(File).not_to exist("#{@dst_dir}/#{gem_name}/.git")
+      # But the files should still exist
+      expect(File).to exist("#{@dst_dir}/#{gem_name}/README.md")
+    end
+
+    it "runs git init when generating outside a git repo" do
+      template_dir = create_user_defined_template("testing", "template-git-test2")
+      File.write("#{template_dir}/README.md", "Hello foo-bar")
+      `git init #{template_dir}`
+
+      options = { bin: false, ext: false, coc: false, template: "template-git-test2" }
+      gem_name = "git-init-app"
+
+      capture_stdout { Bundlegem.gem(options, gem_name) }
+
+      # The generated project SHOULD have its own .git directory
+      expect(File).to exist("#{@dst_dir}/#{gem_name}/.git")
+    end
+
+    it "always runs git init when always_perform_git_init is true" do
+      # Initialize a git repo in the destination directory
+      `git init #{@dst_dir}`
+
+      # Set always_perform_git_init to true in config
+      config_path = "#{@mocked_home}/.bundlegem/config"
+      config_data = YAML.load_file(config_path)
+      config_data['always_perform_git_init'] = true
+      File.write(config_path, "# Comments made to this file will not be preserved\n#{YAML.dump(config_data)}")
+
+      template_dir = create_user_defined_template("testing", "template-git-test3")
+      File.write("#{template_dir}/README.md", "Hello foo-bar")
+      `git init #{template_dir}`
+
+      options = { bin: false, ext: false, coc: false, template: "template-git-test3" }
+      gem_name = "git-force-app"
+
+      capture_stdout { Bundlegem.gem(options, gem_name) }
+
+      # The generated project SHOULD have its own .git directory even though parent is a repo
+      expect(File).to exist("#{@dst_dir}/#{gem_name}/.git")
+    end
+  end
+
   describe "install public templates" do
     before :each do
       setup_mock_web_template

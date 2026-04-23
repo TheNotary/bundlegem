@@ -114,7 +114,12 @@ module Bundlegem::CLI
         template("#{template_src}/#{src}", target.join(dst), config)
       end
 
-      Dir.chdir(target) { `git init`; `git add .` }
+      Dir.chdir(target) do
+        if @configurator.always_perform_git_init || !inside_git_work_tree?
+          `git init`
+        end
+        `git add .`
+      end
 
       if @tconf[:bootstrap_command]
         puts "Executing bootstrap_command"
@@ -129,6 +134,10 @@ module Bundlegem::CLI
     end
 
     private
+
+    def inside_git_work_tree?
+      system("git rev-parse --is-inside-work-tree", out: File::NULL, err: File::NULL)
+    end
 
     def safe_gsub_template_variables(user_string)
       user_string.gsub(/\#{\s*config\[\s*:(\w+)\s*\]\s*}/) { |m| config[$1.to_sym] }

@@ -26,6 +26,10 @@ module Bundlegem
       save_config!
     end
 
+    def always_perform_git_init
+      @config_file_data.fetch("always_perform_git_init", false)
+    end
+
     def domain(key)
       @config_file_data[key.to_s]
     end
