@@ -285,13 +285,13 @@ module Bundlegem::CLI
     def build_content_replacement_pairs
       [
         # FOO_ prefixed non-name variables
-        ['FOO_REGISTRY_REPO_PATH', config[:registry_repo_path]],
+        ['FOO_REGISTRY_REPO_PATH', config[:registry_repo_path] || ''],
         ['FOO_GIT_REPO_DOMAIN',    config[:git_repo_domain]],
         ['FOO_GIT_REPO_PATH',      config[:git_repo_path]],
         ['FOO_GIT_REPO_URL',       config[:git_repo_url]],
-        ['FOO_REGISTRY_DOMAIN',    config[:registry_domain]],
+        ['FOO_REGISTRY_DOMAIN',    config[:registry_domain] || ''],
         ['FOO_IMAGE_PATH',         config[:image_path]],
-        ['FOO_K8S_DOMAIN',         config[:k8s_domain]],
+        ['FOO_K8S_DOMAIN',         config[:k8s_domain] || ''],
         ['FOO_AUTHOR',             config[:author]],
         ['FOO_EMAIL',              config[:email]],
         # Name-derived: compound/longer patterns first
@@ -357,9 +357,6 @@ module Bundlegem::CLI
         content = File.read(source)
         content = content.gsub(/>>>\s+(\S+)/) { $1.chars.join("\x00") }
         build_content_replacement_pairs.each do |find, replace|
-          # TODO: Figure out nil can happened with bundlegem -t rubycli git_lasso
-          next if find.nil? || replace.nil?
-
           content = content.gsub(find, replace)
         end
         content = content.gsub("\x00", '')
