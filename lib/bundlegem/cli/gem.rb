@@ -140,7 +140,9 @@ module Bundlegem::CLI
     end
 
     def safe_gsub_template_variables(user_string)
-      user_string.gsub(/\#{\s*config\[\s*:(\w+)\s*\]\s*}/) { |m| config[$1.to_sym] }
+      build_content_replacement_pairs.inject(user_string) do |result, (find, replace)|
+        result.gsub(find, replace)
+      end
     end
 
     # Domain placeholder → config key mapping

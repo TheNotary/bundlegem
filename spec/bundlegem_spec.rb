@@ -192,7 +192,7 @@ describe Bundlegem do
     options = { bin: false, ext: false, coc:  false, template: "template-user-supplied" }
     gem_name = "good-dog"
 
-    File.write("#{template_dir}/bundlegem.yml", 'bootstrap_command: "echo #{config[:name]}"')
+    File.write("#{template_dir}/bundlegem.yml", 'bootstrap_command: "echo foo-bar"')
     File.write("#{template_dir}/README.md", "# Readme...")
     `git init #{template_dir}`
 
