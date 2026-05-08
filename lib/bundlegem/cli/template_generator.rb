@@ -31,8 +31,11 @@ module Bundlegem::CLI
       puts "Beginning run" if $TRACE
       raise_project_with_that_name_already_exists! if File.exist?(target)
 
-      puts "ensure_safe_gem_name" if $TRACE
-      ensure_safe_gem_name(name, config[:constant_array])
+      puts "ensure_safe_project_name" if $TRACE
+      ensure_safe_project_name(name, config[:constant_array])
+
+      puts "run_name_validation" if $TRACE
+      run_name_validation
 
       template_src = match_template_src
 
@@ -142,6 +145,40 @@ module Bundlegem::CLI
     def safe_gsub_template_variables(user_string)
       build_content_replacement_pairs.inject(user_string) do |result, (find, replace)|
         result.gsub(find, replace)
+      end
+    end
+
+    # Runs declarative name validation rules from the template's bundlegem.yml:
+    #
+    #   name_validation:
+    #     reserved_names: [test, std, fmt]   # exact-match denylist
+    #     regex_validator: "^[a-z][a-z0-9-]*$"  # name MUST match this pattern
+    #
+    # Both keys are optional. All checks run in pure Ruby — no shell, no
+    # cross-platform concerns.
+    def run_name_validation
+      rules = @tconf[:name_validation]
+      return if rules.nil? || rules.empty?
+
+      reserved = Array(rules[:reserved_names]).map(&:to_s)
+      if reserved.include?(name)
+        $stderr.puts "Invalid project name '#{name}': reserved by template '#{@options[:template]}'. Please choose another name."
+        raise
+      end
+
+      pattern = rules[:regex_validator]
+      if pattern && !pattern.to_s.empty?
+        begin
+          regex = Regexp.new(pattern.to_s)
+        rescue RegexpError => e
+          $stderr.puts "Template '#{@options[:template]}' has an invalid name_validation.regex_validator: #{e.message}"
+          raise "invalid name_validation.regex_validator"
+        end
+
+        unless regex.match?(name)
+          $stderr.puts "Invalid project name '#{name}': does not match #{regex.inspect} required by template '#{@options[:template]}'."
+          raise
+        end
       end
     end
 
@@ -413,19 +450,10 @@ Exiting...
 
     # This checks to see that the gem_name is a valid ruby gem name and will 'work'
     # and won't overlap with a bundlegem constant apparently...
-    def ensure_safe_gem_name(name, constant_array)
+    def ensure_safe_project_name(name, constant_array)
       if name =~ /^\d/
         $stderr.puts "Invalid gem name #{name} Please give a name which does not start with numbers."
         raise
-      end
-
-      # TODO:  This validation should be defined within the template itself in some way
-      # may have security implications
-      if config[:template] == "ruby-cli-gem"
-        if Object.const_defined?(constant_array.first)
-          $stderr.puts "Invalid gem name #{name} constant #{constant_array.join("::")} is already in use. Please choose another gem name."
-          raise
-        end
       end
     end
 

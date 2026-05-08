@@ -1,5 +1,6 @@
 ** Planned 0.2.x **
-  - TBD
+  - Feature: templates can declare a `name_validation:` block in bundlegem.yml with two optional keys: `reserved_names` (exact-match denylist) and `regex_validator` (a Ruby regex the project name must match). Validation runs after the built-in regex check and before any files are written. All checks happen in pure Ruby — no shell, no cross-platform concerns.
+  - Removed the hardcoded ruby-cli-gem constant-collision check from core; templates now declare their own naming rules via name_validation.
 
 ** 0.2.0 **
   - Feature: improves stdout feedback to enhance UX

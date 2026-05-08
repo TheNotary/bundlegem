@@ -202,6 +202,134 @@ describe Bundlegem do
     expect(output).to include "echo #{gem_name}"
   end
 
+  describe "name_validation" do
+    it "rejects names listed in reserved_names and skips bootstrap_command" do
+      template_dir = create_user_defined_template("testing", "template-user-supplied")
+      options = { bin: false, ext: false, coc: false, template: "template-user-supplied" }
+      gem_name = "good-dog"
+
+      File.write(
+        "#{template_dir}/bundlegem.yml",
+        "name_validation:\n  reserved_names: [bad-dog, good-dog, ugly-dog]\nbootstrap_command: echo BOOTSTRAP_RAN\n"
+      )
+      File.write("#{template_dir}/README.md", "# Readme")
+      `git init #{template_dir}`
+
+      expect {
+        capture_stdout { capture_stderr { Bundlegem.generate_template(options, gem_name) } }
+      }.to raise_error(RuntimeError)
+
+      expect($captured_stderr).to include "reserved by template"
+      expect(File).not_to exist("#{@dst_dir}/#{gem_name}")
+    end
+
+    it "allows names that are not in reserved_names" do
+      template_dir = create_user_defined_template("testing", "template-user-supplied")
+      options = { bin: false, ext: false, coc: false, template: "template-user-supplied" }
+      gem_name = "good-dog"
+
+      File.write(
+        "#{template_dir}/bundlegem.yml",
+        "name_validation:\n  reserved_names: [bad-dog, ugly-dog]\n"
+      )
+      File.write("#{template_dir}/README.md", "# Readme")
+      `git init #{template_dir}`
+
+      capture_stdout { Bundlegem.generate_template(options, gem_name) }
+
+      expect(File).to exist("#{@dst_dir}/#{gem_name}/README.md")
+    end
+
+    it "rejects names that don't match regex_validator" do
+      template_dir = create_user_defined_template("testing", "template-user-supplied")
+      options = { bin: false, ext: false, coc: false, template: "template-user-supplied" }
+      gem_name = "good-dog"
+
+      File.write(
+        "#{template_dir}/bundlegem.yml",
+        "name_validation:\n  regex_validator: \"^[a-z][a-z0-9_]*$\"\n"
+      )
+      File.write("#{template_dir}/README.md", "# Readme")
+      `git init #{template_dir}`
+
+      expect {
+        capture_stdout { capture_stderr { Bundlegem.generate_template(options, gem_name) } }
+      }.to raise_error(RuntimeError)
+
+      expect($captured_stderr).to include "does not match"
+      expect(File).not_to exist("#{@dst_dir}/#{gem_name}")
+    end
+
+    it "accepts names that match regex_validator" do
+      template_dir = create_user_defined_template("testing", "template-user-supplied")
+      options = { bin: false, ext: false, coc: false, template: "template-user-supplied" }
+      gem_name = "good-dog"
+
+      File.write(
+        "#{template_dir}/bundlegem.yml",
+        "name_validation:\n  regex_validator: \"^[a-z][a-z0-9-]*$\"\n"
+      )
+      File.write("#{template_dir}/README.md", "# Readme")
+      `git init #{template_dir}`
+
+      capture_stdout { Bundlegem.generate_template(options, gem_name) }
+
+      expect(File).to exist("#{@dst_dir}/#{gem_name}/README.md")
+    end
+
+    it "applies both reserved_names and regex_validator together" do
+      template_dir = create_user_defined_template("testing", "template-user-supplied")
+      options = { bin: false, ext: false, coc: false, template: "template-user-supplied" }
+      gem_name = "fmt"
+
+      File.write(
+        "#{template_dir}/bundlegem.yml",
+        "name_validation:\n  reserved_names: [fmt, std]\n  regex_validator: \"^[a-z][a-z0-9-]*$\"\n"
+      )
+      File.write("#{template_dir}/README.md", "# Readme")
+      `git init #{template_dir}`
+
+      expect {
+        capture_stdout { capture_stderr { Bundlegem.generate_template(options, gem_name) } }
+      }.to raise_error(RuntimeError)
+
+      expect($captured_stderr).to include "reserved"
+    end
+
+    it "raises a clear error when regex_validator is malformed" do
+      template_dir = create_user_defined_template("testing", "template-user-supplied")
+      options = { bin: false, ext: false, coc: false, template: "template-user-supplied" }
+      gem_name = "good-dog"
+
+      File.write(
+        "#{template_dir}/bundlegem.yml",
+        "name_validation:\n  regex_validator: \"[unclosed\"\n"
+      )
+      File.write("#{template_dir}/README.md", "# Readme")
+      `git init #{template_dir}`
+
+      expect {
+        capture_stdout { capture_stderr { Bundlegem.generate_template(options, gem_name) } }
+      }.to raise_error(RuntimeError)
+
+      expect($captured_stderr).to include "invalid name_validation.regex_validator"
+    end
+
+    it "is a no-op when name_validation is omitted" do
+      template_dir = create_user_defined_template("testing", "template-user-supplied")
+      options = { bin: false, ext: false, coc: false, template: "template-user-supplied" }
+      gem_name = "good-dog"
+
+      File.write("#{template_dir}/bundlegem.yml", "category: testing\n")
+      File.write("#{template_dir}/README.md", "# Readme")
+      `git init #{template_dir}`
+
+      capture_stdout { Bundlegem.generate_template(options, gem_name) }
+
+      expect(File).to exist("#{@dst_dir}/#{gem_name}/README.md")
+    end
+  end
+
   it "has a test proving every interpolation in one file" do
     expected_manifest = File.read("#{ENV['SPEC_DATA_DIR']}/variable_manifest_test.rb")
     options = { bin: false, ext: false, coc:  false, template: "test_template" }
