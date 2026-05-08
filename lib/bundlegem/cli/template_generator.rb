@@ -23,6 +23,53 @@ module Bundlegem::CLI
       @tconf = load_template_configs
     end
 
+    def config
+      @config ||= build_interpolation_config
+    end
+
+    def run
+      puts "Beginning run" if $TRACE
+      raise_project_with_that_name_already_exists! if File.exist?(target)
+
+      puts "ensure_safe_gem_name" if $TRACE
+      ensure_safe_gem_name(name, config[:constant_array])
+
+      template_src = match_template_src
+
+      puts "dynamically_generate_template_directories" if $TRACE
+      time_it("dynamically_generate_template_directories") do
+        @template_directories = dynamically_generate_template_directories
+      end
+
+      puts "dynamically_generate_templates_files" if $TRACE
+      templates = dynamically_generate_templates_files
+
+      puts "Creating new project folder '#{name}'\n\n"
+      create_template_directories(@template_directories, target)
+
+      templates.each do |src, dst|
+        template("#{template_src}/#{src}", target.join(dst), config)
+      end
+
+      Dir.chdir(target) do
+        if @configurator.always_perform_git_init || !inside_git_work_tree?
+          `git init`
+        end
+        `git add .`
+      end
+
+      if @tconf[:bootstrap_command]
+        puts "Executing bootstrap_command"
+        cmd = safe_gsub_template_variables(@tconf[:bootstrap_command])
+        puts cmd
+        Dir.chdir(target) do
+          `#{cmd}`
+        end
+      end
+
+      puts "\nComplete."
+    end
+
     def build_interpolation_config
       title = name.tr('-', '_').split('_').map(&:capitalize).join(" ")
       pascal_name = name.tr('-', '_').split('_').map(&:capitalize).join
@@ -85,53 +132,6 @@ module Bundlegem::CLI
       }
     end
 
-    def config
-      @config ||= build_interpolation_config
-    end
-
-    def run
-      puts "Beginning run" if $TRACE
-      raise_project_with_that_name_already_exists! if File.exist?(target)
-
-      puts "ensure_safe_gem_name" if $TRACE
-      ensure_safe_gem_name(name, config[:constant_array])
-
-
-      template_src = match_template_src
-
-      puts "dynamically_generate_template_directories" if $TRACE
-      time_it("dynamically_generate_template_directories") do
-        @template_directories = dynamically_generate_template_directories
-      end
-
-      puts "dynamically_generate_templates_files" if $TRACE
-      templates = dynamically_generate_templates_files
-
-      puts "Creating new project folder '#{name}'\n\n"
-      create_template_directories(@template_directories, target)
-
-      templates.each do |src, dst|
-        template("#{template_src}/#{src}", target.join(dst), config)
-      end
-
-      Dir.chdir(target) do
-        if @configurator.always_perform_git_init || !inside_git_work_tree?
-          `git init`
-        end
-        `git add .`
-      end
-
-      if @tconf[:bootstrap_command]
-        puts "Executing bootstrap_command"
-        cmd = safe_gsub_template_variables(@tconf[:bootstrap_command])
-        puts cmd
-        Dir.chdir(target) do
-          `#{cmd}`
-        end
-      end
-
-      puts "\nComplete."
-    end
 
     private
 
