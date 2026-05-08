@@ -69,7 +69,7 @@ end
 # fyi parser.parse! splices options out of ARGV, so gem_name doesn't need to be specified first
 gem_name = ARGV.first
 begin
-  Bundlegem.gem(options, gem_name)
+  Bundlegem.generate_template(options, gem_name)
 rescue Bundlegem::TemplateManager::TemplateResolutionError # TODO: Move this into the --template command, it should be in this file
   template_name = options[:template] || Bundlegem::TemplateManager.default_template_name
   $stderr.puts "Error: template #{template_name} could not be found.  Run the below command to list all available templates.\n\n  bundlegem -l"

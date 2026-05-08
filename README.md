@@ -138,7 +138,7 @@ To pull up a list of available variables, run this command
 $  bundlegem --cheat-sheet
 ```
 
-If you would find additional variables handy, set me up with a PR and assuming it seems widely helpful, I'll merge it right as soon as I can.   The implementation for the variables is largely found in [gem.rb](https://github.com/TheNotary/bundlegem/blob/main/lib/bundlegem/cli/gem.rb#L59).
+If you would find additional variables handy, set me up with a PR and assuming it seems widely helpful, I'll merge it right as soon as I can.   The implementation for the variables is largely found in [gem.rb](https://github.com/TheNotary/bundlegem/blob/main/lib/bundlegem/cli/template_generator.rb#L59).
 
 #### Quick Tips Regarding Project Templates
 

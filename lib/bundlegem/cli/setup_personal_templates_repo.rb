@@ -44,6 +44,7 @@ module Bundlegem::CLI
       # `git config --global user.name`, or nil if that is not set. Does not prompt.
       def personal_templates_dir
         name = `git config --global user.name`.to_s.strip
+        # name = `git config --global user.name`.to_s.strip.downcase # TODO: Make this downcasing when apps health improves
         return nil if name.empty?
         "#{ENV['HOME']}/.bundlegem/templates/templates-#{name}"
       end

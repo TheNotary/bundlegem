@@ -7,7 +7,7 @@ require 'set'
 $TRACE = false
 
 module Bundlegem::CLI
-  class Gem
+  class TemplateGenerator
 
     attr_reader :options, :gem_name, :name, :target
 

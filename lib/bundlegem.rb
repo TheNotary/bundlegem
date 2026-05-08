@@ -78,10 +78,10 @@ module Bundlegem
       puts CLI::DirToTemplate.go
     end
 
-    def gem(options, gem_name)
-      require 'bundlegem/cli/gem'
+    def generate_template(options, gem_name)
+      require 'bundlegem/cli/template_generator'
 
-      Bundlegem::CLI::Gem.new(options, gem_name).run
+      template_generator = CLI::TemplateGenerator.new(options, gem_name).run
     end
 
     # input:  [ { "predefined" => "default" },

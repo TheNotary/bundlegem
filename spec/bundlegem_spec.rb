@@ -100,7 +100,7 @@ describe Bundlegem do
     options = { bin: false, ext: false, coc: false, template: "api" }
     gem_name = "tool-go-good-dog"
 
-    output = capture_stdout { Bundlegem.gem(options, gem_name) }
+    output = capture_stdout { Bundlegem.generate_template(options, gem_name) }
 
     expect(output).to include "leaf-config"
     expect(output).not_to include "root-config"
@@ -111,7 +111,7 @@ describe Bundlegem do
     options = {bin: false, ext: false, coc:  false, template: "test"}
     gem_name = "tmp_gem"
 
-    capture_stdout { Bundlegem.gem(options, gem_name) }
+    capture_stdout { Bundlegem.generate_template(options, gem_name) }
     expect(File).to exist("#{@dst_dir}/#{gem_name}/test_confirmed")
     expect(File).to exist("#{@dst_dir}/#{gem_name}/.vscode/launch.json")
   end
@@ -119,7 +119,7 @@ describe Bundlegem do
   it "has a useful dynamically_generate_template_directories method" do
     options = { bin: false, ext: false, coc:  false, template: "test_template" }
     gem_name = "good-dog"
-    my_gem = Bundlegem::CLI::Gem.new(options, gem_name)
+    my_gem = Bundlegem::CLI::TemplateGenerator.new(options, gem_name)
 
     src_dst_map = my_gem.send('dynamically_generate_template_directories')
 
@@ -131,7 +131,7 @@ describe Bundlegem do
   it "returns the expected interpolated string when substitute_template_values is called" do
     options = { bin: false, ext: false, coc:  false, template: "test_template" }
     gem_name = "good-dog"
-    my_gem = Bundlegem::CLI::Gem.new(options, gem_name)
+    my_gem = Bundlegem::CLI::TemplateGenerator.new(options, gem_name)
 
     short_path = 'foo-bar'
     long_path = 'hello/foo-bar/blah/foo-bar'
@@ -146,7 +146,7 @@ describe Bundlegem do
   it "has a useful dynamically_generate_templates_files method" do
     options = { bin: false, ext: false, coc:  false, template: "test_template" }
     gem_name = "good-dog"
-    my_gem = Bundlegem::CLI::Gem.new(options, gem_name)
+    my_gem = Bundlegem::CLI::TemplateGenerator.new(options, gem_name)
 
     src_dst_map = my_gem.send('dynamically_generate_templates_files')
 
@@ -167,7 +167,7 @@ describe Bundlegem do
     File.write("#{template_dir}/node_modules/dont_template.rb", "I must not be interpretted")
     `git init #{template_dir}`
 
-    capture_stdout { Bundlegem.gem(options, gem_name) }
+    capture_stdout { Bundlegem.generate_template(options, gem_name) }
 
     expect(File).not_to exist "#{@dst_dir}/#{gem_name}/node_modules/dont_template.rb"
     expect(File).not_to exist "#{@dst_dir}/#{gem_name}/node_modules"
@@ -182,7 +182,7 @@ describe Bundlegem do
     File.write("#{template_dir}/README.md", "# Readme...")
     `git init #{template_dir}`
 
-    output = capture_stdout { Bundlegem.gem(options, gem_name) }
+    output = capture_stdout { Bundlegem.generate_template(options, gem_name) }
 
     expect(output).to include "hihihi"
   end
@@ -197,7 +197,7 @@ describe Bundlegem do
     File.write("#{template_dir}/README.md", "# Readme...")
     `git init #{template_dir}`
 
-    output = capture_stdout { Bundlegem.gem(options, gem_name) }
+    output = capture_stdout { Bundlegem.generate_template(options, gem_name) }
 
     expect(output).to include "echo #{gem_name}"
   end
@@ -207,7 +207,7 @@ describe Bundlegem do
     options = { bin: false, ext: false, coc:  false, template: "test_template" }
     gem_name = "good-dog"
 
-    capture_stdout { Bundlegem.gem(options, gem_name) }
+    capture_stdout { Bundlegem.generate_template(options, gem_name) }
 
     resulting_manifest = File.read("#{@dst_dir}/#{gem_name}/#{gem_name}.rb")
     expect(resulting_manifest).to eq expected_manifest
@@ -216,7 +216,7 @@ describe Bundlegem do
   it "has config[:unprefixed_name] removing purpose-tool- from name" do
     options = { bin: false, ext: false, coc:  false, template: "test_template" }
     gem_name = "tool-go-good-dog"
-    my_gem = Bundlegem::CLI::Gem.new(options, gem_name)
+    my_gem = Bundlegem::CLI::TemplateGenerator.new(options, gem_name)
 
     config = my_gem.build_interpolation_config
 
@@ -241,7 +241,7 @@ describe Bundlegem do
       # Simulate user typing "my-prompted-registry.io"
       allow($stdin).to receive(:gets).and_return("my-prompted-registry.io\n")
 
-      output = capture_stdout { Bundlegem.gem(options, gem_name) }
+      output = capture_stdout { Bundlegem.generate_template(options, gem_name) }
 
       expect(output).to include "registry-domain"
       expect(output).to include "~/.bundlegem/config"
@@ -262,7 +262,7 @@ describe Bundlegem do
       # $stdin.gets should NOT be called
       expect($stdin).not_to receive(:gets)
 
-      capture_stdout { Bundlegem.gem(options, gem_name) }
+      capture_stdout { Bundlegem.generate_template(options, gem_name) }
     end
 
     it "does not prompt for templates without domain placeholders" do
@@ -275,7 +275,7 @@ describe Bundlegem do
 
       expect($stdin).not_to receive(:gets)
 
-      capture_stdout { Bundlegem.gem(options, gem_name) }
+      capture_stdout { Bundlegem.generate_template(options, gem_name) }
     end
 
     it "defaults repo_domain to github.com when user enters empty string" do
@@ -293,7 +293,7 @@ describe Bundlegem do
 
       allow($stdin).to receive(:gets).and_return("\n")
 
-      capture_stdout { Bundlegem.gem(options, gem_name) }
+      capture_stdout { Bundlegem.generate_template(options, gem_name) }
 
       saved_config = YAML.load_file(config_path)
       expect(saved_config['repo_domain']).to eq "github.com"
@@ -312,7 +312,7 @@ describe Bundlegem do
       options = { bin: false, ext: false, coc: false, template: "template-git-test" }
       gem_name = "git-skip-app"
 
-      capture_stdout { Bundlegem.gem(options, gem_name) }
+      capture_stdout { Bundlegem.generate_template(options, gem_name) }
 
       # The generated project should NOT have its own .git directory
       expect(File).not_to exist("#{@dst_dir}/#{gem_name}/.git")
@@ -328,7 +328,7 @@ describe Bundlegem do
       options = { bin: false, ext: false, coc: false, template: "template-git-test2" }
       gem_name = "git-init-app"
 
-      capture_stdout { Bundlegem.gem(options, gem_name) }
+      capture_stdout { Bundlegem.generate_template(options, gem_name) }
 
       # The generated project SHOULD have its own .git directory
       expect(File).to exist("#{@dst_dir}/#{gem_name}/.git")
@@ -351,7 +351,7 @@ describe Bundlegem do
       options = { bin: false, ext: false, coc: false, template: "template-git-test3" }
       gem_name = "git-force-app"
 
-      capture_stdout { Bundlegem.gem(options, gem_name) }
+      capture_stdout { Bundlegem.generate_template(options, gem_name) }
 
       # The generated project SHOULD have its own .git directory even though parent is a repo
       expect(File).to exist("#{@dst_dir}/#{gem_name}/.git")
