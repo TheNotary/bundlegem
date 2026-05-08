@@ -9,10 +9,10 @@ Usage Examples:
   $ bundlegem --install-public-templates
 
   # Create a personal mono-repo template for your projects
-  $ bundlegem --create-personal-templates
+  $ bundlegem --setup-personal-templates
 
   # List available teplates
-  $  bundlegem --list
+  $ bundlegem --list
 
   # Create a ruby gem project using the built in service template
   $ bundlegem --template ruby-cli-gem your_project_name

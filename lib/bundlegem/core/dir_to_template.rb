@@ -61,6 +61,7 @@ module Bundlegem::Core::DirToTemplate
 
     def ignored_by_git?(path)
       stdout, _, status = Open3.capture3("git check-ignore #{Shellwords.escape(path)}")
+      return false unless status.exitstatus == 0 || status.exitstatus == 1
       status.success? && !stdout.strip.empty?
     end
 

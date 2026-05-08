@@ -40,6 +40,14 @@ module Bundlegem::CLI
       end
 
 
+      # Non-interactive resolver: returns the personal templates dir path based on
+      # `git config --global user.name`, or nil if that is not set. Does not prompt.
+      def personal_templates_dir
+        name = `git config --global user.name`.to_s.strip
+        return nil if name.empty?
+        "#{ENV['HOME']}/.bundlegem/templates/templates-#{name}"
+      end
+
       def personal_templates_github_name(input: $stdin, output: $stdout)
         name = `git config --global user.name`.to_s.strip
         return name unless name.empty?
@@ -98,7 +106,7 @@ module Bundlegem::CLI
           # templates-#{github_name}
 
           This is a personal mono-repo of [bundlegem](https://github.com/thenotary/bundlegem)
-          templates. It was scaffolded by `bundlegem --create-personal-templates`.
+          templates. It was scaffolded by `bundlegem --setup-personal-templates`.
 
           ## Structure
 

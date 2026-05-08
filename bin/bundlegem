@@ -34,12 +34,12 @@ parser = OptionParser.new do |opts|
     exit
   end
 
-  opts.on("--create-personal-templates", "Create a personal mono-repo template collection") do
+  opts.on("--setup-personal-templates", "Create a personal mono-repo template collection") do
     Bundlegem.setup_personal_templates
     exit
   end
 
-  opts.on("--to-template", "Convert directory to template") do
+  opts.on("--to-template", "Copy the current project into your personal templates repo and convert it to a template") do
     Bundlegem.dir_to_template
     exit
   end
