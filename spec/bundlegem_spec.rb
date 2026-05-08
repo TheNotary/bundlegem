@@ -1,5 +1,6 @@
 require 'spec_helper'
 
+
 describe Bundlegem do
   before :each do
     @mocked_home = "/tmp/bundlegem_mock_home"
@@ -368,6 +369,76 @@ describe Bundlegem do
     it "can download public templates from the web" do
       capture_stdout { Bundlegem.install_public_templates }
       expect(File).to exist("#{ENV['HOME']}/.bundlegem/templates/template-arduino/README.md")
+    end
+  end
+
+  describe "create personal templates" do
+    let(:github_name) { "Test" } # set by reset_test_env via `git config --global user.name "Test"`
+    let(:local_dir)   { "#{ENV['HOME']}/.bundlegem/templates/templates-#{github_name}" }
+
+    before :each do
+      # Default: no remote — skip network calls.
+      allow(Bundlegem).to receive(:remote_repo_exists?).and_return(false)
+    end
+
+    it "errors when repo_domain is not configured" do
+      config_path = "#{ENV['HOME']}/.bundlegem/config"
+      data = YAML.load_file(config_path)
+      data['repo_domain'] = nil
+      File.write(config_path, "# Comments made to this file will not be preserved\n#{YAML.dump(data)}")
+
+      out = StringIO.new
+      Bundlegem.setup_personal_templates(input: StringIO.new(""), output: out)
+
+      expect(out.string).to include("`repo_domain` is not set")
+      expect(File).not_to exist(local_dir)
+    end
+
+    it "creates the mono-repo with bundlegem.yml and README when no remote exists" do
+      out = StringIO.new
+      Bundlegem.setup_personal_templates(input: StringIO.new(""), output: out)
+
+      expect(File).to exist("#{local_dir}/bundlegem.yml")
+      expect(File.read("#{local_dir}/bundlegem.yml")).to include("monorepo: true")
+
+      expect(File).to exist("#{local_dir}/README.md")
+      expect(File.read("#{local_dir}/README.md")).to include("https://github.com/thenotary/bundlegem")
+
+      expect(File).to exist("#{local_dir}/.git")
+      expect(out.string).to include("Created personal templates mono-repo")
+    end
+
+    it "refuses to overwrite an existing local templates directory" do
+      FileUtils.mkdir_p(local_dir)
+
+      out = StringIO.new
+      Bundlegem.setup_personal_templates(input: StringIO.new(""), output: out)
+
+      expect(out.string).to include("The template directory already exists, #{local_dir}")
+      expect(File).not_to exist("#{local_dir}/bundlegem.yml")
+    end
+
+    it "prompts to clone when the remote repo exists and aborts on 'n'" do
+      allow(Bundlegem::CLI::SetupPersonalTemplatesRepo).to receive(:remote_repo_exists?).and_return(true)
+
+      out = StringIO.new
+      Bundlegem.setup_personal_templates(input: StringIO.new("n\n"), output: out)
+
+      expect(out.string).to include("clone it down? [Y/n]")
+      expect(out.string).to include("Aborted")
+      expect(File).not_to exist(local_dir)
+    end
+
+    it "prompts for github name when git user.name is unset" do
+      `git config --global --unset user.name`
+
+      out = StringIO.new
+      Bundlegem.setup_personal_templates(input: StringIO.new("octocat\n"), output: out)
+
+      expect(out.string).to include("Enter your GitHub user name")
+      expect(File).to exist("#{ENV['HOME']}/.bundlegem/templates/templates-octocat/bundlegem.yml")
+    ensure
+      `git config --global user.name "Test"`
     end
   end
 

@@ -70,6 +70,10 @@ module Bundlegem
       exit 1
     end
 
+    def setup_personal_templates(input: $stdin, output: $stdout)
+      CLI::SetupPersonalTemplatesRepo.go(input: input, output: output)
+    end
+
     def dir_to_template
       puts CLI::DirToTemplate.go
     end

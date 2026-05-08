@@ -52,11 +52,11 @@ module Bundlegem::Core::DirToTemplate
     end
 
     def should_skip?(path)
-      !File.file?(path) ||              # skip directories
-        path.start_with?('./.git/') ||  # skip the .git directory
+      !File.file?(path) ||               # skip directories
+        path.start_with?('./.git/') ||   # skip the .git directory
         path == './.gitignore' ||        # skip .gitignore (must remain for git to work)
-        ignored_by_git?(path) ||        # skip things that are gitignored
-        path == "./bundlegem.yml"          # skip the bundlegem.yml file
+        ignored_by_git?(path) ||         # skip things that are gitignored
+        path == "./bundlegem.yml"        # skip the bundlegem.yml file
     end
 
     def ignored_by_git?(path)
