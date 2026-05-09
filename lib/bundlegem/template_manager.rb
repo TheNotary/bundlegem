@@ -7,7 +7,6 @@ module Bundlegem
   # in the user's dir, the gem's builtin templates
   # (and on the web some day)
   class TemplateManager
-    class TemplateResolutionError < StandardError; end
 
     class << self
 
@@ -25,7 +24,10 @@ module Bundlegem
         custom_src = resolve_template_path(custom_template_location, template_name)
         return custom_src if File.exist?(custom_src)
 
-        resolve_monorepo_leaf_template(custom_template_location, template_name) || custom_src
+        monorepo_match = resolve_monorepo_leaf_template(custom_template_location, template_name)
+        return monorepo_match if monorepo_match
+
+        raise Bundlegem::CLIError, "Error: template '#{template_name}' could not be found. Run the below command to list all available templates.\n\n  bundlegem -l"
       end
 
       def template_exists_within_repo?(template_name)
@@ -39,7 +41,7 @@ module Bundlegem
         return basic if File.exist?(basic)
         return prefixed if File.exist?(prefixed)
 
-        basic # fallback, even if it doesn't exist, will be caught downstream
+        basic # fallback, even if it doesn't exist, will be caught by get_template_src
       end
 
       def resolve_monorepo_leaf_template(root, requested_name)
@@ -54,12 +56,12 @@ module Bundlegem
 
         if matches.length > 1
           readable_paths = matches.map { |path| path.sub(/^#{Regexp.escape(root)}\//, "") }.sort.join(", ")
-          raise TemplateResolutionError, "Ambiguous template name '#{requested_name}'. Matching leaf templates: #{readable_paths}. Rename one of the conflicting templates."
+          raise Bundlegem::CLIError, "Ambiguous template name '#{requested_name}'. Matching leaf templates: #{readable_paths}. Rename one of the conflicting templates."
         end
 
         if matches.empty?
           readable_leaves = leaf_paths.map { |path| File.basename(path).sub(/^template-/, "") }.uniq.sort
-          raise TemplateResolutionError, "Template '#{requested_name}' not found in monorepo leaf templates. Available leaf templates: #{readable_leaves.join(', ')}"
+          raise Bundlegem::CLIError, "Template '#{requested_name}' not found in monorepo leaf templates. Available leaf templates: #{readable_leaves.join(', ')}. Run 'bundlegem -l' to list all available templates."
         end
 
         matches.first

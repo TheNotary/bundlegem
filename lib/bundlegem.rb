@@ -83,6 +83,9 @@ module Bundlegem
       require 'bundlegem/cli/template_generator'
 
       template_generator = CLI::TemplateGenerator.new(options, gem_name).run
+    rescue Bundlegem::CLIError => e
+      msg = e.message
+      $stderr.puts msg if msg && !msg.empty? && msg != e.class.name
     end
 
     # input:  [ { "predefined" => "default" },

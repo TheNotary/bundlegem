@@ -42,7 +42,7 @@ module Bundlegem
 
       expect do
         TemplateManager.get_template_src(options)
-      end.to raise_error(TemplateManager::TemplateResolutionError, /Ambiguous template name 'api'/)
+      end.to raise_error(Bundlegem::CLIError, /Ambiguous template name 'api'/)
     end
 
     it 'raises a not-found error when monorepo leaf template does not exist' do
@@ -53,7 +53,15 @@ module Bundlegem
 
       expect do
         TemplateManager.get_template_src(options)
-      end.to raise_error(TemplateManager::TemplateResolutionError, /not found in monorepo leaf templates/)
+      end.to raise_error(Bundlegem::CLIError, /not found in monorepo leaf templates/)
+    end
+
+    it 'raises a CLIError when the template path does not exist' do
+      options = { bin: false, ext: false, coc: false, template: "does-not-exist" }
+
+      expect do
+        TemplateManager.get_template_src(options)
+      end.to raise_error(Bundlegem::CLIError, /could not be found/)
     end
 
   end
