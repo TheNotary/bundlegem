@@ -59,5 +59,46 @@ module Bundlegem::Core
       expect(content).not_to include 'CoolApp'
       expect(content).not_to include 'coolApp'
     end
+
+    it 'reverse-substitutes FOO_* placeholder values from git config and bundlegem config' do
+      template_dir = create_user_defined_template(category: "wizardly_tools")
+      template_name = "good-dog"
+
+      FileUtils.cd(template_dir)
+      manifest = <<~CONTENT
+        author: Test
+        email: you@example.com
+        repo_domain: github.com
+        repo_url: https://github.com/Test/good-dog
+        repo_path: github.com/test/good-dog
+        image_path: test/good-dog
+        registry_domain: my-registry.example.com
+        registry_repo_path: my-registry.example.com/test/good-dog
+        k8s_domain: my-k8s.example.com
+      CONTENT
+      File.write("#{template_dir}/manifest.txt", manifest)
+      File.write("#{template_dir}/.gitignore", "")
+      `git init`
+
+      DirToTemplate.🧙🪄! Find.find("."), template_name: template_name
+
+      content = File.read("#{template_dir}/manifest.txt")
+      expect(content).to include 'FOO_AUTHOR'
+      expect(content).to include 'FOO_EMAIL'
+      expect(content).to include 'FOO_GIT_REPO_DOMAIN'
+      expect(content).to include 'FOO_GIT_REPO_URL'
+      expect(content).to include 'FOO_GIT_REPO_PATH'
+      expect(content).to include 'FOO_IMAGE_PATH'
+      expect(content).to include 'FOO_REGISTRY_DOMAIN'
+      expect(content).to include 'FOO_REGISTRY_REPO_PATH'
+      expect(content).to include 'FOO_K8S_DOMAIN'
+
+      expect(content).not_to include 'you@example.com'
+      expect(content).not_to include 'github.com'
+      expect(content).not_to include 'my-registry.example.com'
+      expect(content).not_to include 'my-k8s.example.com'
+      expect(content).not_to include 'good-dog'
+      expect(content).not_to include 'good_dog'
+    end
   end
 end
