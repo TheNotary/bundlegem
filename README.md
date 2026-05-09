@@ -14,6 +14,7 @@ I highly recommend the `foobar` alias!
 ```bash
 gem install foobar_templates
 foobar_templates --install-public-templates
+foobar_templates --setup-personal-templates
 
 echo "alias foobar='foobar_templates'" >> ~/.bashrc
 source ~/.bashrc
