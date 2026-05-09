@@ -71,7 +71,7 @@ $  echo "language: javascript" >> bundlegem.yml
 $  bundlegem --copy-to-templates
 ```
 
-Change the bundlegem.yml contents to what makes sense for your template.  The `--copy-to-templates` command will replace all occurrences of your project's name variants with `foo-bar` template placeholders.  To keep you and I safe, it will only run if there is a `bundlegem.yml` file in the current directory.
+Change the bundlegem.yml contents to what makes sense for your template.  The `--copy-to-templates` command will prompt you for the template's folder name (defaults to the current project's basename) and the `category` to record in `bundlegem.yml` (defaults to the existing value, or `misc`), then replace all occurrences of your project's name variants with `foo-bar` template placeholders.
 
 #### Categorizing Your Template
 

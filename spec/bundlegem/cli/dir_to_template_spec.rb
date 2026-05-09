@@ -33,7 +33,7 @@ module Bundlegem::CLI
       init_project("cool-app", files: { "main.rb" => "puts 'hi'\n" })
 
       out = StringIO.new
-      expect { DirToTemplate.go(output: out) }.to raise_error(Bundlegem::CLIError)
+      expect { DirToTemplate.go(input: StringIO.new(""), output: out) }.to raise_error(Bundlegem::CLIError)
       expect(out.string).to include "Unable to convert to template, no personal templates repo exists."
       expect(out.string).to include "bundlegem --setup-personal-templates"
     end
@@ -48,7 +48,7 @@ module Bundlegem::CLI
       File.write("#{project_dir}/ignored.log", "should not be copied")
 
       out = StringIO.new
-      DirToTemplate.go(output: out)
+      DirToTemplate.go(input: StringIO.new(""), output: out)
 
       dest = "#{@personal_repo}/cool-app"
       expect(File).to exist("#{dest}/main.rb")
@@ -78,10 +78,56 @@ module Bundlegem::CLI
         "main.rb"       => "puts 'hi'\n",
       })
 
-      DirToTemplate.go(output: StringIO.new)
+      DirToTemplate.go(input: StringIO.new(""), output: StringIO.new)
 
       dest = "#{@personal_repo}/cool-app"
       expect(File.read("#{dest}/bundlegem.yml")).to include "category: backend"
+    end
+
+    it "prompts for a custom template folder name and category" do
+      FileUtils.mkdir_p(@personal_repo)
+      init_project("cool-app", files: {
+        "main.rb"         => "class CoolApp; end\nNAME = 'cool-app'\n",
+        "lib/cool_app.rb" => "module CoolApp; end\n",
+      })
+
+      out = StringIO.new
+      DirToTemplate.go(input: StringIO.new("my-cool-template\nbackend\n"), output: out)
+
+      dest = "#{@personal_repo}/my-cool-template"
+      expect(File).to exist("#{dest}/main.rb")
+      expect(File.read("#{dest}/bundlegem.yml")).to include "category: backend"
+
+      content = File.read("#{dest}/main.rb")
+      expect(content).to include "FooBar"
+      expect(content).to include "foo-bar"
+      expect(content).not_to include "cool-app"
+      expect(content).not_to include "CoolApp"
+    end
+
+    it "defaults the category prompt to the existing bundlegem.yml category" do
+      FileUtils.mkdir_p(@personal_repo)
+      init_project("cool-app", files: {
+        "bundlegem.yml" => "category: backend\n",
+        "main.rb"       => "puts 'hi'\n",
+      })
+
+      out = StringIO.new
+      DirToTemplate.go(input: StringIO.new("\n\n"), output: out)
+
+      expect(out.string).to include "Category [backend]:"
+      expect(File.read("#{@personal_repo}/cool-app/bundlegem.yml")).to include "category: backend"
+    end
+
+    it "rejects invalid template folder names" do
+      FileUtils.mkdir_p(@personal_repo)
+      init_project("cool-app", files: { "main.rb" => "x" })
+
+      out = StringIO.new
+      expect {
+        DirToTemplate.go(input: StringIO.new("bad/name\n"), output: out)
+      }.to raise_error(Bundlegem::CLIError)
+      expect(out.string).to include "invalid template folder name"
     end
 
     it "aborts if a template with the same basename already exists" do
@@ -89,7 +135,7 @@ module Bundlegem::CLI
       init_project("cool-app", files: { "main.rb" => "x" })
 
       out = StringIO.new
-      expect { DirToTemplate.go(output: out) }.to raise_error(Bundlegem::CLIError)
+      expect { DirToTemplate.go(input: StringIO.new(""), output: out) }.to raise_error(Bundlegem::CLIError)
       expect(out.string).to include "already exists at #{@personal_repo}/cool-app"
     end
 
@@ -100,7 +146,7 @@ module Bundlegem::CLI
       FileUtils.cd(project_dir)
 
       out = StringIO.new
-      expect { DirToTemplate.go(output: out) }.to raise_error(Bundlegem::CLIError)
+      expect { DirToTemplate.go(input: StringIO.new(""), output: out) }.to raise_error(Bundlegem::CLIError)
       expect(out.string).to include "must be run from within a git repository"
     end
   end

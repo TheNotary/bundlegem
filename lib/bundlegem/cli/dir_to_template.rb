@@ -11,7 +11,7 @@ module Bundlegem::CLI
 
     class << self
 
-      def go(output: $stdout)
+      def go(input: $stdin, output: $stdout)
         personal_dir = Bundlegem::CLI::SetupPersonalTemplatesRepo.personal_templates_dir
         if personal_dir.nil? || !File.directory?(personal_dir)
           output.puts NO_PERSONAL_REPO_MSG
@@ -20,8 +20,15 @@ module Bundlegem::CLI
 
         validate_inside_git_repo!(output: output)
 
-        template_name = File.basename(Dir.pwd)
-        dest = File.join(personal_dir, template_name)
+        project_name = File.basename(Dir.pwd)
+        default_category = read_existing_category(Dir.pwd) || "misc"
+
+        template_folder_name = prompt(input, output, "Template folder name", project_name)
+        validate_folder_name!(template_folder_name, output: output)
+
+        category = prompt(input, output, "Category", default_category)
+
+        dest = File.join(personal_dir, template_folder_name)
 
         if File.exist?(dest)
           output.puts "Error: a template already exists at #{dest}.  Remove it or rename your project before re-running."
@@ -29,10 +36,10 @@ module Bundlegem::CLI
         end
 
         copy_tracked_files_to(dest)
-        ensure_bundlegem_yml(dest)
+        write_bundlegem_yml(dest, category)
 
         files_changed = Dir.chdir(dest) do
-          Bundlegem::Core::DirToTemplate.🧙🪄! Find.find('.'), template_name: template_name
+          Bundlegem::Core::DirToTemplate.🧙🪄! Find.find('.'), template_name: project_name
         end
 
         output.puts "Template created at: #{dest}"
@@ -72,6 +79,41 @@ module Bundlegem::CLI
       def ensure_bundlegem_yml(dest)
         path = File.join(dest, "bundlegem.yml")
         File.write(path, "category: misc\n") unless File.exist?(path)
+      end
+
+      def write_bundlegem_yml(dest, category)
+        path = File.join(dest, "bundlegem.yml")
+        if File.exist?(path)
+          contents = File.read(path)
+          if contents =~ /^category:.*$/
+            contents = contents.sub(/^category:.*$/, "category: #{category}")
+          else
+            contents = "category: #{category}\n" + contents
+          end
+          File.write(path, contents)
+        else
+          File.write(path, "category: #{category}\n")
+        end
+      end
+
+      def read_existing_category(dir)
+        path = File.join(dir, "bundlegem.yml")
+        return nil unless File.exist?(path)
+        m = File.read(path).match(/^category:\s*(.+?)\s*$/)
+        m && m[1].empty? ? nil : (m && m[1])
+      end
+
+      def prompt(input, output, message, default)
+        output.print "#{message} [#{default}]: "
+        answer = (input.gets || "").strip
+        answer.empty? ? default : answer
+      end
+
+      def validate_folder_name!(name, output: $stdout)
+        if name.nil? || name.empty? || name == "." || name == ".." || name.include?("/") || name.include?("\\")
+          output.puts "Error: invalid template folder name: #{name.inspect}"
+          raise Bundlegem::CLIError
+        end
       end
 
     end

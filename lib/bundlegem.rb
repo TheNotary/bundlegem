@@ -75,8 +75,8 @@ module Bundlegem
       CLI::SetupPersonalTemplatesRepo.go(input: input, output: output)
     end
 
-    def dir_to_template
-      puts CLI::DirToTemplate.go
+    def dir_to_template(input: $stdin, output: $stdout)
+      CLI::DirToTemplate.go(input: input, output: output)
     end
 
     def generate_template(options, gem_name)
