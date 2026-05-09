@@ -1,4 +1,5 @@
 require 'rake'
+require 'rubygems'
 require 'rspec/core/rake_task'
 
 GEM_NAME = "foobar_templates"
@@ -8,7 +9,9 @@ VERSION_FILE = "lib/#{GEM_NAME}/version.rb"
 module ReleaseHelper
   module_function
 
-  RC_RE = /\A(\d+)\.(\d+)\.(\d+)\.pre\.rc\.(\d+)\z/
+  # Prerelease syntax: `MAJOR.MINOR.PATCH.rcN` (e.g. `2.0.1.rc1`).
+  # Gem apparently doesn't support semver's `-` syntax =/
+  RC_RE = /\A(\d+)\.(\d+)\.(\d+)\.rc(\d+)\z/
   REL_RE = /\A(\d+)\.(\d+)\.(\d+)\z/
 
   def dry_run?
@@ -25,12 +28,12 @@ module ReleaseHelper
   def next_version(v)
     if (m = v.match(RC_RE))
       maj, min, pat, rc = m.captures.map(&:to_i)
-      "#{maj}.#{min}.#{pat}.pre.rc.#{rc + 1}"
+      "#{maj}.#{min}.#{pat}.rc#{rc + 1}"
     elsif (m = v.match(REL_RE))
       maj, min, pat = m.captures.map(&:to_i)
-      "#{maj}.#{min}.#{pat + 1}.pre.rc.1"
+      "#{maj}.#{min}.#{pat + 1}.rc1"
     else
-      abort "Unrecognized version format: #{v.inspect} (expected MAJOR.MINOR.PATCH or MAJOR.MINOR.PATCH.pre.rc.N)"
+      abort "Unrecognized version format: #{v.inspect} (expected MAJOR.MINOR.PATCH or MAJOR.MINOR.PATCH.rcN)"
     end
   end
 
