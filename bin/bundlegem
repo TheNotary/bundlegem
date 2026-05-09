@@ -39,7 +39,7 @@ parser = OptionParser.new do |opts|
     exit
   end
 
-  opts.on("--to-template", "Copy the current project into your personal templates repo and convert it to a template") do
+  opts.on("--copy-to-templates", "Exports the current project into your personal templates repo, converting it to a template") do
     Bundlegem.dir_to_template
     exit
   end

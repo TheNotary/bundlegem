@@ -19,7 +19,7 @@ Usage Examples:
 
   # Convert the current directory which represents a working project into a
   # template by replacing project name variants with foo-bar placeholders
-  $ bundlegem --to-template
+  $ bundlegem --copy-to-templates
 
   # shows this message
   $ bundlegem --help

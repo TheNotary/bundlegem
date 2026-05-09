@@ -58,7 +58,7 @@ git config --global user.name YOUR_GH_NAME
 - All name variants (`foo_bar`, `FooBar`, `FOO_BAR`, etc.) will be auto-replaced when generating a new project
 - Use `FOO_` prefixed placeholders for non-name variables (e.g., `FOO_AUTHOR`, `FOO_EMAIL`)
 - Add a `bundlegem.yml` file to the template to make it available for use
-- Run `bundlegem --to-template` to convert an existing project's name variants into foo-bar placeholders
+- Run `bundlegem --copy-to-templates` to convert an existing project's name variants into foo-bar placeholders
 - Use the template to kick off a new project, `bundlegem -t my-template first-test`
 
 To create your own template, just create a new project using the technologies you'd like.  Place this project in `~/.bundlegem/templates/my-template`.  Once it's done, it's a good idea to create a git commit.  Then run something to the effect...
@@ -68,10 +68,10 @@ $  echo "category: frontend"    > bundlegem.yml
 $  echo "purpose: frontend"    >> bundlegem.yml
 $  echo "language: javascript" >> bundlegem.yml
 
-$  bundlegem --to-template
+$  bundlegem --copy-to-templates
 ```
 
-Change the bundlegem.yml contents to what makes sense for your template.  The `--to-template` command will replace all occurrences of your project's name variants with `foo-bar` template placeholders.  To keep you and I safe, it will only run if there is a `bundlegem.yml` file in the current directory.
+Change the bundlegem.yml contents to what makes sense for your template.  The `--copy-to-templates` command will replace all occurrences of your project's name variants with `foo-bar` template placeholders.  To keep you and I safe, it will only run if there is a `bundlegem.yml` file in the current directory.
 
 #### Categorizing Your Template
 

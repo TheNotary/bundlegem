@@ -45,7 +45,7 @@ module Bundlegem::CLI
       def validate_inside_git_repo!(output: $stdout)
         _stdout, _stderr, status = Open3.capture3("git rev-parse --is-inside-work-tree")
         return if status.success?
-        output.puts "Error: --to-template must be run from within a git repository (it uses `git ls-files` to choose what to copy)."
+        output.puts "Error: --copy-to-templates must be run from within a git repository (it uses `git ls-files` to choose what to copy)."
         raise Bundlegem::CLIError
       end
 
