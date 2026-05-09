@@ -36,15 +36,12 @@ module Bundlegem::CLI
         else
           init_personal_templates_dir(local_dir, github_name, ssh_url, output: output)
         end
-
       end
-
 
       # Non-interactive resolver: returns the personal templates dir path based on
       # `git config --global user.name`, or nil if that is not set. Does not prompt.
       def personal_templates_dir
-        name = `git config --global user.name`.to_s.strip
-        # name = `git config --global user.name`.to_s.strip.downcase # TODO: Make this downcasing when apps health improves
+        name = `git config --global user.name`.to_s.strip.downcase
         return nil if name.empty?
         "#{ENV['HOME']}/.bundlegem/templates/templates-#{name}"
       end

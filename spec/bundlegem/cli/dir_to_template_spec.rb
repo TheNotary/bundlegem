@@ -6,7 +6,7 @@ module Bundlegem::CLI
       @mocked_home    = "/tmp/bundlegem_mock_home"
       @template_root  = "#{@mocked_home}/.bundlegem/templates"
       @dst_dir        = "/tmp/bundle_gem_dst_dir"
-      @personal_repo  = "#{@template_root}/templates-Test" # name from reset_test_env
+      @personal_repo  = "#{@template_root}/templates-test" # name from reset_test_env
 
       reset_test_env
       FileUtils.cd(@dst_dir)
