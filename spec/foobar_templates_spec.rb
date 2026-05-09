@@ -506,7 +506,7 @@ describe FoobarTemplates do
 
     before :each do
       # Default: no remote — skip network calls.
-      allow(FoobarTemplates).to receive(:remote_repo_exists?).and_return(false)
+      allow(FoobarTemplates::CLI::SetupPersonalTemplatesRepo).to receive(:remote_repo_exists?).and_return(false)
     end
 
     it "errors when repo_domain is not configured" do
