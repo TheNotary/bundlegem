@@ -3,11 +3,88 @@ require 'rspec/core/rake_task'
 
 GEM_NAME = "foobar_templates"
 GEM_SPEC = "#{GEM_NAME}.gemspec"
+VERSION_FILE = "lib/#{GEM_NAME}/version.rb"
+
+module ReleaseHelper
+  module_function
+
+  RC_RE = /\A(\d+)\.(\d+)\.(\d+)\.pre\.rc\.(\d+)\z/
+  REL_RE = /\A(\d+)\.(\d+)\.(\d+)\z/
+
+  def dry_run?
+    ENV['RELEASE_DRY_RUN'] == '1'
+  end
+
+  def current_version
+    src = File.read(VERSION_FILE)
+    m = src.match(/VERSION\s*=\s*"([^"]+)"/)
+    abort "Could not parse VERSION from #{VERSION_FILE}" unless m
+    m[1]
+  end
+
+  def next_version(v)
+    if (m = v.match(RC_RE))
+      maj, min, pat, rc = m.captures.map(&:to_i)
+      "#{maj}.#{min}.#{pat}.pre.rc.#{rc + 1}"
+    elsif (m = v.match(REL_RE))
+      maj, min, pat = m.captures.map(&:to_i)
+      "#{maj}.#{min}.#{pat + 1}.pre.rc.1"
+    else
+      abort "Unrecognized version format: #{v.inspect} (expected MAJOR.MINOR.PATCH or MAJOR.MINOR.PATCH.pre.rc.N)"
+    end
+  end
+
+  def write_version!(new_version)
+    src = File.read(VERSION_FILE)
+    updated = src.sub(/VERSION\s*=\s*"[^"]+"/, %(VERSION = "#{new_version}"))
+    File.write(VERSION_FILE, updated)
+  end
+
+  def confirm!(prompt, default: false)
+    suffix = default ? "[Y/n]" : "[y/N]"
+    print "#{prompt} #{suffix} "
+    answer = $stdin.gets&.strip
+    return default if answer.nil? || answer.empty?
+    %w[y yes].include?(answer.downcase)
+  end
+
+  def sh!(cmd)
+    puts "+ #{cmd}"
+    abort "command failed: #{cmd}" unless system(cmd)
+  end
+
+  def push!(cmd)
+    if dry_run?
+      puts "[DRY-RUN] would run: #{cmd}"
+    else
+      sh!(cmd)
+    end
+  end
+
+  def ensure_clean_git!
+    out = `git status --porcelain`
+    return if out.strip.empty?
+    abort "Working tree is dirty. Commit or stash changes before releasing.\n#{out}"
+  end
+
+  def ensure_on_default_branch!
+    branch = `git rev-parse --abbrev-ref HEAD`.strip
+    return if %w[main master].include?(branch)
+    return if confirm!("You are on branch '#{branch}', not main/master. Continue?", default: false)
+    abort "Aborted by user."
+  end
+
+  def working_tree_changed?
+    !`git status --porcelain`.strip.empty?
+  end
+end
 
 desc "Build #{GEM_NAME} gem"
 task :build do
-  system "gem build #{GEM_SPEC}"
   FileUtils.mkdir_p "pkg"
+  FileUtils.rm_f Dir.glob("pkg/#{GEM_NAME}-*.gem")
+  FileUtils.rm_f Dir.glob("#{GEM_NAME}-*.gem")
+  system "gem build #{GEM_SPEC}"
   FileUtils.mv Dir.glob("#{GEM_NAME}-*.gem"), "pkg/"
 end
 
@@ -16,10 +93,49 @@ task install: :build do
   system "gem install pkg/#{Dir.children('pkg').sort.last}"
 end
 
-desc "Build and push #{GEM_NAME} gem to RubyGems"
-task release: :build do
-  gem_file = Dir.glob("pkg/#{GEM_NAME}-*.gem").sort.last
-  system "gem push #{gem_file}"
+desc "Interactive local release: confirm version, run specs, build, tag, push, and bump"
+task :release do
+  include_helper = ReleaseHelper
+
+  include_helper.ensure_clean_git!
+  include_helper.ensure_on_default_branch!
+
+  version = include_helper.current_version
+  puts "Current version in #{VERSION_FILE}: #{version}"
+  unless include_helper.confirm!("Release version #{version}?", default: false)
+    puts "Aborted. Edit #{VERSION_FILE} to change the version, then re-run `rake release`."
+    exit 0
+  end
+
+  Rake::Task[:spec].invoke
+  Rake::Task[:build].invoke
+
+  gem_file = "pkg/#{GEM_NAME}-#{version}.gem"
+  abort "Built gem not found at #{gem_file}" unless File.exist?(gem_file)
+
+  if include_helper.working_tree_changed?
+    include_helper.sh! "git add #{VERSION_FILE}"
+    include_helper.sh! %(git commit -m "Release v#{version}")
+  end
+
+  tag = "v#{version}"
+  include_helper.sh! %(git tag -a #{tag} -m "Release #{tag}")
+  include_helper.push! "git push origin HEAD"
+  include_helper.push! "git push origin #{tag}"
+  include_helper.push! "gem push #{gem_file}"
+
+  next_v = include_helper.next_version(version)
+  include_helper.write_version!(next_v)
+  include_helper.sh! "git add #{VERSION_FILE}"
+  include_helper.sh! %(git commit -m "Bump to v#{next_v}")
+  include_helper.push! "git push origin HEAD"
+
+  puts ""
+  puts "=" * 60
+  puts "Released: #{tag}"
+  puts "Next development version: #{next_v}"
+  puts "Tag: https://github.com/TheNotary/#{GEM_NAME}/releases/tag/#{tag}"
+  puts "=" * 60
 end
 
 desc "Run unit specs"
