@@ -1,5 +1,5 @@
 # Foobar Templates: A Pain-Free Project Templator
-[![Gem Version](https://badge.fury.io/rb/foobar_templates.svg)](https://badge.fury.io/rb/foobar_templates)
+[![Gem Version](https://badge.fury.io/rb/foobar_templates.svg?icon=si%3Arubygems)](https://badge.fury.io/rb/foobar_templates)
 
 Foobar Templates allow users to define project templates in the most native form to all technologist: Directory Structures, short commands, and helpful commands that make the tool's usage completely visible!
 
