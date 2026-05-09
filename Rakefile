@@ -80,6 +80,32 @@ module ReleaseHelper
   def working_tree_changed?
     !`git status --porcelain`.strip.empty?
   end
+
+  # Make sure this machine has push access to the gem repository
+  def preflight!
+    problems = []
+
+    cred_paths = [
+      File.expand_path("~/.gem/credentials"),
+      File.expand_path("~/.local/share/gem/credentials"),
+    ]
+    cred_path = cred_paths.find { |p| File.exist?(p) }
+    if cred_path.nil?
+      problems << "No rubygems credentials found (looked in #{cred_paths.join(', ')}). Run `gem signin`."
+    elsif (File.stat(cred_path).mode & 0o077) != 0
+      problems << "Rubygems credentials at #{cred_path} are world/group-readable. Run: chmod 0600 #{cred_path}"
+    end
+
+    unless problems.empty?
+      abort "Release preflight failed:\n  - #{problems.join("\n  - ")}"
+    end
+
+    puts "Checking rubygems push access for #{GEM_NAME}..."
+    owners_out = `gem owner #{GEM_NAME} </dev/null 2>&1`
+    unless $?.success?
+      abort "Cannot query rubygems owners for #{GEM_NAME}:\n#{owners_out}\nRun `gem signin` and ensure your API key has push scope."
+    end
+  end
 end
 
 desc "Build #{GEM_NAME} gem"
@@ -102,6 +128,7 @@ task :release do
 
   include_helper.ensure_clean_git!
   include_helper.ensure_on_default_branch!
+  include_helper.preflight!
 
   version = include_helper.current_version
   puts "Current version in #{VERSION_FILE}: #{version}"
