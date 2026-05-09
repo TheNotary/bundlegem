@@ -1,4 +1,4 @@
-# Foobar Templates: An Easy to Template Project Generator
+# Foobar Templates: A Pain-Free Project Templator
 [![Gem Version](https://badge.fury.io/rb/foobar_templates.svg)](https://badge.fury.io/rb/foobar_templates)
 
 Foobar Templates allow users to define project templates in the most native form to all technologist: Directory Structures, short commands, and helpful commands that make the tool's usage completely visible!
@@ -9,14 +9,19 @@ The most beneficial aspect of Foobar Templates is that it allows you to specify 
 
 ### Installation
 
-```
+I highly recommend the `foobar` alias!
+
+```bash
 gem install foobar_templates
 foobar_templates --install-public-templates
+
+echo "alias foobar='foobar_templates'" >> ~/.bashrc
+source ~/.bashrc
 ```
 
 #### List Available Templates
 
-```
+```bash
 $  foobar_templates -l
 PREDEFINED:
   default - A basic ruby gem
@@ -33,7 +38,7 @@ EMBEDDED:
 
 These commands will create a new gem named `project_name` in `/tmp/project_name`:
 
-```
+```bash
 $  cd /tmp
 $  foobar_templates -t arduino project_name
 ```
@@ -44,7 +49,7 @@ You'll find a project skeleton in ~/.foobar/templates/my_service that you can cu
 
 Configuration is stored in `~/.foobar/config` (created automatically on first run). At minimum, you need your git user name and email configured:
 
-```
+```bash
 git config --global user.email your-public-gh@email.com
 git config --global user.name YOUR_GH_NAME
 ```
@@ -63,7 +68,7 @@ git config --global user.name YOUR_GH_NAME
 
 To create your own template, just create a new project using the technologies you'd like.  Place this project in `~/.foobar/templates/my-template`.  Once it's done, it's a good idea to create a git commit.  Then run something to the effect...
 
-```
+```bash
 $  echo "category: frontend"    > foobar.yml
 $  echo "purpose: frontend"    >> foobar.yml
 $  echo "language: javascript" >> foobar.yml
