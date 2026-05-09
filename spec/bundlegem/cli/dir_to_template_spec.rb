@@ -33,9 +33,7 @@ module Bundlegem::CLI
       init_project("cool-app", files: { "main.rb" => "puts 'hi'\n" })
 
       out = StringIO.new
-      expect { DirToTemplate.go(output: out) }.to raise_error(SystemExit) do |e|
-        expect(e.status).to eq 1
-      end
+      expect { DirToTemplate.go(output: out) }.to raise_error(Bundlegem::CLIError)
       expect(out.string).to include "Unable to convert to template, no personal templates repo exists."
       expect(out.string).to include "bundlegem --setup-personal-templates"
     end
@@ -91,9 +89,7 @@ module Bundlegem::CLI
       init_project("cool-app", files: { "main.rb" => "x" })
 
       out = StringIO.new
-      expect { DirToTemplate.go(output: out) }.to raise_error(SystemExit) do |e|
-        expect(e.status).to eq 1
-      end
+      expect { DirToTemplate.go(output: out) }.to raise_error(Bundlegem::CLIError)
       expect(out.string).to include "already exists at #{@personal_repo}/cool-app"
     end
 
@@ -104,9 +100,7 @@ module Bundlegem::CLI
       FileUtils.cd(project_dir)
 
       out = StringIO.new
-      expect { DirToTemplate.go(output: out) }.to raise_error(SystemExit) do |e|
-        expect(e.status).to eq 1
-      end
+      expect { DirToTemplate.go(output: out) }.to raise_error(Bundlegem::CLIError)
       expect(out.string).to include "must be run from within a git repository"
     end
   end

@@ -93,10 +93,11 @@ module Bundlegem::CLI
       git_repo_domain = @configurator.domain('repo_domain') || 'github.com'
 
       if git_user_name.empty?
-        puts "Error: git config user.name didn't return a value.  You'll probably want to make sure that's configured with your github username:"
-        puts ""
-        puts "git config --global user.name YOUR_GH_NAME"
-        exit 1
+        raise Bundlegem::CLIError, [
+          "Error: git config user.name didn't return a value.  You'll probably want to make sure that's configured with your github username:",
+          "",
+          "git config --global user.name YOUR_GH_NAME",
+        ].join("\n")
       else
         # git_repo_path = provider.com/user/name
         git_repo_path = "#{git_repo_domain}/#{git_user_name}/#{name}".downcase # downcasing for languages like go that are creative

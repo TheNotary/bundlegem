@@ -15,7 +15,7 @@ module Bundlegem::CLI
         personal_dir = Bundlegem::CLI::SetupPersonalTemplatesRepo.personal_templates_dir
         if personal_dir.nil? || !File.directory?(personal_dir)
           output.puts NO_PERSONAL_REPO_MSG
-          exit 1
+          raise Bundlegem::CLIError
         end
 
         validate_inside_git_repo!(output: output)
@@ -25,7 +25,7 @@ module Bundlegem::CLI
 
         if File.exist?(dest)
           output.puts "Error: a template already exists at #{dest}.  Remove it or rename your project before re-running."
-          exit 1
+          raise Bundlegem::CLIError
         end
 
         copy_tracked_files_to(dest)
@@ -46,7 +46,7 @@ module Bundlegem::CLI
         _stdout, _stderr, status = Open3.capture3("git rev-parse --is-inside-work-tree")
         return if status.success?
         output.puts "Error: --to-template must be run from within a git repository (it uses `git ls-files` to choose what to copy)."
-        exit 1
+        raise Bundlegem::CLIError
       end
 
       def copy_tracked_files_to(dest)
@@ -55,7 +55,7 @@ module Bundlegem::CLI
         listing, _stderr, status = Open3.capture3("git ls-files -co --exclude-standard -z")
         if !status.success?
           $stderr.puts "Error: failed to enumerate files via `git ls-files`."
-          exit 1
+          raise Bundlegem::CLIError
         end
 
         FileUtils.mkdir_p(dest)

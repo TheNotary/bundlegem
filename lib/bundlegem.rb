@@ -11,6 +11,8 @@ require 'uri'
 SOURCE_ROOT = File.expand_path("#{File.dirname(__FILE__)}/..")
 
 module Bundlegem
+  class CLIError < StandardError; end
+
   class << self
 
     def version
@@ -66,8 +68,7 @@ module Bundlegem
         end
       end
 
-      puts "Error: `git` command not found. Please install Git and ensure it's in your PATH."
-      exit 1
+      raise CLIError, "Error: `git` command not found. Please install Git and ensure it's in your PATH."
     end
 
     def setup_personal_templates(input: $stdin, output: $stdout)

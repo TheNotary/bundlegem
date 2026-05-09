@@ -51,27 +51,31 @@ parser = OptionParser.new do |opts|
   end
 end
 
-parser.parse!
-
-if ARGV.empty?
-  puts parser
-  puts Bundlegem::HELP_MSG
-  exit 1
-end
-
-if ARGV.length > 1
-  puts "Error: there were unrecognized parameters specified in command"
-  puts Bundlegem::HELP_MSG
-  exit 1
-end
-
-
-# fyi parser.parse! splices options out of ARGV, so gem_name doesn't need to be specified first
-gem_name = ARGV.first
 begin
+  parser.parse!
+
+  if ARGV.empty?
+    puts parser
+    puts Bundlegem::HELP_MSG
+    exit 1
+  end
+
+  if ARGV.length > 1
+    puts "Error: there were unrecognized parameters specified in command"
+    puts Bundlegem::HELP_MSG
+    exit 1
+  end
+
+
+  # fyi parser.parse! splices options out of ARGV, so gem_name doesn't need to be specified first
+  gem_name = ARGV.first
   Bundlegem.generate_template(options, gem_name)
 rescue Bundlegem::TemplateManager::TemplateResolutionError # TODO: Move this into the --template command, it should be in this file
   template_name = options[:template] || Bundlegem::TemplateManager.default_template_name
   $stderr.puts "Error: template #{template_name} could not be found.  Run the below command to list all available templates.\n\n  bundlegem -l"
+  exit 1
+rescue Bundlegem::CLIError => e
+  msg = e.message
+  $stderr.puts msg if msg && !msg.empty? && msg != e.class.name
   exit 1
 end
