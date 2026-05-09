@@ -3,7 +3,7 @@ require 'open3'
 require 'shellwords'
 
 
-module Bundlegem::Core::DirToTemplate
+module FoobarTemplates::Core::DirToTemplate
   class << self
 
     # Takes in a file_enumerator such as Find.find('.') and
@@ -44,7 +44,7 @@ module Bundlegem::Core::DirToTemplate
     end
 
     # Reverse-substitute the user's real values for the FOO_* placeholders that
-    # `Bundlegem::CLI::TemplateGenerator#build_interpolation_config` would have
+    # `FoobarTemplates::CLI::TemplateGenerator#build_interpolation_config` would have
     # interpolated. Keep this list in sync with that method.
     #
     # Ordered longest/most-specific first so composite values (URLs, paths)
@@ -53,7 +53,7 @@ module Bundlegem::Core::DirToTemplate
       author = `git config user.name`.chomp
       email  = `git config user.email`.chomp
 
-      configurator    = Bundlegem::Configurator.new
+      configurator    = FoobarTemplates::Configurator.new
       repo_domain     = configurator.domain('repo_domain')
       registry_domain = configurator.domain('registry_domain')
       k8s_domain      = configurator.domain('k8s_domain')
@@ -101,7 +101,7 @@ module Bundlegem::Core::DirToTemplate
         path.start_with?('./.git/') ||   # skip the .git directory
         path == './.gitignore' ||        # skip .gitignore (must remain for git to work)
         ignored_by_git?(path) ||         # skip things that are gitignored
-        path == "./bundlegem.yml"        # skip the bundlegem.yml file
+        path == "./foobar.yml"        # skip the foobar.yml file
     end
 
     def ignored_by_git?(path)

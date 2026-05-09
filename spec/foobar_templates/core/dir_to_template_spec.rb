@@ -1,12 +1,12 @@
 require 'spec_helper'
 require 'find'
 
-module Bundlegem::Core
+module FoobarTemplates::Core
   describe DirToTemplate do
     before :each do
-      @mocked_home = "/tmp/bundlegem_mock_home"
-      @template_root = "#{@mocked_home}/.bundlegem/templates"
-      @dst_dir = "/tmp/bundle_gem_dst_dir"
+      @mocked_home = "/tmp/foobar_templates_mock_home"
+      @template_root = "#{@mocked_home}/.foobar/templates"
+      @dst_dir = "/tmp/foobar_templates_dst_dir"
 
       reset_test_env
       FileUtils.chdir(@dst_dir)
@@ -60,7 +60,7 @@ module Bundlegem::Core
       expect(content).not_to include 'coolApp'
     end
 
-    it 'reverse-substitutes FOO_* placeholder values from git config and bundlegem config' do
+    it 'reverse-substitutes FOO_* placeholder values from git config and foobar_templates config' do
       template_dir = create_user_defined_template(category: "wizardly_tools")
       template_name = "good-dog"
 

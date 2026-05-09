@@ -1,22 +1,22 @@
-require "bundlegem/version"
-require "bundlegem/strings"
-require 'bundlegem/configurator'
-require 'bundlegem/template_manager'
+require "foobar_templates/version"
+require "foobar_templates/strings"
+require 'foobar_templates/configurator'
+require 'foobar_templates/template_manager'
 
-require 'bundlegem/core/core'
-require 'bundlegem/cli/cli'
+require 'foobar_templates/core/core'
+require 'foobar_templates/cli/cli'
 
 require 'uri'
 
 SOURCE_ROOT = File.expand_path("#{File.dirname(__FILE__)}/..")
 
-module Bundlegem
+module FoobarTemplates
   class CLIError < StandardError; end
 
   class << self
 
     def version
-      Bundlegem::VERSION
+      FoobarTemplates::VERSION
     end
 
     def cheat_sheet
@@ -34,7 +34,7 @@ module Bundlegem
       if output.empty?
         empty_output_msg = "You have no templates.  You can install the public example templates with\n"
         empty_output_msg += "the below command:\n\n"
-        empty_output_msg += "bundlegem --install-public-templates"
+        empty_output_msg += "foobar_templates --install-public-templates"
         return empty_output_msg
       end
 
@@ -49,12 +49,12 @@ module Bundlegem
       config_file_data['public_templates'].split.each do |url|
         uri = URI.parse(url)
         template_folder_name = File.basename(uri.path).sub(/\.git$/, "")
-        if !File.exist?("#{ENV['HOME']}/.bundlegem/templates/#{template_folder_name}")
-          cmd = "cd #{ENV['HOME']}/.bundlegem/templates && git clone #{url}"
+        if !File.exist?("#{ENV['HOME']}/.foobar/templates/#{template_folder_name}")
+          cmd = "cd #{ENV['HOME']}/.foobar/templates && git clone #{url}"
           cmd += " 2> /dev/null" if $test_env
           `#{cmd}`
         else
-          puts "Warning: Skipping, template already exists #{ENV['HOME']}/.bundlegem/templates/#{template_folder_name}"
+          puts "Warning: Skipping, template already exists #{ENV['HOME']}/.foobar/templates/#{template_folder_name}"
         end
       end
     end
@@ -80,10 +80,10 @@ module Bundlegem
     end
 
     def generate_template(options, gem_name)
-      require 'bundlegem/cli/template_generator'
+      require 'foobar_templates/cli/template_generator'
 
       template_generator = CLI::TemplateGenerator.new(options, gem_name).run
-    rescue Bundlegem::CLIError => e
+    rescue FoobarTemplates::CLIError => e
       msg = e.message
       $stderr.puts msg if msg && !msg.empty? && msg != e.class.name
     end

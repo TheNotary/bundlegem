@@ -1,7 +1,7 @@
 require 'fileutils'
 require 'yaml'
 
-module Bundlegem
+module FoobarTemplates
 
   # This class handles the logic for finding templates
   # in the user's dir, the gem's builtin templates
@@ -11,7 +11,7 @@ module Bundlegem
     class << self
 
       def internal_template_location() = File.expand_path("#{File.dirname(__FILE__)}/templates")
-      def custom_template_location() = File.expand_path("~/.bundlegem/templates")
+      def custom_template_location() = File.expand_path("~/.foobar/templates")
       def default_template_name() = "ruby-cli-gem"
 
       def get_template_src(options)
@@ -27,7 +27,7 @@ module Bundlegem
         monorepo_match = resolve_monorepo_leaf_template(custom_template_location, template_name)
         return monorepo_match if monorepo_match
 
-        raise Bundlegem::CLIError, "Error: template '#{template_name}' could not be found. Run the below command to list all available templates.\n\n  bundlegem -l"
+        raise FoobarTemplates::CLIError, "Error: template '#{template_name}' could not be found. Run the below command to list all available templates.\n\n  foobar_templates -l"
       end
 
       def template_exists_within_repo?(template_name)
@@ -56,12 +56,12 @@ module Bundlegem
 
         if matches.length > 1
           readable_paths = matches.map { |path| path.sub(/^#{Regexp.escape(root)}\//, "") }.sort.join(", ")
-          raise Bundlegem::CLIError, "Ambiguous template name '#{requested_name}'. Matching leaf templates: #{readable_paths}. Rename one of the conflicting templates."
+          raise FoobarTemplates::CLIError, "Ambiguous template name '#{requested_name}'. Matching leaf templates: #{readable_paths}. Rename one of the conflicting templates."
         end
 
         if matches.empty?
           readable_leaves = leaf_paths.map { |path| File.basename(path).sub(/^template-/, "") }.uniq.sort
-          raise Bundlegem::CLIError, "Template '#{requested_name}' not found in monorepo leaf templates. Available leaf templates: #{readable_leaves.join(', ')}. Run 'bundlegem -l' to list all available templates."
+          raise FoobarTemplates::CLIError, "Template '#{requested_name}' not found in monorepo leaf templates. Available leaf templates: #{readable_leaves.join(', ')}. Run 'foobar_templates -l' to list all available templates."
         end
 
         matches.first
@@ -84,7 +84,7 @@ module Bundlegem
       end
 
       def load_template_config(dir)
-        path = File.join(dir, "bundlegem.yml")
+        path = File.join(dir, "foobar.yml")
         return nil unless File.exist?(path)
 
         raw = YAML.load_file(path, symbolize_names: true)

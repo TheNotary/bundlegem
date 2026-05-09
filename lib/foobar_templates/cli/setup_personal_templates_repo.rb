@@ -1,14 +1,14 @@
-module Bundlegem::CLI
+module FoobarTemplates::CLI
   module SetupPersonalTemplatesRepo
     class << self
 
       def go(input: $stdin, output: $stdout)
-        Bundlegem::validate_git_is_installed!
-        configurator = Bundlegem::Configurator.new
+        FoobarTemplates::validate_git_is_installed!
+        configurator = FoobarTemplates::Configurator.new
 
         repo_domain = configurator.domain(:repo_domain)
         if repo_domain.nil? || repo_domain.to_s.strip.empty?
-          output.puts "Error: `repo_domain` is not set in #{ENV['HOME']}/.bundlegem/config."
+          output.puts "Error: `repo_domain` is not set in #{ENV['HOME']}/.foobar/config."
           output.puts "Please set it (e.g. `repo_domain: github.com`) and re-run."
           return
         end
@@ -16,7 +16,7 @@ module Bundlegem::CLI
         github_name = personal_templates_github_name(input: input, output: output)
         return if github_name.nil? || github_name.empty?
 
-        local_dir = "#{ENV['HOME']}/.bundlegem/templates/templates-#{github_name}"
+        local_dir = "#{ENV['HOME']}/.foobar/templates/templates-#{github_name}"
         https_url = "https://#{repo_domain}/#{github_name}/templates-#{github_name}"
         ssh_url   = "git@#{repo_domain}:#{github_name}/templates-#{github_name}.git"
 
@@ -43,7 +43,7 @@ module Bundlegem::CLI
       def personal_templates_dir
         name = `git config --global user.name`.to_s.strip.downcase
         return nil if name.empty?
-        "#{ENV['HOME']}/.bundlegem/templates/templates-#{name}"
+        "#{ENV['HOME']}/.foobar/templates/templates-#{name}"
       end
 
       def personal_templates_github_name(input: $stdin, output: $stdout)
@@ -88,7 +88,7 @@ module Bundlegem::CLI
       def init_personal_templates_dir(local_dir, github_name, ssh_url, output: $stdout)
         FileUtils.mkdir_p(local_dir)
 
-        File.write("#{local_dir}/bundlegem.yml", "monorepo: true\n")
+        File.write("#{local_dir}/foobar.yml", "monorepo: true\n")
         File.write("#{local_dir}/README.md", personal_templates_readme(github_name))
 
         redirect = $test_env ? " > /dev/null 2>&1" : ""
@@ -103,30 +103,30 @@ module Bundlegem::CLI
         <<~MARKDOWN
           # templates-#{github_name}
 
-          This is a personal mono-repo of [bundlegem](https://github.com/thenotary/bundlegem)
-          templates. It was scaffolded by `bundlegem --setup-personal-templates`.
+          This is a personal mono-repo of [foobar_templates](https://github.com/thenotary/foobar_templates)
+          templates. It was scaffolded by `foobar_templates --setup-personal-templates`.
 
           ## Structure
 
           Each immediate child directory is a template. A child becomes a template when
-          it contains its own `bundlegem.yml`. 
+          it contains its own `foobar.yml`. 
 
           ```
           templates-#{github_name}/
-            bundlegem.yml              # monorepo: true
+            foobar.yml              # monorepo: true
             README.md
             my-widget-template/
-              bundlegem.yml            # category: frontend
+              foobar.yml            # category: frontend
               foo-bar.rb
             masm-project/
-              bundlegem.yml            # category: low_level
+              foobar.yml            # category: low_level
               main.asm
           ```
 
-          Run `bundlegem --list` to see all templates discovered here, and
-          `bundlegem --template <name> my-project` to scaffold a new project from one.
+          Run `foobar_templates --list` to see all templates discovered here, and
+          `foobar_templates --template <name> my-project` to scaffold a new project from one.
 
-          See https://github.com/thenotary/bundlegem for full documentation.
+          See https://github.com/thenotary/foobar_templates for full documentation.
         MARKDOWN
       end
 

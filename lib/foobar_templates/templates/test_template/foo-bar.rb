@@ -1,5 +1,5 @@
 This file shows all the variables in one place!
-See "lib/bundlegem/templates/test_template/>>> foo-bar.rb"
+See "lib/foobar_templates/templates/test_template/>>> foo-bar.rb"
 
 >>> foo-bar:                  foo-bar
 >>> Foo Bar:                  Foo Bar

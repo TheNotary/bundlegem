@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 
 require 'optparse'
-require 'bundlegem'
+require 'foobar_templates'
 
 
 Signal.trap("INT") { exit 1 }
@@ -15,38 +15,38 @@ parser = OptionParser.new do |opts|
   end
 
   opts.on("-l", "--list", "List available templates") do
-    puts Bundlegem.list
+    puts FoobarTemplates.list
     exit
   end
 
   opts.on("-c", "--cheat-sheet", "Show list of variables available in templates") do
-    puts Bundlegem.cheat_sheet
+    puts FoobarTemplates.cheat_sheet
     exit
   end
 
   opts.on("-v", "--version", "Show version") do
-    puts Bundlegem.version
+    puts FoobarTemplates.version
     exit
   end
 
   opts.on("--install-public-templates", "Install public templates") do
-    Bundlegem.install_public_templates
+    FoobarTemplates.install_public_templates
     exit
   end
 
   opts.on("--setup-personal-templates", "Create a personal mono-repo template collection") do
-    Bundlegem.setup_personal_templates
+    FoobarTemplates.setup_personal_templates
     exit
   end
 
   opts.on("--copy-to-templates", "Exports the current project into your personal templates repo, converting it to a template") do
-    Bundlegem.dir_to_template
+    FoobarTemplates.dir_to_template
     exit
   end
 
   opts.on(nil, "--help", "Show help") do
     puts opts
-    puts Bundlegem::HELP_MSG
+    puts FoobarTemplates::HELP_MSG
     exit
   end
 end
@@ -56,17 +56,17 @@ parser.parse!
 
 if ARGV.empty?
   puts parser
-  puts Bundlegem::HELP_MSG
+  puts FoobarTemplates::HELP_MSG
   exit 1
 end
 
 if ARGV.length > 1
   puts "Error: there were unrecognized parameters specified in command"
-  puts Bundlegem::HELP_MSG
+  puts FoobarTemplates::HELP_MSG
   exit 1
 end
 
 
 gem_name = ARGV.first
-Bundlegem.generate_template(options, gem_name)
+FoobarTemplates.generate_template(options, gem_name)
 

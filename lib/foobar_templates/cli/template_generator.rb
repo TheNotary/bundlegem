@@ -6,7 +6,7 @@ require 'set'
 
 $TRACE = false
 
-module Bundlegem::CLI
+module FoobarTemplates::CLI
   class TemplateGenerator
 
     attr_reader :options, :gem_name, :name, :target
@@ -17,8 +17,8 @@ module Bundlegem::CLI
 
       @name = @gem_name
       @target = Pathname.pwd.join(gem_name)
-      @template_src = ::Bundlegem::TemplateManager.get_template_src(options)
-      @configurator = ::Bundlegem::Configurator.new
+      @template_src = ::FoobarTemplates::TemplateManager.get_template_src(options)
+      @configurator = ::FoobarTemplates::Configurator.new
 
       @tconf = load_template_configs
     end
@@ -84,7 +84,7 @@ module Bundlegem::CLI
       git_user_name = `git config user.name`.chomp
       git_user_email = `git config user.email`.chomp
 
-      # Resolve domain values from ~/.bundlegem/config, prompting if needed
+      # Resolve domain values from ~/.foobar/config, prompting if needed
       required_domains = scan_template_for_required_domains
       prompt_for_missing_domains(required_domains)
 
@@ -93,7 +93,7 @@ module Bundlegem::CLI
       git_repo_domain = @configurator.domain('repo_domain') || 'github.com'
 
       if git_user_name.empty?
-        raise Bundlegem::CLIError, [
+        raise FoobarTemplates::CLIError, [
           "Error: git config user.name didn't return a value.  You'll probably want to make sure that's configured with your github username:",
           "",
           "git config --global user.name YOUR_GH_NAME",
@@ -149,7 +149,7 @@ module Bundlegem::CLI
       end
     end
 
-    # Runs declarative name validation rules from the template's bundlegem.yml:
+    # Runs declarative name validation rules from the template's foobar.yml:
     #
     #   name_validation:
     #     reserved_names: [test, std, fmt]   # exact-match denylist
@@ -235,7 +235,7 @@ module Bundlegem::CLI
         default = DOMAIN_DEFAULTS[domain_key]
         default_hint = default ? " (default: #{default})" : ""
 
-        puts "This template requires '#{display_name}'. The value will be saved to ~/.bundlegem/config for future use."
+        puts "This template requires '#{display_name}'. The value will be saved to ~/.foobar/config for future use."
         print "Enter #{display_name}#{default_hint}: "
         value = $stdin.gets&.chomp || ''
 
@@ -250,7 +250,7 @@ module Bundlegem::CLI
     end
 
     def load_template_configs
-      template_config_path = File.join(@template_src, "bundlegem.yml")
+      template_config_path = File.join(@template_src, "foobar.yml")
 
       if File.exist?(template_config_path)
         t_config = YAML.load_file(template_config_path, symbolize_names: true)
@@ -292,7 +292,7 @@ module Bundlegem::CLI
         base_path = f[@template_src.length+1..-1]
         next if base_path.nil?
         next if base_path.start_with?(".git" + File::SEPARATOR) || base_path == ".git"
-        next if base_path == "bundlegem.yml"
+        next if base_path == "foobar.yml"
         next unless File.file?(f)
 
         [base_path, substitute_template_values(base_path)]
@@ -369,7 +369,7 @@ module Bundlegem::CLI
 
     # returns the full path of the template source
     def match_template_src
-      template_src = ::Bundlegem::TemplateManager.get_template_src(@options)
+      template_src = ::FoobarTemplates::TemplateManager.get_template_src(@options)
 
       if File.exist?(template_src)
         return template_src    # 'newgem' refers to the built in template that comes with the gem
@@ -415,7 +415,7 @@ module Bundlegem::CLI
 
     def raise_no_files_in_template_error!
       err_no_files_in_template = <<-HEREDOC
-Ooops, the template was found for '#{@options[:template]}' in ~/.bundlegem/templates,
+Ooops, the template was found for '#{@options[:template]}' in ~/.foobar/templates,
 but no files were found within it.
 
 Exiting...
@@ -436,7 +436,7 @@ Exiting...
     end
 
     def raise_template_not_found!
-      err_missing_template = "Could not find template folder '#{@options[:template]}' in `~/.bundlegem/templates/`. Please check to make sure your desired template exists."
+      err_missing_template = "Could not find template folder '#{@options[:template]}' in `~/.foobar/templates/`. Please check to make sure your desired template exists."
       $stderr.puts err_missing_template
       raise
     end
@@ -450,7 +450,7 @@ Exiting...
     end
 
     # This checks to see that the gem_name is a valid ruby gem name and will 'work'
-    # and won't overlap with a bundlegem constant apparently...
+    # and won't overlap with a foobar_templates constant apparently...
     def ensure_safe_project_name(name, constant_array)
       if name =~ /^\d/
         $stderr.puts "Invalid gem name #{name} Please give a name which does not start with numbers."

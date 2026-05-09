@@ -4,17 +4,17 @@ require 'open3'
 require 'shellwords'
 
 
-module Bundlegem::CLI
+module FoobarTemplates::CLI
   module DirToTemplate
-    NO_PERSONAL_REPO_MSG = "Unable to convert to template, no personal templates repo exists.  Run `bundlegem --setup-personal-templates` to get that setup.".freeze
+    NO_PERSONAL_REPO_MSG = "Unable to convert to template, no personal templates repo exists.  Run `foobar_templates --setup-personal-templates` to get that setup.".freeze
 
     class << self
 
       def go(input: $stdin, output: $stdout)
-        personal_dir = Bundlegem::CLI::SetupPersonalTemplatesRepo.personal_templates_dir
+        personal_dir = FoobarTemplates::CLI::SetupPersonalTemplatesRepo.personal_templates_dir
         if personal_dir.nil? || !File.directory?(personal_dir)
           output.puts NO_PERSONAL_REPO_MSG
-          raise Bundlegem::CLIError
+          raise FoobarTemplates::CLIError
         end
 
         validate_inside_git_repo!(output: output)
@@ -31,14 +31,14 @@ module Bundlegem::CLI
 
         if File.exist?(dest)
           output.puts "Error: a template already exists at #{dest}.  Remove it or rename your project before re-running."
-          raise Bundlegem::CLIError
+          raise FoobarTemplates::CLIError
         end
 
         copy_tracked_files_to(dest)
-        write_bundlegem_yml(dest, category)
+        write_foobar_yml(dest, category)
 
         files_changed = Dir.chdir(dest) do
-          Bundlegem::Core::DirToTemplate.🧙🪄! Find.find('.'), template_name: project_name
+          FoobarTemplates::Core::DirToTemplate.🧙🪄! Find.find('.'), template_name: project_name
         end
 
         output.puts "Template created at: #{dest}"
@@ -52,7 +52,7 @@ module Bundlegem::CLI
         _stdout, _stderr, status = Open3.capture3("git rev-parse --is-inside-work-tree")
         return if status.success?
         output.puts "Error: --copy-to-templates must be run from within a git repository (it uses `git ls-files` to choose what to copy)."
-        raise Bundlegem::CLIError
+        raise FoobarTemplates::CLIError
       end
 
       def copy_tracked_files_to(dest)
@@ -61,7 +61,7 @@ module Bundlegem::CLI
         listing, _stderr, status = Open3.capture3("git ls-files -co --exclude-standard -z")
         if !status.success?
           $stderr.puts "Error: failed to enumerate files via `git ls-files`."
-          raise Bundlegem::CLIError
+          raise FoobarTemplates::CLIError
         end
 
         FileUtils.mkdir_p(dest)
@@ -75,13 +75,13 @@ module Bundlegem::CLI
         end
       end
 
-      def ensure_bundlegem_yml(dest)
-        path = File.join(dest, "bundlegem.yml")
+      def ensure_foobar_yml(dest)
+        path = File.join(dest, "foobar.yml")
         File.write(path, "category: misc\n") unless File.exist?(path)
       end
 
-      def write_bundlegem_yml(dest, category)
-        path = File.join(dest, "bundlegem.yml")
+      def write_foobar_yml(dest, category)
+        path = File.join(dest, "foobar.yml")
         if File.exist?(path)
           contents = File.read(path)
           if contents =~ /^category:.*$/
@@ -96,7 +96,7 @@ module Bundlegem::CLI
       end
 
       def read_existing_category(dir)
-        path = File.join(dir, "bundlegem.yml")
+        path = File.join(dir, "foobar.yml")
         return nil unless File.exist?(path)
         m = File.read(path).match(/^category:\s*(.+?)\s*$/)
         m && m[1].empty? ? nil : (m && m[1])
@@ -111,7 +111,7 @@ module Bundlegem::CLI
       def validate_folder_name!(name, output: $stdout)
         if name.nil? || name.empty? || name == "." || name == ".." || name.include?("/") || name.include?("\\")
           output.puts "Error: invalid template folder name: #{name.inspect}"
-          raise Bundlegem::CLIError
+          raise FoobarTemplates::CLIError
         end
       end
 

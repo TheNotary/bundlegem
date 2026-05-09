@@ -1,17 +1,17 @@
 require 'spec_helper'
 
-module Bundlegem
+module FoobarTemplates
   describe TemplateManager do
 
     before :each do
-      @template_root = "#{ENV['HOME']}/.bundlegem/templates"
+      @template_root = "#{ENV['HOME']}/.foobar/templates"
       FileUtils.rm_rf(ENV['HOME'])
       FileUtils.mkdir_p(@template_root)
     end
 
     def write_template_config(path, config_contents)
       FileUtils.mkdir_p(path)
-      File.write("#{path}/bundlegem.yml", config_contents)
+      File.write("#{path}/foobar.yml", config_contents)
     end
 
     it '#get_template_src returns the template-test even if prefix is omitted' do
@@ -42,7 +42,7 @@ module Bundlegem
 
       expect do
         TemplateManager.get_template_src(options)
-      end.to raise_error(Bundlegem::CLIError, /Ambiguous template name 'api'/)
+      end.to raise_error(FoobarTemplates::CLIError, /Ambiguous template name 'api'/)
     end
 
     it 'raises a not-found error when monorepo leaf template does not exist' do
@@ -53,7 +53,7 @@ module Bundlegem
 
       expect do
         TemplateManager.get_template_src(options)
-      end.to raise_error(Bundlegem::CLIError, /not found in monorepo leaf templates/)
+      end.to raise_error(FoobarTemplates::CLIError, /not found in monorepo leaf templates/)
     end
 
     it 'raises a CLIError when the template path does not exist' do
@@ -61,7 +61,7 @@ module Bundlegem
 
       expect do
         TemplateManager.get_template_src(options)
-      end.to raise_error(Bundlegem::CLIError, /could not be found/)
+      end.to raise_error(FoobarTemplates::CLIError, /could not be found/)
     end
 
   end

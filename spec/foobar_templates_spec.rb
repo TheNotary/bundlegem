@@ -1,22 +1,22 @@
 require 'spec_helper'
 
 
-describe Bundlegem do
+describe FoobarTemplates do
   before :each do
-    @mocked_home = "/tmp/bundlegem_mock_home"
-    @template_root = "#{@mocked_home}/.bundlegem/templates"
-    @dst_dir = "/tmp/bundle_gem_dst_dir"
+    @mocked_home = "/tmp/foobar_templates_mock_home"
+    @template_root = "#{@mocked_home}/.foobar/templates"
+    @dst_dir = "/tmp/foobar_templates_dst_dir"
 
     reset_test_env
     FileUtils.chdir(@dst_dir)
   end
 
   it 'has a version number' do
-    expect(Bundlegem::VERSION).not_to be nil
+    expect(FoobarTemplates::VERSION).not_to be nil
   end
 
   it 'has a cheat sheet it will share' do
-    output = Bundlegem.cheat_sheet
+    output = FoobarTemplates.cheat_sheet
 
     expect(output).to match(/foo-bar: \W* good-dog/x)
     expect(output).to match(/FOO_BAR: \W* GOOD_DOG/x)
@@ -26,26 +26,26 @@ describe Bundlegem do
   # List
 
   it 'gives the user a helpful output when there are no templates installed' do
-    list_output = Bundlegem.list
+    list_output = FoobarTemplates.list
 
     expect(list_output).to start_with "You have no templates."
-    expect(File).to exist("#{ENV['HOME']}/.bundlegem")
+    expect(File).to exist("#{ENV['HOME']}/.foobar")
   end
 
   it 'creates a config file if needed and lists properly' do
     create_user_defined_template
 
-    list_output = Bundlegem.list
+    list_output = FoobarTemplates.list
 
     expect(list_output).to eq " MISC:\n   empty_template\n\n"
-    expect(File).to exist("#{ENV['HOME']}/.bundlegem")
+    expect(File).to exist("#{ENV['HOME']}/.foobar")
   end
 
   it "lists with good categories" do
     category = "ARDUINO"
     create_user_defined_template(category)
 
-    list_output = Bundlegem.list
+    list_output = FoobarTemplates.list
     expect(list_output).to include category
   end
 
@@ -54,7 +54,7 @@ describe Bundlegem do
     full_template_name = "template-happy-burger"
     create_user_defined_template(category, "template-happy-burger")
 
-    list_output = Bundlegem.list
+    list_output = FoobarTemplates.list
     # expect(list_output.include?(full_template_name)).to be false
     expect(list_output).not_to include full_template_name
     expect(list_output).to include "happy-burger"
@@ -65,7 +65,7 @@ describe Bundlegem do
     create_monorepo_template(["template-platform", "template-api"], monorepo: false, category: "services")
     create_monorepo_template(["template-platform", "template-ui"], monorepo: false, category: "frontend")
 
-    list_output = Bundlegem.list
+    list_output = FoobarTemplates.list
 
     expect(list_output).to include "api"
     expect(list_output).to include "ui"
@@ -79,7 +79,7 @@ describe Bundlegem do
     create_monorepo_template(["template-org", "template-team"], monorepo: true)
     create_monorepo_template(["template-org", "template-team", "template-console"], monorepo: false, category: "cli")
 
-    list_output = Bundlegem.list
+    list_output = FoobarTemplates.list
 
     expect(list_output).to include "console"
     expect(list_output).to include "CLI"
@@ -93,14 +93,14 @@ describe Bundlegem do
     root_dir = create_monorepo_template(["template-platform"], monorepo: true)
     leaf_dir = create_monorepo_template(["template-platform", "template-api"], monorepo: false, category: "services")
 
-    File.write("#{root_dir}/bundlegem.yml", "monorepo: true\nbootstrap_command: echo root-config\n")
-    File.write("#{leaf_dir}/bundlegem.yml", "bootstrap_command: echo leaf-config\n")
+    File.write("#{root_dir}/foobar.yml", "monorepo: true\nbootstrap_command: echo root-config\n")
+    File.write("#{leaf_dir}/foobar.yml", "bootstrap_command: echo leaf-config\n")
     File.write("#{leaf_dir}/foo-bar.rb", "puts 'foo-bar'\n")
 
     options = { bin: false, ext: false, coc: false, template: "api" }
     gem_name = "tool-go-good-dog"
 
-    output = capture_stdout { Bundlegem.generate_template(options, gem_name) }
+    output = capture_stdout { FoobarTemplates.generate_template(options, gem_name) }
 
     expect(output).to include "leaf-config"
     expect(output).not_to include "root-config"
@@ -111,7 +111,7 @@ describe Bundlegem do
     options = {bin: false, ext: false, coc:  false, template: "test"}
     gem_name = "tmp_gem"
 
-    capture_stdout { Bundlegem.generate_template(options, gem_name) }
+    capture_stdout { FoobarTemplates.generate_template(options, gem_name) }
     expect(File).to exist("#{@dst_dir}/#{gem_name}/test_confirmed")
     expect(File).to exist("#{@dst_dir}/#{gem_name}/.vscode/launch.json")
   end
@@ -119,7 +119,7 @@ describe Bundlegem do
   it "has a useful dynamically_generate_template_directories method" do
     options = { bin: false, ext: false, coc:  false, template: "test_template" }
     gem_name = "good-dog"
-    my_gem = Bundlegem::CLI::TemplateGenerator.new(options, gem_name)
+    my_gem = FoobarTemplates::CLI::TemplateGenerator.new(options, gem_name)
 
     src_dst_map = my_gem.send('dynamically_generate_template_directories')
 
@@ -131,7 +131,7 @@ describe Bundlegem do
   it "returns the expected interpolated string when substitute_template_values is called" do
     options = { bin: false, ext: false, coc:  false, template: "test_template" }
     gem_name = "good-dog"
-    my_gem = Bundlegem::CLI::TemplateGenerator.new(options, gem_name)
+    my_gem = FoobarTemplates::CLI::TemplateGenerator.new(options, gem_name)
 
     short_path = 'foo-bar'
     long_path = 'hello/foo-bar/blah/foo-bar'
@@ -146,7 +146,7 @@ describe Bundlegem do
   it "has a useful dynamically_generate_templates_files method" do
     options = { bin: false, ext: false, coc:  false, template: "test_template" }
     gem_name = "good-dog"
-    my_gem = Bundlegem::CLI::TemplateGenerator.new(options, gem_name)
+    my_gem = FoobarTemplates::CLI::TemplateGenerator.new(options, gem_name)
 
     src_dst_map = my_gem.send('dynamically_generate_templates_files')
 
@@ -167,7 +167,7 @@ describe Bundlegem do
     File.write("#{template_dir}/node_modules/dont_template.rb", "I must not be interpretted")
     `git init #{template_dir}`
 
-    capture_stdout { Bundlegem.generate_template(options, gem_name) }
+    capture_stdout { FoobarTemplates.generate_template(options, gem_name) }
 
     expect(File).not_to exist "#{@dst_dir}/#{gem_name}/node_modules/dont_template.rb"
     expect(File).not_to exist "#{@dst_dir}/#{gem_name}/node_modules"
@@ -178,11 +178,11 @@ describe Bundlegem do
     options = { bin: false, ext: false, coc:  false, template: "template-user-supplied" }
     gem_name = "good-dog"
 
-    File.write("#{template_dir}/bundlegem.yml", "bootstrap_command: echo hihihi")
+    File.write("#{template_dir}/foobar.yml", "bootstrap_command: echo hihihi")
     File.write("#{template_dir}/README.md", "# Readme...")
     `git init #{template_dir}`
 
-    output = capture_stdout { Bundlegem.generate_template(options, gem_name) }
+    output = capture_stdout { FoobarTemplates.generate_template(options, gem_name) }
 
     expect(output).to include "hihihi"
   end
@@ -193,11 +193,11 @@ describe Bundlegem do
     options = { bin: false, ext: false, coc:  false, template: "template-user-supplied" }
     gem_name = "good-dog"
 
-    File.write("#{template_dir}/bundlegem.yml", 'bootstrap_command: "echo foo-bar"')
+    File.write("#{template_dir}/foobar.yml", 'bootstrap_command: "echo foo-bar"')
     File.write("#{template_dir}/README.md", "# Readme...")
     `git init #{template_dir}`
 
-    output = capture_stdout { Bundlegem.generate_template(options, gem_name) }
+    output = capture_stdout { FoobarTemplates.generate_template(options, gem_name) }
 
     expect(output).to include "echo #{gem_name}"
   end
@@ -209,14 +209,14 @@ describe Bundlegem do
       gem_name = "good-dog"
 
       File.write(
-        "#{template_dir}/bundlegem.yml",
+        "#{template_dir}/foobar.yml",
         "name_validation:\n  reserved_names: [bad-dog, good-dog, ugly-dog]\nbootstrap_command: echo BOOTSTRAP_RAN\n"
       )
       File.write("#{template_dir}/README.md", "# Readme")
       `git init #{template_dir}`
 
       expect {
-        capture_stdout { capture_stderr { Bundlegem.generate_template(options, gem_name) } }
+        capture_stdout { capture_stderr { FoobarTemplates.generate_template(options, gem_name) } }
       }.to raise_error(RuntimeError)
 
       expect($captured_stderr).to include "reserved by template"
@@ -229,13 +229,13 @@ describe Bundlegem do
       gem_name = "good-dog"
 
       File.write(
-        "#{template_dir}/bundlegem.yml",
+        "#{template_dir}/foobar.yml",
         "name_validation:\n  reserved_names: [bad-dog, ugly-dog]\n"
       )
       File.write("#{template_dir}/README.md", "# Readme")
       `git init #{template_dir}`
 
-      capture_stdout { Bundlegem.generate_template(options, gem_name) }
+      capture_stdout { FoobarTemplates.generate_template(options, gem_name) }
 
       expect(File).to exist("#{@dst_dir}/#{gem_name}/README.md")
     end
@@ -246,14 +246,14 @@ describe Bundlegem do
       gem_name = "good-dog"
 
       File.write(
-        "#{template_dir}/bundlegem.yml",
+        "#{template_dir}/foobar.yml",
         "name_validation:\n  regex_validator: \"^[a-z][a-z0-9_]*$\"\n"
       )
       File.write("#{template_dir}/README.md", "# Readme")
       `git init #{template_dir}`
 
       expect {
-        capture_stdout { capture_stderr { Bundlegem.generate_template(options, gem_name) } }
+        capture_stdout { capture_stderr { FoobarTemplates.generate_template(options, gem_name) } }
       }.to raise_error(RuntimeError)
 
       expect($captured_stderr).to include "does not match"
@@ -266,13 +266,13 @@ describe Bundlegem do
       gem_name = "good-dog"
 
       File.write(
-        "#{template_dir}/bundlegem.yml",
+        "#{template_dir}/foobar.yml",
         "name_validation:\n  regex_validator: \"^[a-z][a-z0-9-]*$\"\n"
       )
       File.write("#{template_dir}/README.md", "# Readme")
       `git init #{template_dir}`
 
-      capture_stdout { Bundlegem.generate_template(options, gem_name) }
+      capture_stdout { FoobarTemplates.generate_template(options, gem_name) }
 
       expect(File).to exist("#{@dst_dir}/#{gem_name}/README.md")
     end
@@ -283,14 +283,14 @@ describe Bundlegem do
       gem_name = "fmt"
 
       File.write(
-        "#{template_dir}/bundlegem.yml",
+        "#{template_dir}/foobar.yml",
         "name_validation:\n  reserved_names: [fmt, std]\n  regex_validator: \"^[a-z][a-z0-9-]*$\"\n"
       )
       File.write("#{template_dir}/README.md", "# Readme")
       `git init #{template_dir}`
 
       expect {
-        capture_stdout { capture_stderr { Bundlegem.generate_template(options, gem_name) } }
+        capture_stdout { capture_stderr { FoobarTemplates.generate_template(options, gem_name) } }
       }.to raise_error(RuntimeError)
 
       expect($captured_stderr).to include "reserved"
@@ -302,14 +302,14 @@ describe Bundlegem do
       gem_name = "good-dog"
 
       File.write(
-        "#{template_dir}/bundlegem.yml",
+        "#{template_dir}/foobar.yml",
         "name_validation:\n  regex_validator: \"[unclosed\"\n"
       )
       File.write("#{template_dir}/README.md", "# Readme")
       `git init #{template_dir}`
 
       expect {
-        capture_stdout { capture_stderr { Bundlegem.generate_template(options, gem_name) } }
+        capture_stdout { capture_stderr { FoobarTemplates.generate_template(options, gem_name) } }
       }.to raise_error(RuntimeError)
 
       expect($captured_stderr).to include "invalid name_validation.regex_validator"
@@ -320,11 +320,11 @@ describe Bundlegem do
       options = { bin: false, ext: false, coc: false, template: "template-user-supplied" }
       gem_name = "good-dog"
 
-      File.write("#{template_dir}/bundlegem.yml", "category: testing\n")
+      File.write("#{template_dir}/foobar.yml", "category: testing\n")
       File.write("#{template_dir}/README.md", "# Readme")
       `git init #{template_dir}`
 
-      capture_stdout { Bundlegem.generate_template(options, gem_name) }
+      capture_stdout { FoobarTemplates.generate_template(options, gem_name) }
 
       expect(File).to exist("#{@dst_dir}/#{gem_name}/README.md")
     end
@@ -335,7 +335,7 @@ describe Bundlegem do
     options = { bin: false, ext: false, coc:  false, template: "test_template" }
     gem_name = "good-dog"
 
-    capture_stdout { Bundlegem.generate_template(options, gem_name) }
+    capture_stdout { FoobarTemplates.generate_template(options, gem_name) }
 
     resulting_manifest = File.read("#{@dst_dir}/#{gem_name}/#{gem_name}.rb")
     expect(resulting_manifest).to eq expected_manifest
@@ -344,7 +344,7 @@ describe Bundlegem do
   it "has config[:unprefixed_name] removing purpose-tool- from name" do
     options = { bin: false, ext: false, coc:  false, template: "test_template" }
     gem_name = "tool-go-good-dog"
-    my_gem = Bundlegem::CLI::TemplateGenerator.new(options, gem_name)
+    my_gem = FoobarTemplates::CLI::TemplateGenerator.new(options, gem_name)
 
     config = my_gem.build_interpolation_config
 
@@ -358,7 +358,7 @@ describe Bundlegem do
       `git init #{template_dir}`
 
       # Remove registry_domain from config so it triggers a prompt
-      config_path = "#{@mocked_home}/.bundlegem/config"
+      config_path = "#{@mocked_home}/.foobar/config"
       config_data = YAML.load_file(config_path)
       config_data.delete('registry_domain')
       File.write(config_path, "# Comments made to this file will not be preserved\n#{YAML.dump(config_data)}")
@@ -369,10 +369,10 @@ describe Bundlegem do
       # Simulate user typing "my-prompted-registry.io"
       allow($stdin).to receive(:gets).and_return("my-prompted-registry.io\n")
 
-      output = capture_stdout { Bundlegem.generate_template(options, gem_name) }
+      output = capture_stdout { FoobarTemplates.generate_template(options, gem_name) }
 
       expect(output).to include "registry-domain"
-      expect(output).to include "~/.bundlegem/config"
+      expect(output).to include "~/.foobar/config"
 
       # Verify value was saved to config
       saved_config = YAML.load_file(config_path)
@@ -390,7 +390,7 @@ describe Bundlegem do
       # $stdin.gets should NOT be called
       expect($stdin).not_to receive(:gets)
 
-      capture_stdout { Bundlegem.generate_template(options, gem_name) }
+      capture_stdout { FoobarTemplates.generate_template(options, gem_name) }
     end
 
     it "does not prompt for templates without domain placeholders" do
@@ -403,7 +403,7 @@ describe Bundlegem do
 
       expect($stdin).not_to receive(:gets)
 
-      capture_stdout { Bundlegem.generate_template(options, gem_name) }
+      capture_stdout { FoobarTemplates.generate_template(options, gem_name) }
     end
 
     it "defaults repo_domain to github.com when user enters empty string" do
@@ -411,7 +411,7 @@ describe Bundlegem do
       File.write("#{template_dir}/README.md", "Clone from FOO_GIT_REPO_URL")
       `git init #{template_dir}`
 
-      config_path = "#{@mocked_home}/.bundlegem/config"
+      config_path = "#{@mocked_home}/.foobar/config"
       config_data = YAML.load_file(config_path)
       config_data.delete('repo_domain')
       File.write(config_path, "# Comments made to this file will not be preserved\n#{YAML.dump(config_data)}")
@@ -421,7 +421,7 @@ describe Bundlegem do
 
       allow($stdin).to receive(:gets).and_return("\n")
 
-      capture_stdout { Bundlegem.generate_template(options, gem_name) }
+      capture_stdout { FoobarTemplates.generate_template(options, gem_name) }
 
       saved_config = YAML.load_file(config_path)
       expect(saved_config['repo_domain']).to eq "github.com"
@@ -440,7 +440,7 @@ describe Bundlegem do
       options = { bin: false, ext: false, coc: false, template: "template-git-test" }
       gem_name = "git-skip-app"
 
-      capture_stdout { Bundlegem.generate_template(options, gem_name) }
+      capture_stdout { FoobarTemplates.generate_template(options, gem_name) }
 
       # The generated project should NOT have its own .git directory
       expect(File).not_to exist("#{@dst_dir}/#{gem_name}/.git")
@@ -456,7 +456,7 @@ describe Bundlegem do
       options = { bin: false, ext: false, coc: false, template: "template-git-test2" }
       gem_name = "git-init-app"
 
-      capture_stdout { Bundlegem.generate_template(options, gem_name) }
+      capture_stdout { FoobarTemplates.generate_template(options, gem_name) }
 
       # The generated project SHOULD have its own .git directory
       expect(File).to exist("#{@dst_dir}/#{gem_name}/.git")
@@ -467,7 +467,7 @@ describe Bundlegem do
       `git init #{@dst_dir}`
 
       # Set always_perform_git_init to true in config
-      config_path = "#{@mocked_home}/.bundlegem/config"
+      config_path = "#{@mocked_home}/.foobar/config"
       config_data = YAML.load_file(config_path)
       config_data['always_perform_git_init'] = true
       File.write(config_path, "# Comments made to this file will not be preserved\n#{YAML.dump(config_data)}")
@@ -479,7 +479,7 @@ describe Bundlegem do
       options = { bin: false, ext: false, coc: false, template: "template-git-test3" }
       gem_name = "git-force-app"
 
-      capture_stdout { Bundlegem.generate_template(options, gem_name) }
+      capture_stdout { FoobarTemplates.generate_template(options, gem_name) }
 
       # The generated project SHOULD have its own .git directory even though parent is a repo
       expect(File).to exist("#{@dst_dir}/#{gem_name}/.git")
@@ -495,42 +495,42 @@ describe Bundlegem do
     end
 
     it "can download public templates from the web" do
-      capture_stdout { Bundlegem.install_public_templates }
-      expect(File).to exist("#{ENV['HOME']}/.bundlegem/templates/template-arduino/README.md")
+      capture_stdout { FoobarTemplates.install_public_templates }
+      expect(File).to exist("#{ENV['HOME']}/.foobar/templates/template-arduino/README.md")
     end
   end
 
   describe "create personal templates" do
     let(:github_name) { "Test" } # set by reset_test_env via `git config --global user.name "Test"`
-    let(:local_dir)   { "#{ENV['HOME']}/.bundlegem/templates/templates-#{github_name}" }
+    let(:local_dir)   { "#{ENV['HOME']}/.foobar/templates/templates-#{github_name}" }
 
     before :each do
       # Default: no remote — skip network calls.
-      allow(Bundlegem).to receive(:remote_repo_exists?).and_return(false)
+      allow(FoobarTemplates).to receive(:remote_repo_exists?).and_return(false)
     end
 
     it "errors when repo_domain is not configured" do
-      config_path = "#{ENV['HOME']}/.bundlegem/config"
+      config_path = "#{ENV['HOME']}/.foobar/config"
       data = YAML.load_file(config_path)
       data['repo_domain'] = nil
       File.write(config_path, "# Comments made to this file will not be preserved\n#{YAML.dump(data)}")
 
       out = StringIO.new
-      Bundlegem.setup_personal_templates(input: StringIO.new(""), output: out)
+      FoobarTemplates.setup_personal_templates(input: StringIO.new(""), output: out)
 
       expect(out.string).to include("`repo_domain` is not set")
       expect(File).not_to exist(local_dir)
     end
 
-    it "creates the mono-repo with bundlegem.yml and README when no remote exists" do
+    it "creates the mono-repo with foobar.yml and README when no remote exists" do
       out = StringIO.new
-      Bundlegem.setup_personal_templates(input: StringIO.new(""), output: out)
+      FoobarTemplates.setup_personal_templates(input: StringIO.new(""), output: out)
 
-      expect(File).to exist("#{local_dir}/bundlegem.yml")
-      expect(File.read("#{local_dir}/bundlegem.yml")).to include("monorepo: true")
+      expect(File).to exist("#{local_dir}/foobar.yml")
+      expect(File.read("#{local_dir}/foobar.yml")).to include("monorepo: true")
 
       expect(File).to exist("#{local_dir}/README.md")
-      expect(File.read("#{local_dir}/README.md")).to include("https://github.com/thenotary/bundlegem")
+      expect(File.read("#{local_dir}/README.md")).to include("https://github.com/thenotary/foobar_templates")
 
       expect(File).to exist("#{local_dir}/.git")
       expect(out.string).to include("Created personal templates mono-repo")
@@ -540,17 +540,17 @@ describe Bundlegem do
       FileUtils.mkdir_p(local_dir)
 
       out = StringIO.new
-      Bundlegem.setup_personal_templates(input: StringIO.new(""), output: out)
+      FoobarTemplates.setup_personal_templates(input: StringIO.new(""), output: out)
 
       expect(out.string).to include("The template directory already exists, #{local_dir}")
-      expect(File).not_to exist("#{local_dir}/bundlegem.yml")
+      expect(File).not_to exist("#{local_dir}/foobar.yml")
     end
 
     it "prompts to clone when the remote repo exists and aborts on 'n'" do
-      allow(Bundlegem::CLI::SetupPersonalTemplatesRepo).to receive(:remote_repo_exists?).and_return(true)
+      allow(FoobarTemplates::CLI::SetupPersonalTemplatesRepo).to receive(:remote_repo_exists?).and_return(true)
 
       out = StringIO.new
-      Bundlegem.setup_personal_templates(input: StringIO.new("n\n"), output: out)
+      FoobarTemplates.setup_personal_templates(input: StringIO.new("n\n"), output: out)
 
       expect(out.string).to include("clone it down? [Y/n]")
       expect(out.string).to include("Aborted")
@@ -561,10 +561,10 @@ describe Bundlegem do
       `git config --global --unset user.name`
 
       out = StringIO.new
-      Bundlegem.setup_personal_templates(input: StringIO.new("octocat\n"), output: out)
+      FoobarTemplates.setup_personal_templates(input: StringIO.new("octocat\n"), output: out)
 
       expect(out.string).to include("Enter your GitHub user name")
-      expect(File).to exist("#{ENV['HOME']}/.bundlegem/templates/templates-octocat/bundlegem.yml")
+      expect(File).to exist("#{ENV['HOME']}/.foobar/templates/templates-octocat/foobar.yml")
     ensure
       `git config --global user.name "Test"`
     end

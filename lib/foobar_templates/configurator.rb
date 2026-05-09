@@ -1,13 +1,13 @@
 require 'fileutils'
 require 'yaml'
 
-module Bundlegem
+module FoobarTemplates
 
   class Configurator
     attr_accessor :config_file_data
 
     def initialize
-      @config_directory_root = "#{ENV['HOME']}/.bundlegem"
+      @config_directory_root = "#{ENV['HOME']}/.foobar"
       @config_file = "#{@config_directory_root}/config"
       @user_defined_templates_path = "#{@config_directory_root}/templates"
 
@@ -70,7 +70,7 @@ module Bundlegem
     end
 
     def read_template_config(template_dir)
-      template_config_path = File.join(template_dir, "bundlegem.yml")
+      template_config_path = File.join(template_dir, "foobar.yml")
       return {} unless File.exist?(template_config_path)
 
       raw_config = YAML.load_file(template_config_path, symbolize_names: true)

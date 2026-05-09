@@ -1,4 +1,4 @@
-module Bundlegem::CLI
+module FoobarTemplates::CLI
   module CheatSheet
     class << self
 

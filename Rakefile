@@ -1,7 +1,7 @@
 require 'rake'
 require 'rspec/core/rake_task'
 
-GEM_NAME = "bundlegem"
+GEM_NAME = "foobar_templates"
 GEM_SPEC = "#{GEM_NAME}.gemspec"
 
 desc "Build #{GEM_NAME} gem"

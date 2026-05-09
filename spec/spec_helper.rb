@@ -1,13 +1,13 @@
 $LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
 $test_env = true
-require 'bundlegem'
-require 'bundlegem/cli/template_generator'
+require 'foobar_templates'
+require 'foobar_templates/cli/template_generator'
 require 'fileutils'
 require 'yaml'
 require 'pry'
 
 # Mock our home directory
-ENV['HOME'] = "/tmp/bundlegem_mock_home"
+ENV['HOME'] = "/tmp/foobar_templates_mock_home"
 ENV['SPEC_DATA_DIR'] = File.expand_path("./spec/data") # I fell into this from sloppy chdir handling, bad CLI/ API isolation.
 
 
@@ -19,7 +19,7 @@ def setup_mock_web_template
   `cd "#{mock_repo}" && git init && git add . && git commit -m "haxing"`
 
   # Update the config file so install_public_templates finds our mock repo
-  config_path = "#{ENV['HOME']}/.bundlegem/config"
+  config_path = "#{ENV['HOME']}/.foobar/config"
   config_data = YAML.load_file(config_path)
   config_data['public_templates'] = mock_repo
   File.write(config_path, "# Comments made to this file will not be preserved\n#{YAML.dump(config_data)}")
@@ -36,7 +36,7 @@ def create_user_defined_template(category = nil, template_name = "empty_template
   FileUtils.mkdir_p new_template_dir
 
   # Writes the category
-  File.open("#{new_template_dir}/bundlegem.yml", "w+") do |f|
+  File.open("#{new_template_dir}/foobar.yml", "w+") do |f|
     f.puts "category: #{category}" unless category.nil?
   end
 
@@ -50,7 +50,7 @@ def create_monorepo_template(path_segments, monorepo: true, category: nil)
   config = []
   config << "monorepo: true" if monorepo
   config << "category: #{category}" unless category.nil?
-  File.write("#{template_dir}/bundlegem.yml", config.join("\n"))
+  File.write("#{template_dir}/foobar.yml", config.join("\n"))
 
   template_dir
 end
@@ -68,7 +68,7 @@ def reset_test_env
 
   `git config --global init.defaultBranch main && #{auth_settings}`
 
-  # Write domain config to ~/.bundlegem/config instead of git config
+  # Write domain config to ~/.foobar/config instead of git config
   config_data = {
     'default_template' => 'cli_gem',
     'public_templates' => '',
@@ -76,8 +76,8 @@ def reset_test_env
     'k8s_domain' => 'my-k8s.example.com',
     'repo_domain' => 'github.com',
   }
-  FileUtils.mkdir_p "#{@mocked_home}/.bundlegem"
-  File.write("#{@mocked_home}/.bundlegem/config", "# Comments made to this file will not be preserved\n#{YAML.dump(config_data)}")
+  FileUtils.mkdir_p "#{@mocked_home}/.foobar"
+  File.write("#{@mocked_home}/.foobar/config", "# Comments made to this file will not be preserved\n#{YAML.dump(config_data)}")
 end
 
 # squelch stdout
