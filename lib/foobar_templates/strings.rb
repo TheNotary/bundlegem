@@ -11,18 +11,13 @@ Usage Examples:
   # Create a personal mono-repo template for your projects
   $ foobar_templates --setup-personal-templates
 
-  # List available teplates
-  $ foobar_templates --list
-
   # Create a ruby gem project using the built in service template
   $ foobar_templates --template ruby-cli-gem your_project_name
 
   # Convert the current directory which represents a working project into a
   # template by replacing project name variants with foo-bar placeholders
+  $ cd my_recently_built_project
   $ foobar_templates --copy-to-templates
-
-  # shows this message
-  $ foobar_templates --help
   HEREDOC
 
 end
